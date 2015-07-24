@@ -5,24 +5,17 @@ date:
 categories: jekyll update
 ---
 
-This post is inspired by a hilarious tweet that David Robinson made:
+This post is inspired by a hilarious tweet that David Robinson made on June 19th, 2015:
 
 <blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="en" dir="ltr">&quot;I wish I&#39;d left this code across scattered .R files instead of combining it into a package&quot; said no one ever <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> <a href="http://t.co/udeNH4T67H">http://t.co/udeNH4T67H</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/611885584584441856">June 19, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-I finally decided it was time to take the next step and start wrapping all my utility functions, that are scattered across numerous .R files, into R packages that were are well-documented. There are wonderful resources that already exist to explain how to make your first R package. For instance:
+I finally decided it was time to take the next step and start wrapping all my utility functions, that are scattered across numerous .R files, into R packages that are well-documented. There are already two wonderful resources that explain how to make your first R package:
 
 * [Hilary Parker's "Writing an R package from scratch"](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) - This was the resource that helped me get started on making my first R package. It involves you creating your R package from bare bones and is a fantastic introduction.  
 * [Hadley Wickham's "R packages"](http://r-pkgs.had.co.nz/) - This is the most comprehensive resource of how to generate an R package. 
 
-This post, aims to be "in-between" these two resources. Giving a slightly more detailed explanation on creating packages from scratch while not going into the great depth that "R packages" does. 
-
-You'll benefit from this post, if you've read Hilary Parker's post but what to know about details such as:
-
-* How do I add external package dependencies?
-* Where do I put data that my package needs?
-
-This will be a primer on these details without going into the extensive depth in "R packages".
+This post discusses the typical workflow I use to generate R packages. It also aims to provide information that is "in-between" the two aforementioned resources; Giving a slightly more detailed explanation on creating packages from scratch while not going into the great depth that "R packages" does. 
 
 RStudio provides a great interface for creating R packages. However I am not a RStudio user (vim and vimrplugin suits all my needs), thus I will be showing how everything works in the R console and the specific code to use (which I assume is what RStudio is running for you in the background). 
 
@@ -34,7 +27,13 @@ Hadley Wickham's has provided the R community with [devtools](https://cran.r-pro
 install.packages("devtools")
 ```
 
-At the time of this post, I am using devtools version 1.7.0.
+You'll also need roxygen2 for documenting your functions (see below).
+
+```{r}
+install.packages("roxygen2")
+```
+
+At the time of this post, I am using the versions 1.7.0 and 4.1.0 for devtools and roxygen2 respectively. 
 
 # Creating the Framework for your First Package
 
@@ -120,10 +119,48 @@ Imports:
 
 Notice how I didn't specify any version for dplyr which simply indicates the package some version of dplyr. Also remember the comma between each dependency. I've burned a few times by that!
 
-## How do I Document My Functions?
+# How do I Document My Functions?
+
+So how do you get that nice documentation in R when I go `?load_mat`. We can leverage off the [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html) which provides a very simple way of documenting our functions and then produces `man/load_mat.Rd` files which is what we see when we go `?load_mat`. Both [Hilary (Step 3: Add documentation)](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) and [Hadley (Object documentation)](http://r-pkgs.had.co.nz/man.html) discuss at length and I refer you to there pages.
+
+Once you've got your documentation completed, you can simply run:
+
+```{r}
+devtools::document()
+```
+
+This will generate the .Rd files in the man folder. One for each function.
+
+# What if my Package Requires Data for some Functions?
+
+So what if some of your functions require data for them to work? For instance, in one of the [projects that I was involved in we produced a model that returned the scores that would indicate the risk of classical Hodgkin lymphoma patients for overall survival](http://www.ncbi.nlm.nih.gov/pubmed/23182984). I have subsequently worked on producing a companion R package, [CHL26predictor](https://github.com/tinyheero/CHL26predictor), for producing these scores. One of the things that my package required was the feature coefficients from the model so that I could generate the scores. These feature coefficients were sitting in a .tsv file and I want to get these values in my R package without having to hard-code the coefficients into my code.
+
+Thankfully, there are some mechanisms to do this. Your data can exist in 3 locations in your R package folder: 1) data, 2) R/sysdata.rda, and 3) inst/extdata. I will discuss about 1) and 3) as I have used those both approaches. 
+
+## Making Binary Data Available
+
+The data folder is meant to store binary data (in .rda format) that is made available to users. The easiest way to do this use the `devtools::use_data()` function on whatever R object you have. For instance:
+
+```
+x <- c(1:10)
+devtools::use_data(x)
+```
+
+This ends up creating and saving the x object into data/x.rda. When you load up your package, the x variable will be available for you to use. You can this one step further, by actually providing the code that generated the binary data. To do this, the standard thing to do is create a `data-raw` folder. Then create a file .R file with the same name as your binary data 
 
 
- 
+## Making Binary Data Available
+
+# Making Vignettes
+
+Vignettes are extremely important to give people a high-level understanding of what your R package can. To get started with generating a vignette, you can use the `devtools::use_vignette()` function for this. For instance,
+
+```{r}
+devtools::use_vignette("introduction")
+```
+
+This will create a vignette/introduction.Rmd file. This is a vignette template Rmarkdown file that you can then use to fill out steps on how you can use your package. 
+
 # Miscellaneous 
 
 There was recently a twitter thread about using ["pipes"](https://cran.r-project.org/web/packages/magrittr/index.htm) in R functions. 
