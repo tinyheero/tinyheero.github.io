@@ -4,8 +4,12 @@ title: About
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+I am currently undertaking a PhD in Bioinformatics under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/). My main research interest is in the implications of tumour genomic diversity on disease progression in B-cell lymphomas. In particular, how tumour evolution plays a role in treatment resistance and how understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. 
 
-You can find the source code for the Jekyll new theme at: [github.com/jglovier/jekyll-new](https://github.com/jglovier/jekyll-new)
+I have a passion for applying statistical and machine learning approaches to big data, in particular genomics data (e.g. sequencing data). In terms of technical skills:
 
-You can find the source code for Jekyll at [github.com/jekyll/jekyll](https://github.com/jekyll/jekyll)
+1) I have expertise in dealing with big data in the R programming language (e.g. data.table, tidyr, dplyr) and a thorough understanding of the core principles around R
+
+2) I have extensive experience in doing reproducible research through interactive applications and D3 web reporting (e.g. Rmarkdown, knitr, pandoc, git, shiny)
+
+3) I have expertise in developing/managing big data processing pipelines through the Make engine with experience in using ruffus, bpipe, snakemake, and nextflow. 
