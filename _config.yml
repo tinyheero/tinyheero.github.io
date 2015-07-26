@@ -10,4 +10,4 @@ twitter_username: fongchunchan
 github_username:  tinyheero
 
 # Build settings
-markdown: kramdown
+markdown: redcarpet
