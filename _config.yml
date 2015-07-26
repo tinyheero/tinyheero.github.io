@@ -9,5 +9,7 @@ url: "http://yourdomain.com" # the base hostname & protocol for your site
 twitter_username: fongchunchan
 github_username:  tinyheero
 
+highlighter: pygments
+
 # Build settings
 markdown: redcarpet
