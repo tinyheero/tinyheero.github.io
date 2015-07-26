@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Making Your First R Package"
-date:   
+date:   2015-07-19 19:53:02
 categories: jekyll update
 ---
 
@@ -10,18 +10,24 @@ This post is inspired by a hilarious tweet that David Robinson made on June 19th
 <blockquote class="twitter-tweet" data-partner="tweetdeck"><p lang="en" dir="ltr">&quot;I wish I&#39;d left this code across scattered .R files instead of combining it into a package&quot; said no one ever <a href="https://twitter.com/hashtag/rstats?src=hash">#rstats</a> <a href="http://t.co/udeNH4T67H">http://t.co/udeNH4T67H</a></p>&mdash; David Robinson (@drob) <a href="https://twitter.com/drob/status/611885584584441856">June 19, 2015</a></blockquote>
 <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-I finally decided it was time to take the next step and start wrapping all my utility functions, that are scattered across numerous .R files, into R packages that are well-documented. There are already two wonderful resources that explain how to make your first R package:
+I finally decided it was time to take the next step and start wrapping all my utility functions, that are scattered across numerous .R files, into R packages. Now why would I or anyone else do this? A few key reasons:
+
+1. **Code Organization**: I am always trying to figure out where that "function" I wrote months, weeks, or even days ago is. It is scattered in one of my .R files in one of my PhD projects. Often times, I end up just re-writing it because it is faster than searching all my .R files. An R package would help in organizing where my functions go.
+1. **Consistent documentation**: I can barely remember what half of my functions do let alone the inputs and outputs. An R package provides a great consistent documentation and actually encourages you to document them.
+1. **Code Distribution**: 
+
+There are already two wonderful resources that explain how to make your first R package:
 
 * [Hilary Parker's "Writing an R package from scratch"](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) - This was the resource that helped me get started on making my first R package. It involves you creating your R package from bare bones and is a fantastic introduction.  
 * [Hadley Wickham's "R packages"](http://r-pkgs.had.co.nz/) - This is the most comprehensive resource of how to generate an R package. 
 
-This post discusses the typical workflow I use to generate R packages. It also aims to provide information that is "in-between" the two aforementioned resources; Giving a slightly more detailed explanation on creating packages from scratch while not going into the great depth that "R packages" does. 
+This post discusses the typical workflow that I use to generate R packages. It also aims to provide information that is "in-between" the two aforementioned resources; Giving a slightly more detailed explanation on creating packages from scratch while not going into the great depth that "R packages" does. 
 
-RStudio provides a great interface for creating R packages. However I am not a RStudio user (vim and vimrplugin suits all my needs), thus I will be showing how everything works in the R console and the specific code to use (which I assume is what RStudio is running for you in the background). 
+RStudio provides a great interface for creating R packages. However I am not a RStudio user (vim and [Vim-R-plugin](http://www.vim.org/scripts/script.php?script_id=2628) suits all my needs), thus I will be showing how everything works in the R console and the specific code to use (which I assume is what RStudio is running for you in the background). 
 
 # Setup
 
-Hadley Wickham's has provided the R community with [devtools](https://cran.r-project.org/web/packages/devtools/index.html) which is an R package that helps us build R packages. We will need to install this package if you want to make your life easier:
+Hadley Wickham has provided the R community with [devtools](https://cran.r-project.org/web/packages/devtools/index.html) which is an R package that helps us build R packages. We will need to install this package if you want to make your life easier:
 
 ```{r}
 install.packages("devtools")
@@ -47,10 +53,10 @@ This ends up creating a folder with the same name as your package name with 4 fi
 
 * DESCRIPTION: This is where all the meta-data about your package goes. Rather than try to explain the contents, I will refer you to [Hadley's detailed explanation on the contents of this file](http://r-pkgs.had.co.nz/description.html)
 * myfirstpackage.Rproj: This is a RStudio specific file. As I do not use RStudio, I will not comment on this file as I never use it.
-* NAMESPACE: In short, this file indicates needs to be exposed to users or not. From my experience, I've never edited this file as devtools takes care of the changes as you'll see below. 
+* NAMESPACE: In short, this file indicates what needs to be exposed to users or not of your R package. From my experience, I've never edited this file as devtools takes care of the changes as you'll see below. 
 * R: This is where all your R code goes for your package.
 
-You now have the bare bones of your first R package. So let's start adding some functions!
+You now have the bare bones of your first R package. First start by filling out the details in the DESCRIPTION file. When that is done, we can start adding some functions!
 
 # How do I Add My R Functions?
 
@@ -82,7 +88,20 @@ load_mat2 <- function(infile){
 }
 ```
 
-In general, try to group together related functions into the same .R file (e.g. if you have a bunch of loading functions then putting them in load.R would be a good idea). 
+In general, try to group together related functions into the same .R file (e.g. if you have a bunch of loading functions then putting them in load.R would be a good idea). One important thing to note here, is you need to add the `@export` tag above your function to indicate this function to be "exposed" to users to use. For example:
+
+```
+#' @export
+load_mat <- function(infile){
+  in.dt <- data.table::fread(infile, header = TRUE)
+  in.dt <- in.dt[!duplicated(in.dt[, 1]), ]
+  in.mat <- as.matrix(in.dt[, -1, with = FALSE])
+  rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
+  in.mat
+}
+```
+
+The `#' @export` syntax is actually an Roxygen tag which we will discuss below. By doing this, this ensures that the `load_mat()` function gets added to the NAMESPACE (when you run `devtools::document()`) to indicate that it needs to be exposed.
 
 ## External Dependencies
 
@@ -121,7 +140,29 @@ Notice how I didn't specify any version for dplyr which simply indicates the pac
 
 # How do I Document My Functions?
 
-So how do you get that nice documentation in R when I go `?load_mat`. We can leverage off the [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html) which provides a very simple way of documenting our functions and then produces `man/load_mat.Rd` files which is what we see when we go `?load_mat`. Both [Hilary (Step 3: Add documentation)](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) and [Hadley (Object documentation)](http://r-pkgs.had.co.nz/man.html) discuss at length and I refer you to there pages.
+So how do you get that nice documentation in R when I go `?load_mat`. We can leverage off the [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html) which provides a very simple way of documenting our functions and then produces `man/load_mat.Rd` files which is what we see when we go `?load_mat`. Both [Hilary (Step 3: Add documentation)](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) and [Hadley (Object documentation)](http://r-pkgs.had.co.nz/man.html) discuss at length and I refer you to there pages. 
+
+For instance, here is how you might document the `load_mat()` function:
+
+```{r}
+#' Load a Matrix
+#'
+#' This function loads a file as a matrix. It assumes that the first column
+#' contains the rownames and the subsequent columns are the sample identifiers.
+#' Any rows with duplicated row names will be dropped with the first one being
+#' kepted.
+#'
+#' @param infile Path to the input file
+#' @return A matrix of the infile
+#' @export
+load_mat <- function(infile){
+  in.dt <- data.table::fread(infile, header = TRUE)
+  in.dt <- in.dt[!duplicated(in.dt[, 1]), ]
+  in.mat <- as.matrix(in.dt[, -1, with = FALSE])
+  rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
+  in.mat
+}
+```
 
 Once you've got your documentation completed, you can simply run:
 
@@ -129,7 +170,34 @@ Once you've got your documentation completed, you can simply run:
 devtools::document()
 ```
 
-This will generate the .Rd files in the man folder. One for each function.
+This will generate the `load_mat.Rd` files in the man folder:
+
+```{r}
+% Generated by roxygen2 (4.1.0): do not edit by hand
+% Please edit documentation in R/load.R
+\name{load_mat}
+\alias{load_mat}
+\title{Load a Matrix}
+\usage{
+load_mat(infile)
+}
+\arguments{
+\item{infile}{Path to the input file}
+}
+\value{
+A matrix of the infile
+}
+\description{
+This function loads a file as a matrix. It assumes that the first column
+contains the rownames and the subsequent columns are the sample identifiers.
+Any rows with duplicated row names will be dropped with the first one being
+kepted.
+}
+```
+
+You will get one for each function in your R package.
+
+> Each time you add new documentation to your R function, you need to run `devtools::document()` again to re-generate the .Rd files.
 
 # What if my Package Requires Data for some Functions?
 
@@ -146,10 +214,17 @@ x <- c(1:10)
 devtools::use_data(x)
 ```
 
-This ends up creating and saving the x object into data/x.rda. When you load up your package, the x variable will be available for you to use. You can this one step further, by actually providing the code that generated the binary data. To do this, the standard thing to do is create a `data-raw` folder. Then create a file .R file with the same name as your binary data 
+This ends up creating and saving the x object into data/x.rda. When you load up your package, the x variable will be available for you to use. You can this one step further, by actually providing the code that generated the binary data. To do this, the standard thing to do is create a `data-raw` folder. Then create a file .R file with the same name as your binary data. Inside this .R files, you put the exact same code as above. This gives you a record of how the binary data is generated.
 
+You don't want to include these .R files in the actual R package. So what we do is place the `data-raw` folder into the `.Rbuildignore` file. This ensures that when we build and install the package (see below) we ignore the folder `data-raw`.
 
-## Making Binary Data Available
+## Making Raw Data Available
+
+Sometimes you actually need to make raw data available to users for your package. For instance, you may have some loading functions that you want to demonstrate. You'll need the raw (i.e. tsv files) to demonstrate how these functions work. The best way to do this is to put the raw data in the folder `inst/extdata`. When the package gets installed, the data becomes available through the `system.file()` function. For instance if I had the file  `inst/extdata/model-coef.tsv`, once the package is installed I can access this file by going:
+
+```
+system.file("extdata", "model-coef.tsv", package = "myfirstpackage")
+```
 
 # Making Vignettes
 
@@ -160,6 +235,61 @@ devtools::use_vignette("introduction")
 ```
 
 This will create a vignette/introduction.Rmd file. This is a vignette template Rmarkdown file that you can then use to fill out steps on how you can use your package. 
+
+# How do I Install/Use My R Package?
+
+Ok so that we have:
+
+1. Our functions (.R files) the R folder
+2. Documentation (.Rd) files in in the man folder
+3. Data (binary and/or raw) in the data and inst/extdata 
+
+How do we actually install and use our package? We can use the `devtools::load_all()` function which will load your R package into memory exposing all the functions and data that we highlighted above. However as soon as you close your R session, the package will no longer be available.
+
+To actually install your package, you use the `devtools::install()` function which installs your R package into your R system library. Then you will be able to load up your package with:
+
+```{r}
+library("myfirstpackage")
+```
+
+Along with all the data that comes with the package!
+
+# How do I Distribute my R Package
+
+There are several avenues in how you can distribute. The easiest way is to distribute it through Github right now. There is a set of core files you need to have committed. An example of something basic can be my [tinyutils R package](https://github.com/tinyheero/tinyutils). The core files are the following: 
+
+* R/\*.R files 
+* man/\*.Rd files
+* DESCRIPTION
+* NAMESPACE
+
+If you have data, you can also add those files to the repository. Once this is all done and you've pushed it to GitHub, anyone can install it using the following command:
+
+```
+devtools::install_github("yourusername/myfirstpackage")
+```
+
+That's it! Now anyone can use your wonderful package! 
+
+## What about My Vignettes? 
+
+So how should you make your vignettes available to the public? What I've done is commit both the .rmd and generated .html file to my GitHub repository. GitHub won't directly render the .html file, but you can use the [GitHub HTML Preview service](http://htmlpreview.github.io/). Basically, you just give it the url of your html file from your GitHub and it will render. For instance, here is the preview of my html vignette:
+
+[http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html](http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html)
+
+# Summary and What's Next?
+
+Hopefully this post has inspired you to get started on your first R package. I strongly believe putting your functions in R packages is the optimal way to maintain your code as well as distribute it. As I mentioned in the beginning of the post, there are so many times where I've had to search all over the place to look for a function that I'd written a while ago; Only to give up and just re-write it. By investing a bit more time in packaging your code into R packages, you gain at least these benefits:
+
+1. A central location where you know your R functions are (instead of being scattered across all sorts of .R files all over your system)
+1. A consistent documentation of your code (hands up if you've written a function and then came back 1 week later and asked yourself "what does this function do again?)
+1. Version control.
+1. Ability to easily distribute your code to others and for scientific publications.
+
+If you've made it to the end of this post, and are wondering what's next? Then a few things that I would suggest are:
+
+1. READ [Hadley Wickham's "R packages"](http://r-pkgs.had.co.nz/). As mentioned at the beginning, this is the most comprehensive resource on making R packages. It will cover everything mentioned in this post and much more in far greater detail. 
+1. Think about taking your package to the next step and submit your R packages to popular central hubs like [CRAN](https://cran.r-project.org/) or Bioconductor (bioinformatics R packages).
 
 # Miscellaneous 
 
