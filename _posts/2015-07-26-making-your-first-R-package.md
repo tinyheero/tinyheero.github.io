@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Making Your First R Package"
-date:   2015-07-19 19:53:02
+date:   2015-07-26 20:15:00
 categories: jekyll update
 ---
 
