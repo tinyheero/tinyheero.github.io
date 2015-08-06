@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Fong Chun Chan&#39;s Blog</title>
+    <description>A blog about bioinformatics, cancer research, R, statistics and  BIG data
+</description>
+    <link>http://yourdomain.com/</link>
+    <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Thu, 06 Aug 2015 15:05:39 -0700</pubDate>
+    <lastBuildDate>Thu, 06 Aug 2015 15:05:39 -0700</lastBuildDate>
+    <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>Making Patient Gene Mutation Matrix Plots</title>
+        <description>&lt;p&gt;In the cancer genomics field, a very popular plot you&amp;#39;ll often see is what is called the &amp;quot;Sample Gene Mutation Matrix&amp;quot; plot. For instance,&lt;/p&gt;
+
+&lt;p&gt;![An example of a sample gene mutation matrix]&lt;/p&gt;
+</description>
+        <pubDate>Thu, 06 Aug 2015 14:54:35 -0700</pubDate>
+        <link>http://yourdomain.com/2015/08/06/making-patient-gene-mutation-matrices.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/2015/08/06/making-patient-gene-mutation-matrices.html</guid>
+        
+        <category>R</category>
+        
+        <category>Bioinformatics</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>NSE</title>
+        <description>&lt;ul&gt;
+&lt;li&gt;http://justanotherdatablog.blogspot.ca/2015/03/dplyr-use-cases-non-interactive-mode.html&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;filter_crit &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; interp&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;is.na&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;code&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;is.na&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;time&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;is.na&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;sampleID&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;
+                      biopsy &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; biopsy.type&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                      &lt;span class=&quot;m&quot;&gt;.&lt;/span&gt;values &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;code &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;endpointCode&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                                      time &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;endpoint&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+                                      biopsy.type &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; arguments&lt;span class=&quot;o&quot;&gt;$&lt;/span&gt;biopsyType&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;</description>
+        <pubDate>Thu, 06 Aug 2015 10:27:43 -0700</pubDate>
+        <link>http://yourdomain.com/2015/08/06/dplyr_nse.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/2015/08/06/dplyr_nse.html</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Making Your First R Package</title>
+        <description>&lt;p&gt;This post is inspired by a hilarious tweet that David Robinson made on June 19th, 2015:&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-partner=&quot;tweetdeck&quot;&gt;&lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&amp;quot;I wish I&amp;#39;d left this code across scattered .R files instead of combining it into a package&amp;quot; said no one ever &lt;a href=&quot;https://twitter.com/hashtag/rstats?src=hash&quot;&gt;#rstats&lt;/a&gt; &lt;a href=&quot;http://t.co/udeNH4T67H&quot;&gt;http://t.co/udeNH4T67H&lt;/a&gt;&lt;/p&gt;&amp;mdash; David Robinson (@drob) &lt;a href=&quot;https://twitter.com/drob/status/611885584584441856&quot;&gt;June 19, 2015&lt;/a&gt;&lt;/blockquote&gt;
+
+&lt;script async src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;I finally decided it was time to take the next step and start wrapping all my utility functions, that are scattered across numerous .R files, into R packages. Now why would I or anyone else do this? A few key reasons:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Code Organization&lt;/strong&gt;: I am always trying to figure out where that &amp;quot;function&amp;quot; I wrote months, weeks, or even days ago. Often times, I end up just re-writing it because it is faster than searching all my .R files. An R package would help in organizing where my functions go.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Consistent documentation&lt;/strong&gt;: I can barely remember what half of my functions do let alone the inputs and outputs. An R package provides a great consistent documentation structure and actually encourages you to document your functions.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Code Distribution&lt;/strong&gt;: No more emailing .R scripts! An R package gives an easy way to distribute your code for others. Especially if you put it on GitHub. &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;This post discusses the typical workflow that I use to generate R packages. There are already at least two wonderful resources that explain how to make your first R package:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/&quot;&gt;Hilary Parker&amp;#39;s &amp;quot;Writing an R package from scratch&amp;quot;&lt;/a&gt; - This was the resource that helped me get started on making my first R package. It involves you creating your R package from bare bones and is a fantastic introduction.&lt;br&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://r-pkgs.had.co.nz/&quot;&gt;Hadley Wickham&amp;#39;s &amp;quot;R packages&amp;quot;&lt;/a&gt; - This is the most comprehensive resource of how to generate an R package. &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I aim to provide information that is &amp;quot;in-between&amp;quot; the two aforementioned resources; Giving a slightly more detailed explanation on creating packages from scratch while not going into the great depth that &amp;quot;R packages&amp;quot; does. &lt;/p&gt;
+
+&lt;p&gt;RStudio provides a great interface for creating R packages. However I am not a RStudio user (vim and &lt;a href=&quot;http://www.vim.org/scripts/script.php?script_id=2628&quot;&gt;Vim-R-plugin&lt;/a&gt; suits all my needs), thus I will be showing how everything works in the R console and the specific code to use (which I assume is what RStudio is running for you in the background). &lt;/p&gt;
+
+&lt;h1&gt;Setup&lt;/h1&gt;
+
+&lt;p&gt;Hadley Wickham has provided the R community with &lt;a href=&quot;https://cran.r-project.org/web/packages/devtools/index.html&quot;&gt;devtools&lt;/a&gt; which helps with building R packages. We will be using this package to make our lives easier:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;install.packages&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;devtools&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You&amp;#39;ll also need roxygen2 for documenting your functions (see below).&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;install.packages&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;roxygen2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;At the time of this post, I am using the versions 1.7.0 and 4.1.0 for devtools and roxygen2 respectively.&lt;/p&gt;
+
+&lt;h1&gt;Creating the Framework for your First Package&lt;/h1&gt;
+
+&lt;p&gt;The first thing you want to do is create the framework for your R package. We can do this using devtools:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;devtools&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;create&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;myfirstpackage&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This ends up creating a folder with the same name as your package name with 4 files inside the folder:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;DESCRIPTION: This is where all the meta-data about your package goes. Rather than try to explain the contents, I will refer you to &lt;a href=&quot;http://r-pkgs.had.co.nz/description.html&quot;&gt;Hadley&amp;#39;s detailed explanation on the contents of this file&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;myfirstpackage.Rproj: This is a RStudio specific file. As I do not use RStudio, I will not comment on this file as I never use it.&lt;/li&gt;
+&lt;li&gt;NAMESPACE: In short, this file indicates what needs to be exposed to users for your R package. From my experience, I&amp;#39;ve never edited this file as devtools takes care of the changes as you&amp;#39;ll see below. &lt;/li&gt;
+&lt;li&gt;R: This is where all your R code goes for your package.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;You now have the bare bones of your first R package. First start by filling out the details in the DESCRIPTION file. When that is done, we can start adding some functions!&lt;/p&gt;
+
+&lt;h1&gt;How do I Add My R Functions?&lt;/h1&gt;
+
+&lt;p&gt;All your R functions that you want in your R package belong in the R directory. You can create an .R file that has the same name as the function you want in it. For instance, let&amp;#39;s create a file called &lt;code&gt;R/load_mat.R&lt;/code&gt; and add the following contents to the file:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;load_mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; data.table&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;fread&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; header &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; in.dt&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;duplicated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  in.mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;rownames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.mat&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;unlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  in.mat
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is a simple function that takes in a file and convert it into a matrix with the proper column and row names based on the format of the in file. You don&amp;#39;t need to have stick to the rule of one function is one .R file. Each .R file can have multiple functions in them. So:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;load_mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; data.table&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;fread&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; header &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; in.dt&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;duplicated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  in.mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;rownames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.mat&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;unlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  in.mat
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+load_mat2 &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+   &lt;span class=&quot;kc&quot;&gt;...&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In general, try to group together related functions into the same .R file (e.g. if you have a bunch of loading functions then putting them in &lt;code&gt;R/load.R&lt;/code&gt; would be a good idea). One important thing to note here, is you need to add the &lt;code&gt;@export&lt;/code&gt; tag above your function to indicate this function to be &amp;quot;exposed&amp;quot; to users to use. For example:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;#39; @export&lt;/span&gt;
+load_mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; data.table&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;fread&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; header &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; in.dt&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;duplicated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  in.mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;rownames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.mat&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;unlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  in.mat
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The &lt;code&gt;#&amp;#39; @export&lt;/code&gt; syntax is actually an Roxygen tag which we will discuss below. By doing this, this ensures that the &lt;code&gt;load_mat()&lt;/code&gt; function gets added to the NAMESPACE (when you run &lt;code&gt;devtools::document()&lt;/code&gt;) to indicate that it needs to be exposed.&lt;/p&gt;
+
+&lt;h2&gt;External Dependencies&lt;/h2&gt;
+
+&lt;p&gt;You&amp;#39;ll see that the &lt;code&gt;load_mat()&lt;/code&gt; function actually depends on the &lt;code&gt;data.table::fread()&lt;/code&gt; function to read in files super quickly. Notice how I did NOT do something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;kn&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;data.table&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+load_mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; fread&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; header &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; in.dt&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;duplicated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  in.mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;rownames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.mat&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;unlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  in.mat
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;In other words, specifically load the data.table package and thus save me the step of having to use the &lt;code&gt;data.table::fread()&lt;/code&gt;. Doing this is actually a big no-no in R packages as using a &lt;code&gt;library()&lt;/code&gt; in an R function can globally effect the availability of functions. To re-iterate:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Never use library() or require() in a R package!&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If your R functions require functions from external packages, the way to do this is to use the &lt;a href=&quot;https://stat.ethz.ch/R-manual/R-devel/library/base/html/ns-dblcolon.html&quot;&gt;&amp;quot;double colon&amp;quot; approach&lt;/a&gt;. You also need to indicate that your R package depends on these external packages. To do this, you will need you add this information your DESCRIPTION file under the Imports content. For this case, we need the data.table R package, so we added the following to our DESCRIPTION file:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Imports:
+    data.table (&amp;gt;= 1.9.4)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Notice how I also specified the version of the data.table. Basically I am saying that this package I am building requires the data.table package and specifically a version of it that is &amp;gt;= 1.9.4. You can indicate multiple external dependencies by just adding them in the next line:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;Imports:
+    data.table (&amp;gt;= 1.9.4),
+    dplyr
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Notice how I didn&amp;#39;t specify any version for dplyr which simply indicates that the package requires some version of dplyr. Also remember the comma between each dependency. I&amp;#39;ve been burned a few times by that!&lt;/p&gt;
+
+&lt;h1&gt;How do I Document My Functions?&lt;/h1&gt;
+
+&lt;p&gt;So how do you get that nice documentation in R when I go &lt;code&gt;?load_mat&lt;/code&gt;. We can leverage off the &lt;a href=&quot;https://cran.r-project.org/web/packages/roxygen2/index.html&quot;&gt;roxygen2&lt;/a&gt; which provides a very simple way of documenting our functions and then produces &lt;code&gt;man/load_mat.Rd&lt;/code&gt; files which is what we see when we go &lt;code&gt;?load_mat&lt;/code&gt;. Both &lt;a href=&quot;http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/&quot;&gt;Hilary (Step 3: Add documentation)&lt;/a&gt; and &lt;a href=&quot;http://r-pkgs.had.co.nz/man.html&quot;&gt;Hadley (Object documentation)&lt;/a&gt; discuss this at length and I refer you to there pages. &lt;/p&gt;
+
+&lt;p&gt;For instance, here is how you might document the &lt;code&gt;load_mat()&lt;/code&gt; function:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;c1&quot;&gt;#&amp;#39; Load a Matrix&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; This function loads a file as a matrix. It assumes that the first column&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; contains the rownames and the subsequent columns are the sample identifiers.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; Any rows with duplicated row names will be dropped with the first one being&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; kepted.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; @param infile Path to the input file&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; @return A matrix of the infile&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#&amp;#39; @export&lt;/span&gt;
+load_mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;){&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; data.table&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;fread&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;infile&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; header &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  in.dt &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; in.dt&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;duplicated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  in.mat &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;as.matrix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;-1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;rownames&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.mat&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;unlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;in.dt&lt;span class=&quot;p&quot;&gt;[,&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; with &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;FALSE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  in.mat
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Once you&amp;#39;ve got your documentation completed, you can simply run:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;devtools&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;document&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will generate the &lt;code&gt;load_mat.Rd&lt;/code&gt; file in the man folder:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;% Generated by roxygen2 (4.1.0): do not edit by hand
+% Please edit documentation in R/load.R
+\name{load_mat}
+\alias{load_mat}
+\title{Load a Matrix}
+\usage{
+load_mat(infile)
+}
+\arguments{
+\item{infile}{Path to the input file}
+}
+\value{
+A matrix of the infile
+}
+\description{
+This function loads a file as a matrix. It assumes that the first column
+contains the rownames and the subsequent columns are the sample identifiers.
+Any rows with duplicated row names will be dropped with the first one being
+kepted.
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;You will get one &lt;code&gt;.Rd&lt;/code&gt; file for each function in your R package.&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Each time you add new documentation to your R function, you need to run &lt;code&gt;devtools::document()&lt;/code&gt; again to re-generate the .Rd files.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1&gt;What if my Package Requires Data for some Functions?&lt;/h1&gt;
+
+&lt;p&gt;So what if some of your functions require data for them to work? For instance in one of the &lt;a href=&quot;http://www.ncbi.nlm.nih.gov/pubmed/23182984&quot;&gt;projects that I was involved in, we produced a model that returned the scores that would indicate the risk of classical Hodgkin lymphoma patients for overall survival&lt;/a&gt;. I have subsequently worked on producing a companion R package, &lt;a href=&quot;https://github.com/tinyheero/CHL26predictor&quot;&gt;CHL26predictor&lt;/a&gt;, for producing these scores. One of the things that my package required was the feature coefficients from the model so that I could generate the scores. These feature coefficients were sitting in a .tsv file and I wanted to get these values in my R package without having to hard-code the coefficients into my code.&lt;/p&gt;
+
+&lt;p&gt;Thankfully, there are mechanisms to do this. Your data can exist in 3 locations in your R package folder: 1) data, 2) R/sysdata.rda, and 3) inst/extdata. I will discuss about 1) and 3) as I have used both of these approaches. &lt;/p&gt;
+
+&lt;h2&gt;Making Binary Data Available&lt;/h2&gt;
+
+&lt;p&gt;The data folder is meant to store binary data (in .rda format) that is made available to users. The easiest way to do this is to use the &lt;code&gt;devtools::use_data()&lt;/code&gt; function on whatever R object you have. For instance:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;x &lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+devtools&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;use_data&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;x&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This ends up creating and saving the x object into data/x.rda. When you load up your package, the x variable will be available for you to use. You can this one step further, by actually providing the code that generated the binary data. To do this, the standard thing to do is create a &lt;code&gt;data-raw&lt;/code&gt; folder. Then create a file .R file with the same name as your binary data. Inside this .R files, you put the exact same code as above. This gives you a record of how the binary data is generated.&lt;/p&gt;
+
+&lt;p&gt;You don&amp;#39;t want to include these .R files in the actual R package. So what we do is place the &lt;code&gt;data-raw&lt;/code&gt; folder into the &lt;code&gt;.Rbuildignore&lt;/code&gt; file like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt; ^data-raw$
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This ensures that when we build and install the package (see below) we ignore the folder &lt;code&gt;data-raw&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Making Raw Data Available&lt;/h2&gt;
+
+&lt;p&gt;Sometimes you actually need to make raw data available to users for your package. For instance, you may have some loading functions that you want to demonstrate. You&amp;#39;ll need the raw (i.e. tsv files) to demonstrate how these functions work. The best way to do this is to put the raw data in the folder &lt;code&gt;inst/extdata&lt;/code&gt;. When the package gets installed, the data becomes available through the &lt;code&gt;system.file()&lt;/code&gt; function. For instance if I had the file  &lt;code&gt;inst/extdata/model-coef.tsv&lt;/code&gt;, once the package is installed I can access this file by going:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;kp&quot;&gt;system.file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;extdata&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;model-coef.tsv&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; package &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;myfirstpackage&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h1&gt;Making Vignettes&lt;/h1&gt;
+
+&lt;p&gt;Vignettes are extremely important to give people a high-level understanding of what your R package can do. To get started with generating a vignette, you can use the &lt;code&gt;devtools::use_vignette()&lt;/code&gt; function for this. For instance,&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;devtools&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;use_vignette&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;introduction&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will create a &lt;code&gt;vignette/introduction.Rmd&lt;/code&gt; file. This is a vignette template Rmarkdown file that you can then use to fill out steps on how you can use your package. &lt;/p&gt;
+
+&lt;h1&gt;How do I Install/Use My R Package?&lt;/h1&gt;
+
+&lt;p&gt;Ok so now that we have:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Our functions (.R files) the R folder&lt;/li&gt;
+&lt;li&gt;Documentation (.Rd) files in in the man folder&lt;/li&gt;
+&lt;li&gt;Data (binary and/or raw) in the data and inst/extdata &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;How do we actually install and use our package? We can use the &lt;code&gt;devtools::load_all()&lt;/code&gt; function which will load your R package into memory exposing all the functions and data that we highlighted above. However as soon as you close your R session, the package will no longer be available.&lt;/p&gt;
+
+&lt;p&gt;To actually install your package, you use the &lt;code&gt;devtools::install()&lt;/code&gt; function which installs your R package into your R system library. Then you will be able to load up your package with:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;&lt;span class=&quot;kn&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;myfirstpackage&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Along with all the data that comes with the package!&lt;/p&gt;
+
+&lt;h1&gt;How do I Distribute my R Package&lt;/h1&gt;
+
+&lt;p&gt;There are several avenues in how you can distribute. The easiest way is to distribute it through Github. There is a set of core files you need to have committed. An example of something basic can be my &lt;a href=&quot;https://github.com/tinyheero/tinyutils&quot;&gt;tinyutils R package&lt;/a&gt;. The core files are the following: &lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;R/*.R files &lt;/li&gt;
+&lt;li&gt;man/*.Rd files&lt;/li&gt;
+&lt;li&gt;DESCRIPTION&lt;/li&gt;
+&lt;li&gt;NAMESPACE&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If you have data, you can also add those files to the repository. Once this is all done and you&amp;#39;ve pushed it to GitHub, anyone can install it using the following command:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-r&quot; data-lang=&quot;r&quot;&gt;devtools&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;install_github&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;quot;yourusername/myfirstpackage&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That&amp;#39;s it! Now anyone can use your wonderful package! &lt;/p&gt;
+
+&lt;h2&gt;What about My Vignettes?&lt;/h2&gt;
+
+&lt;p&gt;So how should you make your vignettes available to the public? What I&amp;#39;ve done is commit both the .rmd and generated .html file to my GitHub repository. GitHub won&amp;#39;t directly render the .html file, but you can use the &lt;a href=&quot;http://htmlpreview.github.io/&quot;&gt;GitHub HTML Preview service&lt;/a&gt;. Basically, you just give it the url of your html file from your GitHub and it will render it. For instance, here is the preview of my html vignette:&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html&quot;&gt;http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;h1&gt;Summary and What&amp;#39;s Next?&lt;/h1&gt;
+
+&lt;p&gt;Hopefully this post has inspired you to get started on your first R package. I strongly believe putting your functions in R packages is the optimal way to maintain your functions as well as distribute it to others to use.  If you&amp;#39;ve made it to the end of this post, and are wondering what&amp;#39;s next? Then a few things that I would suggest are:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;READ&lt;/strong&gt; &lt;a href=&quot;http://r-pkgs.had.co.nz/&quot;&gt;Hadley Wickham&amp;#39;s &amp;quot;R packages&amp;quot;&lt;/a&gt;. As mentioned in the beginning, this is the most comprehensive resource on making R packages. It will cover everything mentioned in this post and in far greater detail. &lt;/li&gt;
+&lt;li&gt;Think about taking your package to the next step and submit your R packages to popular central hubs like &lt;a href=&quot;https://cran.r-project.org/&quot;&gt;CRAN&lt;/a&gt; or &lt;a href=&quot;http://bioconductor.org/&quot;&gt;Bioconductor&lt;/a&gt; (bioinformatics R packages).&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;http://r-pkgs.had.co.nz/tests.html&quot;&gt;Adding automated testing to your R package.&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Now go out and start making your first R package!&lt;/p&gt;
+</description>
+        <pubDate>Sun, 26 Jul 2015 13:15:00 -0700</pubDate>
+        <link>http://yourdomain.com/jekyll/update/2015/07/26/making-your-first-R-package.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/jekyll/update/2015/07/26/making-your-first-R-package.html</guid>
+        
+        <category>R</category>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+      <item>
+        <title>Creation of My Blog!</title>
+        <description>&lt;p&gt;Welcome to the first post in my newly created blog! Looking forward to blogging about my adventures in bioinformatics, cancer, and big data research. The creation of this blog was done by using &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;jekyll&lt;/a&gt; which provides a nice and easy way to get started with a static website that is blog-aware. All the content for this website is hosted on &lt;a href=&quot;https://github.com/tinyheero/tinyheero.github.io&quot;&gt;github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;I followed the instructions posted kindly by &lt;a href=&quot;http://growthalytics.com/programming/2015/07/19/setting-up-your-own-blog/&quot;&gt;James Huang on his blog&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1&gt;Adding Comments&lt;/h1&gt;
+
+&lt;p&gt;The comments are through &lt;a href=&quot;https://disqus.com/&quot;&gt;Disqus&lt;/a&gt;. I followed the &lt;a href=&quot;http://www.perfectlyrandom.org/2014/06/29/adding-disqus-to-your-jekyll-powered-github-pages/&quot;&gt;instructions here to do this&lt;/a&gt;. In brief,&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Register a site with Disqus using &lt;a href=&quot;https://disqus.com/websites/&quot;&gt;https://disqus.com/websites/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Grab the &amp;quot;universal code&amp;quot; and add that to a &lt;code&gt;_includes/disqus.html&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Then add &lt;code&gt;{% include disqus.html%}&lt;/code&gt; to &lt;code&gt;_layouts/post.html&lt;/code&gt;. I added it right after &lt;code&gt;{{ content}}&lt;/code&gt;. &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;By doing this, this makes the Disqus comments appear on every post. You can also add them to other &lt;code&gt;_layout/*.html&lt;/code&gt; pages in the future. &lt;/p&gt;
+
+&lt;p&gt;Also for escaping the liquid template tags (i.e. include disqus.html} so that they can appear in this post, refer to this &lt;a href=&quot;http://stackoverflow.com/questions/3426182/how-to-escape-liquid-template-tags&quot;&gt;stackoverflow thread&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h1&gt;Adding Tags&lt;/h1&gt;
+
+&lt;p&gt;I follow the instructions posted kindly by &lt;a href=&quot;http://charliepark.org/tags-in-jekyll/&quot;&gt;Charlie Park&amp;#39;s &amp;quot;Tags in Jekyll&amp;quot;&lt;/a&gt; to setup tags in Jekyll.&lt;/p&gt;
+</description>
+        <pubDate>Sun, 19 Jul 2015 12:53:02 -0700</pubDate>
+        <link>http://yourdomain.com/jekyll/update/2015/07/19/first-post.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/jekyll/update/2015/07/19/first-post.html</guid>
+        
+        
+        <category>jekyll</category>
+        
+        <category>update</category>
+        
+      </item>
+    
+  </channel>
+</rss>
