@@ -6,5 +6,5 @@ layout: default
 <ul>
 	{% for post in site.tags[page.tag] %}
 		<li class="archive_list"><time style="color:#666;font-size:11px;" datetime='{{post.date | date: "%Y-%m-%d"}}'>{{post.date | date: "%m/%d/%y"}}</time> <a class="archive_list_article_link" href='{{post.url}}'>{{post.title}}</a></li>
-	{% endfor %>
+	{% endfor %}
 </ul>
