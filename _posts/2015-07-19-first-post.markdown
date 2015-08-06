@@ -23,4 +23,6 @@ Also for escaping the liquid template tags (i.e. include disqus.html} so that th
 
 # Adding Tags
 
-I follow the instructions posted kindly by [Charlie Park's "Tags in Jekyll"](http://charliepark.org/tags-in-jekyll/) to setup tags in Jekyll.
+I follow the instructions posted at [http://www.minddust.com/post/tags-and-categories-on-github-pages/](http://www.minddust.com/post/tags-and-categories-on-github-pages/) for generating plugin-free tags. I had to go plugin-free because this blog is hosted on Github pages. 
+
+For a plugin version of tags, I would recommend following the instructions posted kindly by [Charlie Park's "Tags in Jekyll"](http://charliepark.org/tags-in-jekyll/).
