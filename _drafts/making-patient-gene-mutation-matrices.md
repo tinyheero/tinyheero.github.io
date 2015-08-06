@@ -1,6 +1,9 @@
 ---
 layout: post
 title:  "Making Patient Gene Mutation Matrix Plots"
+tags:
+- R
+- Bioinformatics
 ---
 
 In the cancer genomics field, a very popular plot you'll often see is what is called the "Sample Gene Mutation Matrix" plot. For instance,
