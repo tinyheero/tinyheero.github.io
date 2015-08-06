@@ -2,8 +2,7 @@
 layout: post
 title:  "Making Your First R Package"
 date:   2015-07-26 20:15:00
-tags: 
-- R
+tags: [R]
 categories: jekyll update
 ---
 
