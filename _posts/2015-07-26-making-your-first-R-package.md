@@ -117,6 +117,7 @@ load_mat <- function(infile){
   in.mat <- as.matrix(in.dt[, -1, with = FALSE])
   rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
   in.mat
+}
 ```
 
 In other words, specifically load the data.table package and thus save me the step of having to use the `data.table::fread()`. Doing this is actually a big no-no in R packages as using a `library()` in an R function can globally effect the availability of functions. To re-iterate:
