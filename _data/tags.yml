@@ -4,3 +4,6 @@ R:
 git:
     slug: git
     name: git
+bioinfo:
+    slug: bioinfo
+    name: Bioinformatics
