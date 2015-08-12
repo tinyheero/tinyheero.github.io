@@ -7,7 +7,7 @@ tags: [git]
 
 Git submodules provide a nifty way to integrate a git repository within a git repository. The first time I encountered git submodules was when I was browsing [Heng Li's fermikit git repository](https://github.com/lh3/fermikit).
 
-![Screenshot of fermikit on github]({{ site.url }}/assets/git-submodules/fermikit-github.png)
+![Screenshot of fermikit on github]({{ site.url }}/assets/fermikit-github.png)
 
 Notice how the files have a @ symbol folowed by some random value. This actually indicates a git submodule within this git repository. For instance, the bfc file is actually a folder containing the [bfc git repository](https://github.com/lh3/bfc). The seemingly random value after the @ symbol is a git hash that indicates a specific commit of the bcf git repository. This basically means this current commit of fermikit depends on the "a73dad2" commit of the bcf repository.
 
