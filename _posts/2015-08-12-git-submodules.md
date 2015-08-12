@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Working with Git Submodules"
-date:   2015-08-12
+date:   2015-08-12 09:28:00
 tags: [git]
 ---
 
