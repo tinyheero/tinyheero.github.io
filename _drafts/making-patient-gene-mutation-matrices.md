@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Making Patient Gene Mutation Matrix Plots"
-tags: [R, Bioinformatics]
+tags: [R, bioinfo]
 categories: R
 ---
 

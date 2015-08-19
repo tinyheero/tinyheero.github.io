@@ -7,3 +7,6 @@ git:
 xml2:
     slug: xml2
     name: xml2
+bioinfo:
+    slug: bioinfo
+    name: Bioinformatics
