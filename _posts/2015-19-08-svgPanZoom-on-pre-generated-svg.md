@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  "Using svgPanZoom on a Pre-generated SVG"
+date:   2015-19-08
 tags: [R, svgPanZoom]
 ---
 
