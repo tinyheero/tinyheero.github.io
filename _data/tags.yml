@@ -4,3 +4,6 @@ R:
 git:
     slug: git
     name: git
+xml2:
+    slug: xml2
+    name: xml2
