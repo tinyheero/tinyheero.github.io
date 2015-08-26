@@ -13,3 +13,6 @@ svgPanZoom:
 bioinfo:
     slug: bioinfo
     name: Bioinformatics
+stats:
+    slug: stats
+    name: Statistics
