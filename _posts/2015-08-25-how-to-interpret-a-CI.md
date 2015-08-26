@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "How do I Interpret a Confidence Interval?"
-date: 2015-08-19
+date: 2015-08-25
 tags: [stats]
 ---
 
