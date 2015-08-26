@@ -4,7 +4,7 @@ title:  "Using TrAp (Tree Approach to Clonality) for Deconvoluting the Evolution
 tags: [bioinfo, TrAp, cancer, evolution]
 ---
 
-I recently had a chance to try out the TrAp software from the Yuval Kluger's Lab:
+I recently had a chance to try out the TrAp software from the [Yuval Kluger's Lab](http://medicine.yale.edu/lab/kluger/):
 
 > [Strino, F., Parisi, F., Micsinai, M., & Kluger, Y. (2013). TrAp: a tree approach for fingerprinting subclonal tumor composition. Nucleic Acids Res, 41(17), e165–e165](http://www.ncbi.nlm.nih.gov/pubmed/23892400)
 
@@ -29,7 +29,7 @@ Interestingly, if you run TrAp in gui mode it will return a interface that has a
 
 > Welcome to the TrAp GUI version 0.3a
 
-Not sure if it should say 0.31 or not? In either case, you can quickly test TrAp in the gui by going `Examples -> Example 1`. Or if you are running it in `--text mode`, you can run:
+Not sure if it should say 0.31 or not? In either case, you can quickly test TrAp in the gui by going `Examples -> Example 1`. Or if you are running it in `--text` mode, you can run:
 
 ```
 java -jar TrApWithDependencies.jar --text figure1.txt
@@ -64,11 +64,11 @@ SIGNAL A<sub>6</sub> .1
 * The 1st line indicates the errors are fixed at 0.0000001.
 * The 2nd line is actually a dummy variable for aberration-free cells. As stated in the paper:
 
-> ...to ensure that the aberration-free noncancerous cells (wildtype) are included in the solution of the problem, we add one dummy aberration to all the normal and cancerous cells in the sample.
+    > ...to ensure that the aberration-free noncancerous cells (wildtype) are included in the solution of the problem, we add one dummy aberration to all the normal and cancerous cells in the sample.
 
 * Lines 3 and onwards are used to indicate the mutation data input. For example, the 3rd line indicates we have:
     + SIGNAL (i.e. genomic aberration)
-    + name: A2 (unique identifier of the genomic aberration). The `<sub>` tag is an html tag for subscript and is used in the output.
+    + name: A<sub>2</sub> (unique identifier of the genomic aberration). The `<sub>` tag is an html tag for subscript and is used in the output.
     + value: 0.6 (i.e. cellular frequency of the genomic aberration)
     + [error]: This is optional value (not included in this example) where you indicate the error of the measurement. Because we specified `DATATYPE FIXED` at the top, we indicate that all data have the same fixed error.
 
@@ -85,25 +85,25 @@ For instance, the optimal tree from figure1.txt, using TrAp version 0.31, looks 
 <img src="{{ site.url }}/assets/TrAp-single-sample-output-F1.png", alt = "Optimal Solution from figure1.txt" />
 </p>
 
-* The C0 represents the aberration-free clone.
-* The red nodes in the tree indicate the "observed" subclones (C2, C4, C5, C6) in the tumour sample.
-* The white boxes represent clones (C2) that we don't observe. More on this below.
-* The mutations each subclone contains is indicated by the mutation identifiers (A2, A3, etc).
+* The C<sub>0</sub> represents the aberration-free clone.
+* The red nodes in the tree indicate the "observed" subclones (C<sub>2</sub>, C<sub>4</sub>, C<sub>5</sub>, C<sub>6</sub>) in the tumour sample.
+* The white boxes represent clones (C<sub>2</sub>) that we don't observe. More on this below.
+* The mutations each subclone contains is indicated by the mutation identifiers (A<sub>2</sub>, A<sub>3</sub>, etc).
 * The percentages represent the portion of the tumour that each subclone represents. The sum of the red boxes should sum to 100%.
 
 How we interpret this tree is as follows:
 
-1. We started with some aberration-free cells (clone; C0)
-1. These cells acquired mutation A2 giving rise to C1. Independently, another set of cells acquired mutation A3 giving rise to C2. In other words, the **C1 cells have mutation A2 but NOT mutation A3**. Similar logic applies to C2.
-1. The C1 cells then acquire mutation A4 to give rise to C3. Although not explicitly shown, **these C3 cells have both the mutation A2 and A4.**
-    * Not all C1 cells acquired mutation A4 though. Hence, why we still observe C1 cells and why it is shown in a red box.
-1. On the other branch, some C2 cells then acquire mutation A5 while others acquire mutation A6. The C4 and C5 have mutation A3 in addition to the respective mutations they acquired.
-    * All C2 cells either acquired mutation A5 or A6. We never observe any cells with just mutation A3. **Hence, C2 appears as a white box and also with 0.0% portion of the tumour.**
+1. We started with some aberration-free cells (clone; C<sub>0</sub>)
+1. These cells acquired mutation A<sub>2</sub> giving rise to C<sub>1</sub>. Independently, another set of cells acquired mutation A<sub>3</sub> giving rise to C<sub>2</sub>. In other words, the **C<sub>1</sub> cells have mutation A<sub>2</sub> but NOT mutation A<sub>3</sub>**. Similar logic applies to C<sub>2</sub>.
+1. The C<sub>1</sub> cells then acquire mutation A<sub>4</sub> to give rise to C<sub>3</sub>. Although not explicitly shown, **these C<sub>3</sub> cells have both the mutation A<sub>2</sub> and A<sub>4</sub>.**
+    * Not all C<sub>1</sub> cells acquired mutation A<sub>4</sub> though. Hence, why we still observe C<sub>1</sub> cells and why it is shown in a red box.
+1. On the other branch, some C<sub>2</sub> cells then acquire mutation A<sub>5</sub> while others acquire mutation A<sub>6</sub>. The C<sub>4</sub> and C<sub>5</sub> have mutation A<sub>3</sub> in addition to the respective mutations they acquired.
+    * All C<sub>2</sub> cells either acquired mutation A<sub>5</sub> or A<sub>A</sub>. We never observe any cells with just mutation <sub>A3</sub>. **Hence, C<sub>2</sub> appears as a white box and also with 0.0% portion of the tumour.**
 1. Ultimately, the tumour consists of 4 observed subclones:
-    * C1 with just mutation A2. This clone accounts for 25% of all tumour cells in the population.
-    * C3 with mutations A2 and A4. This clone accounts for 35% of all tumour cells in the population.
-    * C4 with mutations A3 and A5. This clone accounts for 30% of all tumour cells in the population.
-    * C5 with mutations A3 and A6. This clone accounts for 10% of all tumour cells in the population.
+    * C<sub>1</sub> with just mutation A<sub>2</sub>. This clone accounts for 25% of all tumour cells in the population.
+    * C<sub>3</sub> with mutations A<sub>2</sub> and A<sub>4</sub>. This clone accounts for 35% of all tumour cells in the population.
+    * C<sub>4</sub> with mutations A<sub>3</sub> and A<sub>5</sub>. This clone accounts for 30% of all tumour cells in the population.
+    * C<sub>5</sub> with mutations A<sub>3</sub> and A<sub>6</sub>. This clone accounts for 10% of all tumour cells in the population.
 
 This figure is slightly different from the left half of Figure 1 of the paper:
 
@@ -111,7 +111,7 @@ This figure is slightly different from the left half of Figure 1 of the paper:
 <img src="{{ site.url }}/assets/TrAp-F1.png", alt = "Left Half of Figure 1" />
 </p>
 
-The **only difference is that ancestor mutations are "pushed down" to show the complete genotype of each subclone.** For instance, it explicitly shows C4 has having mutations A2 mutations A4. While the first tree requires that you make the implicit connection that the descendents cells have the mutations of their parent cells.
+The **only difference is that ancestor mutations are "pushed down" to show the complete genotype of each subclone.** For instance, it explicitly shows C<sub>4</sub> has having mutations A<sub>2</sub> mutations A<sub>4</sub>. While the first tree requires that you make the implicit connection that the descendents cells have the mutations of their parent cells.
 
 # Multisample Mode
 
@@ -121,7 +121,7 @@ You can also use TrAp in a multisample mode. This is useful in scenarios where y
 <img src="{{ site.url }}/assets/TrAp-multi-sample-output-S6.png", alt = "Right Half of Supplemental Figure S6" />
 </p>
 
-Here we see a "Before Treatment" and an "After Treatment" tree corresponding to two paired samples. This example nicely illustrates how **TrAp predicts that subclone C4 survives treatment and acquires new mutations, Relapse (5), to form the subclone C5.** To use multisample mode, you need to have an input file for each sample. You can see an example of this is in the examples/multisample folder which contains the input files:
+Here we see a "Before Treatment" and an "After Treatment" tree corresponding to two paired samples. This example nicely illustrates how **TrAp predicts that subclone C<sub>4</sub> survives treatment and acquires new mutations, Relapse (5), to form the subclone C<sub>5</sub>.** To use multisample mode, you need to have an input file for each sample. You can see an example of this is in the examples/multisample folder which contains the input files:
 
 1. fig\_s6\_1.txt
 1. fig\_s6\_2.txt
