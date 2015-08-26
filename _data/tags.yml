@@ -16,3 +16,12 @@ bioinfo:
 stats:
     slug: stats
     name: Statistics
+TrAp:
+    slug: TrAp 
+    name: TrAp
+cancer:
+    slug: cancer
+    name: Cancer
+evolution:
+    slug: evolution
+    name: Evolution
