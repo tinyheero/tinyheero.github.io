@@ -25,3 +25,6 @@ cancer:
 evolution:
     slug: evolution
     name: Evolution
+devtools:
+    slug: devtools
+    name: devtools
