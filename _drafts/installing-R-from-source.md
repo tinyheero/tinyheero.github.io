@@ -6,13 +6,9 @@ tags: [R]
 
 If you've ever had to install R from source, chances are you'll run into some issues. This blog post lists all the different problems I've encountered and how I got around them. These instructions apply to a Centos Distribution (specifically 7.1) and worked with R-3.2.2. Specifically, I had root access but wanted to install a specific version of R for my personal user account (i.e. in my personal home directory at ~/usr/local).
 
-## Download Source
-
-You can download the latest source from R 
-
 ## Configure, Make, Install
 
-Once you've extracted the package source, go into the folder and you can first configure the compile settings:
+First download the R source package. Once you've extracted the package source, go into the folder and `configure` the compile settings:
 
 ```
 ./configure --prefix=$(HOME)/usr/local/R/3.2.2
