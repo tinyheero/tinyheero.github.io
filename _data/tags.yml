@@ -28,3 +28,6 @@ evolution:
 devtools:
     slug: devtools
     name: devtools
+kallisto:
+    slug: kallisto
+    name: kallisto
