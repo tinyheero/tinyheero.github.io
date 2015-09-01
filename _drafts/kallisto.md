@@ -1,18 +1,14 @@
 ---
 layout: post
-title:  "kallisto"
+title:  "How \"Pseudoalignments\" Work in kallisto"
 tags: [bioinfo, kallisto]
 ---
 
-[@lpachter](https://twitter.com/lpachter)'s group has recently introduced a new tool called [kallisto](http://pachterlab.github.io/kallisto/) to the bioinformatics community which has created quite a bit of hype through his blog post "[Near-optimal RNA-Seq quantification with kallisto](https://liorpachter.wordpress.com/2015/05/10/near-optimal-rna-seq-quantification-with-kallisto/)". **The paper at the time of this writing is in [pre-print form at arXiv](http://arxiv.org/abs/1505.02710).**
+[@lpachter](https://twitter.com/lpachter)'s group has recently introduced a new tool called [kallisto](http://pachterlab.github.io/kallisto/) to the bioinformatics community which marks a huge advancement in how RNA-seq analysis is done. 
 
-kallisto is considered a "lightweight algorithm" which (to the best of my knowledge) is defined by the [Sailfish paper](http://www.ncbi.nlm.nih.gov/pubmed/24752080) as algorithms which:
+> The paper, at the time of this writing, is in pre-print form at arXiv titled [Near-optimal RNA-Seq quantification](Near-optimal RNA-Seq quantification)
 
-> 1. make frugal use of data
-> 1. respect constant factors 
-> 1. effectively use concurrent hardware by working with small units of data where possible
-
-kallisto is super fast at quantifying the abundance of transcripts from RNA-seq data with high accuracy. The speed on the program can be attributed to the usage of "psuedoalignments" which aims to (from Lior's blog post):
+kallisto is a "lightweight algorithm" that is super fast at quantifying the abundance of transcripts from RNA-seq data with high accuracy. The speed of the program can be attributed to the usage of "psuedoalignments" which aims to (from [Lior's blog post](https://liorpachter.wordpress.com/2015/05/10/near-optimal-rna-seq-quantification-with-kallisto/)):
 
 > ...determine, for each read, not where in each transcript it aligns, but rather which transcripts it is compatible with...
 
@@ -24,7 +20,7 @@ Specifically, the graph is constructed from the k-mers present in an input trans
 
 ![Modified Figure 1a,b]({{ site.url }}/assets/kallisto-fig1-a-b.png)
 
-We see in Figure 1a there are three transcripts (pink, blue, and green) which then get converted into the T-DBG (Figure 1b). Each node/vertex is a k-mer in the T-DBG and is associated with a transcript or set of transcripts (represented by the different colors) which formally in the paper is described as (from my understanding) a k-compatibility class. In other words, the left most node has a k-compatibility class of all 3 transcripts. While the nodes in the top path have a k-compatibility class of only the blue and pink transript. Kallisto will then:
+We see in Figure 1a there are three transcripts (pink, blue, and green) which then get converted into a T-DBG (Figure 1b). Each node/vertex is a k-mer in the T-DBG and is associated with a transcript or set of transcripts (represented by the different colors) which formally in the paper is described as (from my understanding) a k-compatibility class. In other words, the left most node has a k-compatibility class of all 3 transcripts. While the nodes in the top path have a k-compatibility class of only the blue and pink transript. Kallisto will then:
 
 > stores a hash table mapping each k-mer to the contig it is contained in, along with the position within the contig. This structure is called the "kallisto index"
 
@@ -32,13 +28,13 @@ If we were to take a read and hash it back to the T-DBG (pseudoalignment), the d
 
 ![Modified Figure 1a,c]({{ site.url }}/assets/kallisto-fig1-a-c.png)
 
-To find the transcript this read corresponds to, we can take the intersection of all the k-compatibility classes (i.e. the transcripts) and this would give us the k-compatibility class of a read and thus the transcripts the read is compatible with (Figure 1c; Modified to add k-compatibility classes of each node). 
+To find the transcript this read corresponds to, we can take the intersection of all the k-compatibility classes (i.e. the transcripts) and this would give us the k-compatibility class of a read and thus the transcripts the read is compatible with (Figure 1c; Modified to add the k-compatibility class of each node). 
 
 ![Modified Figure 1c]({{ site.url }}/assets/kallisto-fig1-c.png)
 
-In this case, the intersection of the k-compatible classes of all black nodes would be the blue and pink transcript. This idea can be extended to paired-end reads very easily by simply taking the intersection of the k-compatibility classes along the entire fragment (i.e. both reads). 
+In this case, the intersection of the k-compatibility classes of all black nodes would be the blue and pink transcripts. This idea can be extended to paired-end reads very easily by simply taking the intersection of the k-compatibility classes along the entire fragment (i.e. both reads). 
 
-This is almost what kallisto does except that it takes advantage of the fact that there can be redundant information along a path. For instance, We see that the 3 left most nodes form a contig (i.e. linear stretches that have identical colorings) and all have the same k-compatibility class; This is classified as having the same "equivalence class". When kallisto hashes a read k-mer to the T-DBG, it looks up the k-compatible class of the node and then **"skips" to the node that is after the last node in the same equivalence class**. Figure 1d demonstrates this:
+This is almost what kallisto does except that it takes advantage of the fact that there can be redundant information along a path. For instance, we see that the 3 left most nodes form a contig (i.e. linear stretches that have identical colorings) and all have the same k-compatibility class; This is classified as having the same "equivalence class". When kallisto hashes a read k-mer to the T-DBG, it looks up the k-compatibility class of the node and then **"skips" to the node that is after the last node in the same equivalence class**. Figure 1d demonstrates this:
 
 ![Figure 1d,e]({{ site.url }}/assets/kallisto-fig1-d-e.png)
 
@@ -50,8 +46,31 @@ So kallisto will always try to "skip over redundant k-mers" or skip to the end o
 
 > For the majority of reads, kallisto ends up performing a hash lookup for only two k-mers (Supp. Fig. 6)
 
-There is also a companion tool called [sleuth](http://pachterlab.github.io/sleuth/) which performs the analysis (e.g. differential expression) the output of kallisto
+I've given kallisto (v0.42.3) a spin myself on an RNA-seq library against the `Homo_sapiens.GRCh38.rel79.cdna.all.fa.gz` transcriptome with `--bias` and `-b 100` parameters:
 
-This post describes my experience in installing the two pieces of software. 
+```
+[quant] fragment length distribution will be estimated from the data
+[index] k-mer length: 31
+[index] number of targets: 173,259
+[index] number of k-mers: 104,344,666
+[index] number of equivalence classes: 695,212
+[quant] running in paired-end mode
+[quant] will process pair 1: fastq/test.1.fastq.gz
+                             fastq/test.2.fastq.gz
+[quant] finding pseudoalignments for the reads ... done
+[quant] learning parameters for sequence specific bias
+[quant] processed 92,206,249 reads, 82,446,339 reads pseudoaligned
+[quant] estimated average fragment length: 187.018
+[   em] quantifying the abundances ... done
+[   em] the Expectation-Maximization algorithm ran for 1,521 rounds
+[bstrp] number of EM bootstraps complete: 100
+```
 
+The run took just over an hour which is significantly faster than my usual workflow of transcriptome alignment followed by quantification. 
 
+I hope this post helps you understand how pseudoalignments work in kallisto (at least my understanding of it) and inspires you to give kallisto a try!
+
+# References
+
+* [Lior's Blog Post on Kallisto - Near-optimal RNA-Seq quantification with kallisto](https://liorpachter.wordpress.com/2015/05/10/near-optimal-rna-seq-quantification-with-kallisto/)".
+* [Pre-print of Kallisto - Near-optimal RNA-Seq quantification](Near-optimal RNA-Seq quantification)
