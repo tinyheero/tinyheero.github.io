@@ -1,0 +1,93 @@
+---
+title: "Visualization of Gene Expression Data using Heatmaps in R"
+author: "Fong Chun Chan"
+date: "August 25, 2015"
+output: html_document
+---
+
+One of the most common techniques to visualize matrix data is to use heatmaps which represent the individual values of a cell by different colors. Doing this, allows for the immediate contrast between different cells and if clustering is performed will allow users to easily distinguish between different columns and rows. It is used in a variety of different fields, and in the biological sciences it is often used to represent "expression data". For instance, let's take a look at this figure:
+
+
+Here the rows represent different genes and the columns represent different lymphoma patients. Each cell represents the expression of a gene in a particular patient. The color gradient indicates how the different cells are encoded with green representing smaller values and red representing larger values. Because the data is clustered, we can immediately see patterns in the data. For instance, the patients on the right have . 
+
+In R, several functions provide the ability to generate these heatmaps. For instance,
+
+1. heatmap: This is a base function
+1. heatmap.2: This is a function from the package gplots. 
+1. heatmap.plus: 
+1. d3heatmap: From the d3heatmaps package, this function is very similar to the base heatmap function. But it leverages off [D3](http://d3js.org/) to provide an interactive heatmap. 
+
+All these functions provide the capacity to cluster the data and generate the heatmap. If you are only interested in generating a heatmap, then you can do that with the image() function or even use [ggplot](https://learnr.wordpress.com/2010/01/26/ggplot2-quick-heatmap-plotting/).
+
+In this post, we will use the new d3heatmaps R package to generate heatmaps on gene expression from lymphoma patients. Although, the principles and code can easily be extended to other fields. 
+
+Let's start by load
+
+```{r}
+library("readr")
+library("dplyr")
+library("reshape2")
+library("d3heatmap")
+library("tinyutils")
+
+#----------
+# Loading Clinical Data
+#----------
+clinical.data.df <- read_tsv("~/Desktop/clinical-data.tsv")
+clinical.data.df[clinical.data.df == ""] <- NA
+
+abc.samples <- clinical.data.df %>%
+  filter(RNA_seq_COO == "ABC") %>%
+  .$miRNA_seq_ID
+
+gcb.samples <- clinical.data.df %>%
+  filter(RNA_seq_COO == "GCB") %>%
+  .$miRNA_seq_ID
+
+samples <- c(abc.samples, gcb.samples)
+
+#---------
+# Loading Expression Data
+#---------
+gene.exprs.df <- read_tsv("assets/mirna-expression-Lim-et-al-2015.txt")
+gene.exprs.mat <- as.matrix(gene.exprs.df[, -1])
+rownames(gene.exprs.mat) <- gene.exprs.df[[1]]
+
+# Normalize Expression Data
+sample.total.reads <- colSums(gene.exprs.mat)
+gene.exprs.mat.normalized <- 
+  (gene.exprs.mat / sample.total.reads) * 1e6
+gene.exprs.mat.normalized[gene.exprs.mat.normalized < 1] <- 1
+gene.exprs.mat.normalized.log2 <- log2(gene.exprs.mat.normalized)
+
+top.mirna <- c("hsa-mir-3150b", "hsa-mir-129", "hsa-mir-155", "hsa-mir-222", 
+               "hsa-mir-148a", "hsa-mir-3934", "hsa-mir-28")
+ 
+#---------
+# Calculate Fold Change Between ABC and GCB Samples
+#---------
+# abc.samples.gene.mean <- gene.exprs.mat.normalized.log2[, abc.samples] %>%
+#   rowMeans
+# gcb.samples.gene.mean <- gene.exprs.mat.normalized.log2[, gcb.samples] %>%
+#   rowMeans
+# 
+# fc <- abc.samples.gene.mean - gcb.samples.gene.mean
+# fc.df <- data_frame(mirnaID = names(fc), fc = unname(fc)) %>%
+#   arrange(desc(fc))
+# 
+# top.mirna <- fc.df %>%
+#   slice(1:50) %>%
+#   .$mirnaID
+
+gene.exprs.mat.normalized.log2.z <- 
+  format_mat(gene.exprs.mat.normalized.log2, norm.method = "z")
+gene.exprs.mat.normalized.log2.z[gene.exprs.mat.normalized.log2.z < -2] <- -2
+gene.exprs.mat.normalized.log2.z[gene.exprs.mat.normalized.log2.z > 2] <- 2
+
+hc.cols <- hclust(dist(t(gene.exprs.mat.normalized.log2.z[top.mirna, samples])), method = "ward.D2")
+
+d3heatmap(gene.exprs.mat.normalized.log2.z[top.mirna, samples], colors = "Spectral", Colv = as.dendrogram(hc.cols))
+```
+
+
+When profiling the transcriptome of tumou
