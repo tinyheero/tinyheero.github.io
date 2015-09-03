@@ -1,0 +1,41 @@
+---
+title: "Implementating a Gaussian Mixture Model in R"
+author: "Fong Chun Chan"
+date: "August 25, 2015"
+output: html_document
+---
+
+If someone presented you with the following density plot: 
+
+```{r}
+library("ggplot2")
+ggplot(faithful, aes(x = waiting)) +
+	geom_density()
+```
+
+We can see the distribution appears to be bi-modal (i.e. there are two bumps). Suggesting that these data might be coming from two different sources. These data are actually from the `faithful` dataset available from R from startup. 
+
+```{r}
+head(faithful)
+```
+
+This data is 2-column data.frame 
+
+* eruptions: Length of eruption (in mins)
+* waiting: Time in between eruptions (in mins)
+
+These data suggest that the eruption times may be coming from two different populations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. What kind of methodology approaches can be employ to 
+
+
+
+A mixture model is a "model-based approach" to clustering which consists of using certain models to cluster data and attempt to optimize the fit between the data and the model. It is good at representing data when it comes from a mixture of populations (i.e. heterogenous population). Each cluster is represented mathematically as a parametric distribution (e.g. Guassian distribution). Therefore, the whole model consist of a mixture of distributions; Each distribution is typically referred to as a component distribution. 
+
+The benefit of this approach is that:
+
+* well-studied statistical inference techniques available
+* flexibility in choosing the component distribution
+* obtain a density estimation for each cluster
+* a “soft” classification is available (i.e. probability of each data point belonging to a certain component). This is different from a clustering approach like k-means which assigns a "hard" classification.
+
+One of the most common mixture models you will see in practice is a Gaussian Mixture Model (GMM) or Mixture of Gaussians. In R, there are several packages that provide GMM clustering out of the box; [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html) is one of them. A [blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) shows a nice application of mixtools to the Old Faithful dataset (available in R from startup as `faithful`). 
+
