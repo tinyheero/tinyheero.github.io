@@ -5,15 +5,21 @@ date: "August 25, 2015"
 output: html_document
 ---
 
-If someone presented you with the following density plot: 
+## TL;DR
 
-```{r}
+* Learn the utility of mixture model clustering
+* Learn how to implement your own Gaussian Mixture Model in R
+
+Let's say someone presented you with the following density plot: 
+
+```{r, message = FALSE}
 library("ggplot2")
-ggplot(faithful, aes(x = waiting)) +
+p <- ggplot(faithful, aes(x = waiting)) +
 	geom_density()
+p
 ```
 
-We can see the distribution appears to be bi-modal (i.e. there are two bumps). Suggesting that these data might be coming from two different sources. These data are actually from the `faithful` dataset available from R from startup. 
+We can immediately see that the resulting distribution appears to be bi-modal (i.e. there are two bumps) suggesting that these data might be coming from two different sources. These data are actually from the `faithful` dataset available in R:
 
 ```{r}
 head(faithful)
@@ -24,11 +30,53 @@ This data is 2-column data.frame
 * eruptions: Length of eruption (in mins)
 * waiting: Time in between eruptions (in mins)
 
-These data suggest that the eruption times may be coming from two different populations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. What kind of methodology approaches can be employ to 
+Putting the data into context suggests that the eruption times may be coming from two different sub-populations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. You can probably take an intutive guess as to how you could split this data. 
+
+For instance, there likely is a population with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (black vertical line in figure below).
+
+```{r}
+p + 
+	geom_vline(x = 53, col = "red") + 
+	geom_vline(x = 80)
+```
+
+But rather than take a subjective way to determine this, we can employ a machine-learning technique called [**mixture model clustering**](https://en.wikipedia.org/wiki/Mixture_model).  This is a "model-based approach" to clustering which uses statistical distributions to cluster data and attempt to optimize the fit between the data and the model. One of the most common statistical distributions used for mixture model clustering is the [Gaussian/Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution):
+
+$$ N(\mu, \sigma^2) $$
+
+The normal distribution is parameterized by two variables:
+
+* $\mu$: Mean; Center of the mass
+* $\sigma^2$: Variance; Spread of the mass
+
+When Gaussians are used for mixture model clustering they are referred to as [Gaussian Mixture Models (GMM)](https://en.wikipedia.org/wiki/Mixture_model#Gaussian_mixture_model). As it turns out, our early intuition on where the means and variance of the subpopulation in the plot above is a perfect example of how we could apply a GMM. Specifically, we could try to represent each subpopulation as its own distribution (aka. mixture component). The entire set of data could then be represented as a mixture of 2 Gaussian distributions (i.e. 2-component GMM)
+
+In R, there are several packages that provide an implementation of GMM already (e.g. [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html), [mclust](http://www.stat.washington.edu/mclust/)). As there exists [a nice blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) on using mixttools on the `faithful` dataset, we will just borrow a bit his code to demonstrate the GMM in action:
+
+```{r mixtools, message = FALSE}
+library("mixtools")
+wait <- faithful$waiting
+mixmdl <- normalmixEM(wait, k = 2)
+plot(mixmdl, which = 2)
+```
+
+The key is the `normalmixEM` function which builds a 2-component GMM (`k = 2` indicates to use 2 components). So how do we interpret this? It's actually quite simply; The red and green lines simply indicate 2 different fitted Gaussian distributions. Specifically, the means of the 2 Gaussians are respectively:
+
+```{r}
+mixmdl$mu
+```
+
+With respectively variances of:
+
+```{r}
+mixmdl$sigma
+```
+
+Not immedat
 
 
 
-A mixture model is a "model-based approach" to clustering which consists of using certain models to cluster data and attempt to optimize the fit between the data and the model. It is good at representing data when it comes from a mixture of populations (i.e. heterogenous population). Each cluster is represented mathematically as a parametric distribution (e.g. Guassian distribution). Therefore, the whole model consist of a mixture of distributions; Each distribution is typically referred to as a component distribution. 
+It is good at representing data when it comes from a mixture of populations (i.e. heterogenous population). Each cluster is represented mathematically as a parametric distribution (e.g. Guassian distribution). Therefore, the whole model consist of a mixture of distributions; Each distribution is typically referred to as a component distribution. 
 
 The benefit of this approach is that:
 
@@ -37,5 +85,9 @@ The benefit of this approach is that:
 * obtain a density estimation for each cluster
 * a “soft” classification is available (i.e. probability of each data point belonging to a certain component). This is different from a clustering approach like k-means which assigns a "hard" classification.
 
-One of the most common mixture models you will see in practice is a Gaussian Mixture Model (GMM) or Mixture of Gaussians. In R, there are several packages that provide GMM clustering out of the box; [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html) is one of them. A [blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) shows a nice application of mixtools to the Old Faithful dataset (available in R from startup as `faithful`). 
+One of the most common mixture models you will see in practice is a Gaussian Mixture Model (GMM) or Mixture of Gaussians. In R, there are several packages that provide GMM clustering out of the box; [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html) is one of them.  
 
+
+## References
+
+* {{{{j
