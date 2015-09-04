@@ -42,7 +42,7 @@ p +
 
 But rather than take a subjective way to determine this, we can employ a machine-learning technique called [**mixture model clustering**](https://en.wikipedia.org/wiki/Mixture_model).  This is a "model-based approach" to clustering which uses statistical distributions to cluster data and attempt to optimize the fit between the data and the model. One of the most common statistical distributions used for mixture model clustering is the [Gaussian/Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution):
 
-$$ N(\mu, \sigma^2) $$
+$$ \mathcal{N}(\mu, \sigma^2) $$
 
 The normal distribution is parameterized by two variables:
 
@@ -73,6 +73,10 @@ mixmdl$sigma
 ```
 
 Not immedat
+
+Mathematically, a GMM can be represented like this:
+
+$$ p(x) = \sum_{k=1}^{K}\pi_k\mathcal{N}(x|\mu_{k},\sigma_{k}) $$ 
 
 
 
