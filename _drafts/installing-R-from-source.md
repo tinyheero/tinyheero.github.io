@@ -29,6 +29,14 @@ make install
 
 After this step, you should have the binary of R installed at `$HOME/usr/local/R/3.2.2/bin/R` and the `Rscript` in the same directory. 
 
+### Cairo
+
+By default, the R installation will have the parameter `--with-cairo` set. This will attempt to compile R with cairo support. This is something you will need if you want to install the [Cairo R package](https://cran.r-project.org/web/packages/Cairo/index.html). You will need to have cairo-devel for this to work:
+
+```
+yum install cairo-devel
+```
+
 ## Common Errors
 
 ### headers/libs are not available
@@ -68,3 +76,6 @@ The second error `--with-x=yes (default) and headers/libs are not available` occ
 yum install libXt-devel
 yum install libX11-devel
 ```
+
+
+If you try to install the package Cairo `r install.packages("Cairo")` you may run into 
