@@ -8,8 +8,8 @@ output: html_document
 ## TL;DR - Summary
 
 * Learn why you would use mixture model clustering
-* Learn the utility of mixture model clustering
-* Learn how to implement your own Gaussian Mixture Model in R
+* Use gaussian mixture model clustering from the mixtools R package
+* Implement your own gaussian mixture model in R
 
 ## Why would you need Mixture Model Clustering?
 
@@ -87,7 +87,7 @@ You might also notice how the "heights" of the two components (herein we will re
 mixmdl$lambda
 ```
 
-Formally, these are referred to as the mixing weights (aka. mixing proportions). One can interpret this as the red component representing `r round(mixmdl$lambda[1]*100, 3)`% and the green component representing `r round(mixmdl$lambda[2]*100, 3)`% of the input data. Another important aspect is that each input data point is actually assigned a posterior probability of belonging to one of these components. We can retrieve these data by using the following code:
+Formally, these are referred to as the mixing weights (aka. mixing proportions, mixing coefficients). One can interpret this as the red component representing `r round(mixmdl$lambda[1]*100, 3)`% and the green component representing `r round(mixmdl$lambda[2]*100, 3)`% of the input data. Another important aspect is that each input data point is actually assigned a posterior probability of belonging to one of these components. We can retrieve these data by using the following code:
 
 ```{r}
 post.df <- as.data.frame(cbind(x = mixmdl$x, mixmdl$posterior))
@@ -106,9 +106,11 @@ It's important to understand that no "labels" have been assigned here actually. 
 
 ```{r}
 post.df %>%
-	mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>%
-	group_by(label) %>%
-	summarize(total = n())
+	mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
+	ggplot(aes(x = factor(label))) +
+	geom_bar() +
+	xlab("Component") +
+	ylab("Number of Data Points")
 ```
 
 Or one could use 0.8 and get the following label distribution:
@@ -116,17 +118,54 @@ Or one could use 0.8 and get the following label distribution:
 ```{r}
 post.df %>%
 	mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
-	group_by(label) %>%
-	summarize(total = n())
+	ggplot(aes(x = factor(label))) +
+	geom_bar() +
+	xlab("Component") +
+	ylab("Number of Data Points")
 ```
-
-Mathematically, a GMM can be represented like this:
-
-$$ p(x) = \sum_{k=1}^{K}\pi_k\mathcal{N}(x|\mu_{k},\sigma_{k}) $$ 
 
 ## Implementing Your Own GMM In R 
 
-If you are like me, then not knowing what is happening "under the hood" may bug you. What is actually happening when I run `normalmixEM`? How does it fit the components?
+If you are like me, then not knowing what is happening "under the hood" may bug you. What is actually happening when I run `normalmixEM`? Where are these posterior probabilites coming from? How does it fit the components? To understand all this, we need to first understand the mathematical representation of a GMM:
+
+$$P(X) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k})$$ 
+
+* X = Dataset of n elements (x~1~, ..., x~n~).
+* K = Number of components.
+* $\alpha_{k}$ = Mixing weight of the kth component. $\sum_{k=1}^{K}\alpha_{k} = 1$.
+* $\mathcal{N}(x|\mu_{k},\sigma_{k})$ Gaussian probability density function (pdf) of the kth component defined by the parameters $\mu_{k}$ and $\sigma_{k}$.
+* $\mu_{k}$ = Mean of the kth component.
+* $\sigma_{k}$ = Standard deviation of the kth component.
+
+It looks complicated. but if we use our example from above then this breaksdown to:
+
+$$P(X) = `r round(mixmdl$lambda[1], 3)`\mathcal{N}(X|`r round(mixmdl$mu[1], 3)`, `r round(mixmdl$sigma[1], 3)`) + `r round(mixmdl$lambda[2], 3)`\mathcal{N}(X|`r round(mixmdl$mu[2], 3)`, `r round(mixmdl$sigma[2], 3)`)$$
+
+All we've done here is substitute in the parameters of the mixture model. If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
+
+> What is the probability that the data point (x~j~) belongs to component (k~i~)?
+
+Mathematically, the question be posed like this $P(x_{j} \in k_{i} | x_{j})$. We can [Bayes rule](https://en.wikipedia.org/wiki/Bayes%27_rule) to help us here. Once we apply Bayes rule, we get the following equation:
+
+$$ P(x_{j} \in k_{i} | x_{j}) = \frac{P(x | x \in k_{i})P(k_{i})}{P(x)} $$
+
+
+
+you would be able to literally plug and play and get a final "value" of this GMM equation.
+
+### Calculating the Posterior Probabilities of Each Data Point
+
+
+
+As we've already seen, we can get the posterior probabilites of each data point by using `mixmdl$posterior`. But how is this actually generated? The mathematical equation to calculate the posterior probability of x data point belong to component i is as follows:
+
+
+
+
+
+
+### Calcul
+
 
 ## Summary
 
