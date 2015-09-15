@@ -31,3 +31,6 @@ devtools:
 kallisto:
     slug: kallisto
     name: kallisto
+cairo: 
+    slug: cairo
+    name: Cairo
