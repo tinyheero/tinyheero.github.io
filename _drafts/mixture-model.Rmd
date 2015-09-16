@@ -141,31 +141,86 @@ It looks complicated. but if we use our example from above then this breaksdown 
 
 $$P(X) = `r round(mixmdl$lambda[1], 3)`\mathcal{N}(X|`r round(mixmdl$mu[1], 3)`, `r round(mixmdl$sigma[1], 3)`) + `r round(mixmdl$lambda[2], 3)`\mathcal{N}(X|`r round(mixmdl$mu[2], 3)`, `r round(mixmdl$sigma[2], 3)`)$$
 
-All we've done here is substitute in the parameters of the mixture model. If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
+All we've done here is substitute in the parameters of the mixture model. 
+
+### Calculating Posterior Probabilities
+
+If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
 
 > What is the probability that the data point (x~j~) belongs to component (k~i~)?
 
-Mathematically, the question be posed like this $P(x_{j} \in k_{i} | x_{j})$. We can [Bayes rule](https://en.wikipedia.org/wiki/Bayes%27_rule) to help us here. Once we apply Bayes rule, we get the following equation:
+Mathematically, the question can be posed like this $P(x_{i} \in k_{j} | x_{i})$. How do we actually solve this equation? To help us, we can apply [Bayes' rule](https://en.wikipedia.org/wiki/Bayes%27_rule) here:
 
-$$ P(x_{j} \in k_{i} | x_{j}) = \frac{P(x | x \in k_{i})P(k_{i})}{P(x)} $$
+$$ P(x_{i} \in k_{j} | x_{i}) = \frac{P(x | x \in k_{j})P(k_{j})}{P(x_{i})} $$
 
+This parts of this equation are related to the GMM equation above as follows:
 
+* $P(x | x \in k_{j})$ = $\mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}})$
+* $P(k_{j})$ = $\alpha_{k_{j}}$
+* $P(x_{i}) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{i}|\mu_{k},\sigma_{k})$
 
-you would be able to literally plug and play and get a final "value" of this GMM equation.
+Knowing these equations now, let's see if we can calculate the posterior values from the example above. For instance, what is the posterior of x = `r mixmdl$x[33]` belong to the green component? We can first calculate the top part of the equation like this in R:
 
-### Calculating the Posterior Probabilities of Each Data Point
+```{r}
+comp1.prod <- dnorm(mixmdl$x[33], mixmdl$mu[1], mixmdl$sigma[1]) * 
+	mixmdl$lambda[1]
+```
 
+Here we are using the `dnrom` function from R to make use of the gaussian pdf. To calculate the bottom part of the equation, we actually need to calculate this value for both components and sum them up:
 
+```{r}
+comp2.prod <- dnorm(mixmdl$x[33], mixmdl$mu[2], mixmdl$sigma[2]) * 
+	mixmdl$lambda[2]
 
-As we've already seen, we can get the posterior probabilites of each data point by using `mixmdl$posterior`. But how is this actually generated? The mathematical equation to calculate the posterior probability of x data point belong to component i is as follows:
+normalizer <- comp1.prod + comp2.prod
+```
 
+Now that we have all the components of the equation, let's plug and solve this:
 
+```{r}
+comp1.prod / normalizer
+```
 
+We can easily calculate this for every data point as follows:
 
+```{r}
+comp1.prod <- dnorm(mixmdl$x, mixmdl$mu[1], mixmdl$sigma[1]) * 
+	mixmdl$lambda[1]
 
+comp2.prod <- dnorm(mixmdl$x, mixmdl$mu[2], mixmdl$sigma[2]) * 
+	mixmdl$lambda[2]
 
-### Calcul
+normalizer <- comp1.prod + comp2.prod
 
+comp1.post <- comp1.prod / normalizer
+comp2.post <- comp2.prod / normalizer
+```
+
+Let's see how our own calculations compare to the mixtools reported posteriors to make sure that we are doing it right:
+
+```{r}
+post.df %>%
+	mutate(comp.1.recal = comp1.post) %>%
+	ggplot(aes(x = comp.1, y = comp.1.recal)) +
+	geom_point() +
+	xlab("Mixtools Component 1 Posterior") +
+	ylab("Recalulated Compponent 1 Posterior") +
+	ggtitle("Recalulated vs. Mixtools Component 1 Posteriors")
+```
+
+```{r}
+post.df %>%
+	mutate(comp.2.recal = comp2.post) %>%
+	ggplot(aes(x = comp.2, y = comp.2.recal)) +
+	geom_point() +
+	xlab("Mixtools Component 2 Posterior") +
+	ylab("Recalulated Compponent 2 Posterior") +
+	ggtitle("Recalulated vs. Mixtools Component 2 Posteriors")
+```
+
+### Fitting the Components
+
+In the previous section, we learned how to calculate the component posterior probabilites for each data point. But before we can do this, we need to actually have parameters of the components. How do we "fit" the components to the data to get the parameters.
 
 ## Summary
 
