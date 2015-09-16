@@ -1,0 +1,44 @@
+---
+layout: post
+title:  "Installing the V8 R Package"
+tags: [R, V8]
+---
+
+I recently tried to install the V8 R package on my Mac running Yosemite using `install.packages("V8")` only to run into this problem.
+
+```
+* installing *source* package ‘V8’ ...
+** package ‘V8’ successfully unpacked and MD5 sums checked
+Package libv8 was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libv8.pc'
+to the PKG_CONFIG_PATH environment variable
+No package 'libv8' found
+Using PKG_CFLAGS=-I/usr/local/opt/v8-315/include
+Using PKG_LIBS=-L/usr/local/opt/v8-315/lib -lv8
+------------------------- ANTICONF ERROR ---------------------------
+Configuration failed because libv8 was not found. Try installing:
+ * deb: libv8-3.14-dev | libv8-dev (Debian, Ubuntu)
+ * rpm: v8-devel (Fedora, EPEL)
+ * brew: v8-315 (OSX) -- NOT regular v8! Tap from homebrew/versions
+ * csw: libv8_dev (Solaris)
+If libv8 is already installed, check that 'pkg-config' is in your
+PATH and PKG_CONFIG_PATH contains a libv8.pc file. If pkg-config
+is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
+R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
+--------------------------------------------------------------------
+ERROR: configuration failed for package ‘V8’
+* removing ‘/usr/local/lib/R/3.2/site-library/V8’
+```
+
+The problem was a missing v8 library. You can get this from homebrew, but you need to make sure get the right one. It tells you this in the error message:
+
+> brew: v8-315 (OSX) -- NOT regular v8! Tap from homebrew/versions
+
+So what you do is:
+
+```
+brew tap homebrew/versions
+brew install v8-315
+```
+
+Once this is installed, you can try `install.packages("V8")` again and it should work.
