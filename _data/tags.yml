@@ -34,3 +34,6 @@ kallisto:
 cairo: 
     slug: cairo
     name: Cairo
+v8: 
+    slug: v8
+    name: V8
