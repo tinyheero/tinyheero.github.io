@@ -128,14 +128,14 @@ post.df %>%
 
 If you are like me, then not knowing what is happening "under the hood" may bug you. What is actually happening when I run `normalmixEM`? Where are these posterior probabilites coming from? How does it fit the components? To understand all this, we need to first understand the mathematical representation of a GMM:
 
-$$P(X) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k})$$ 
+$$P(X) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k}^{2})$$ 
 
 * X = Dataset of n elements (x~1~, ..., x~n~).
 * K = Number of components.
 * $\alpha_{k}$ = Mixing weight of the kth component. $\sum_{k=1}^{K}\alpha_{k} = 1$.
 * $\mathcal{N}(x|\mu_{k},\sigma_{k})$ Gaussian probability density function (pdf) of the kth component defined by the parameters $\mu_{k}$ and $\sigma_{k}$.
 * $\mu_{k}$ = Mean of the kth component.
-* $\sigma_{k}$ = Standard deviation of the kth component.
+* $\sigma_{k}^{2}$ = Variance of the kth component.
 
 It looks complicated. but if we use our example from above then this breaksdown to:
 
@@ -143,7 +143,7 @@ $$P(X) = `r round(mixmdl$lambda[1], 3)`\mathcal{N}(X|`r round(mixmdl$mu[1], 3)`,
 
 All we've done here is substitute in the parameters of the mixture model. 
 
-### Calculating Posterior Probabilities
+### Calculating the Posterior Probabilities
 
 If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
 
@@ -155,7 +155,7 @@ $$ P(x_{i} \in k_{j} | x_{i}) = \frac{P(x | x \in k_{j})P(k_{j})}{P(x_{i})} $$
 
 This parts of this equation are related to the GMM equation above as follows:
 
-* $P(x | x \in k_{j})$ = $\mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}})$
+* $P(x_{i} | x_{i} \in k_{j})$ = $\mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}})$. This is known as the "responsibility": How much is the kth component responsible for the x~i~ data point.
 * $P(k_{j})$ = $\alpha_{k_{j}}$
 * $P(x_{i}) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{i}|\mu_{k},\sigma_{k})$
 
@@ -218,9 +218,66 @@ post.df %>%
 	ggtitle("Recalulated vs. Mixtools Component 2 Posteriors")
 ```
 
-### Fitting the Components
+### Calculating the Component Parameters
 
-In the previous section, we learned how to calculate the component posterior probabilites for each data point. But before we can do this, we need to actually have parameters of the components. How do we "fit" the components to the data to get the parameters.
+In the previous section, we learned how to calculate the component posterior probabilites for each data point. But before we can do this, we need to actually have parameters of the components. How do we "fit" the components to the data to get the parameters? 
+
+Let's start with a simplier question. If we knew which data points belonged to which components, what would the parameters of the components be? We can just use maximum likelihood estimation to determine the components parameters, so:
+
+* $\mu_{k} = \frac{\sum_{i}^{N_{k}}x_{i,k}}{N_{k}}$
+* $\sigma_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$
+
+Where $N_{k}$ indicates the number of data points in the kth component. But in GMMs, each data point is not "hard" assigned to any component. They are "soft" assigned and thus belong to each component to a certain degree. In other words, t he variable $N_{k}$ doesn't really exist in GMMs. 
+
+So how do we do this? If you remember the posterior probability calculations from the previous section, there essentially server as the soft assignments. We can make use of these data by incorporating it into the calculations as follows:
+
+* $\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})x_{i,k}}{P(x_{i} | x_{i} \in k_{j})}$
+* $\sigma_{k} = \frac{\sum_{i}^{N}(P(x_{i} | x_{i} \in k_{j})x_{i,k} - \mu_{k})^2}{P(x_{i} | x_{i} \in k_{j})}$
+
+Essentially, we are incorporting an "uncertainity" in the association of a data point with a component. If we were 100% certain of the labels of each cluster, then we would just multiple each data point by 1 we would end by the same "hard" label equations as above.
+
+Now that we know this, let's calculate the components parameters using our example from above and compare them to the mixtools parameters:
+
+```{r}
+comp1.n <- sum(mixmdl$posterior[, 1])
+comp2.n <- sum(mixmdl$posterior[, 2])
+
+comp1.mu <- 1/comp1.n * sum(mixmdl$posterior[, 1] * mixmdl$x)
+comp2.mu <- 1/comp2.n * sum(mixmdl$posterior[, 2] * mixmdl$x)
+
+comp1.var <- sum(mixmdl$posterior[, 1] * (mixmdl$x - comp1.mu)^2) * 1/comp1.n
+comp2.var <- sum(mixmdl$posterior[, 2] * (mixmdl$x - comp2.mu)^2) * 1/comp2.n
+
+comp.params.df <- data.frame(comp = c("comp1", "comp2"),
+                             comp.mu = c(comp1.mu, comp2.mu),
+                             comp.var = c(comp1.var, comp2.var),
+                             comp.cal = c("self", "self"))
+
+mixtools.comp.params.df <- data.frame(comp = c("comp1", "comp2"),
+                                      comp.mu = mixmdl$mu, 
+                                      comp.var = mixmdl$sigma^2,
+                                      comp.cal = c("mixtools", "mixtools"))
+```
+
+```{r}
+library("reshape2")
+library("dplyr")
+
+rbind(comp.params.df, mixtools.comp.params.df) %>%
+	melt %>%
+	ggplot(aes(x = comp.cal, y = value)) +
+	facet_grid(comp ~ variable) +
+	geom_bar(stat = "identity")
+```
+
+How do these parameters compare to the parameters reported by mixtools?
+
+```{r}
+mixmdl$mu
+mixmdl$sigma^2
+```
+
+> Note that mixtools reports the standard deviation of the components. So we squared the values to get the variance.
 
 ## Summary
 
@@ -234,3 +291,5 @@ The benefit of this approach is that:
 * a “soft” classification is available (i.e. probability of each data point belonging to a certain component). This is different from a clustering approach like k-means which assigns a "hard" classification.
 
 ## References
+
+* [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
