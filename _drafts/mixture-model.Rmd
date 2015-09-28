@@ -241,7 +241,7 @@ post.df %>%
 
 ### Calculating the Component Parameters
 
-In the previous section, we learned how to calculate the component posterior probabilites for each data point. But before we can do this, we need to actually have parameters of the components. How do we "fit" the components to the data to get the parameters? 
+In the previous section, we learned how to calculate the component posterior probabilites for each data point. But before we can do this, we need to actually have the parameters of the components. How do we "fit" the components to the data to get the parameters? 
 
 Let's start with a simplier question. If we knew which data points belonged to which components, what would the parameters of the components be? We can just use maximum likelihood estimation (MLE) to determine the components parameters, so:
 
@@ -249,9 +249,9 @@ Let's start with a simplier question. If we knew which data points belonged to w
 * $\sigma_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$
 * $\alpha_{k} = \frac{N_{k}}{N}$
 
-Where $N_{k}$ indicates the number of data points in the kth component. But in GMMs, each data point is not "hard" assigned to any component. They are "soft" assigned and thus belong to each component to a certain degree. In other words, t he variable $N_{k}$ doesn't really exist in GMMs. 
+Where $N_{k}$ indicates the number of data points in the kth component. But in GMMs, each data point is not "hard" assigned to any component. They are "soft" assigned and thus belong to each component to a certain degree. In other words, the variable $N_{k}$ doesn't really exist in GMMs. 
 
-So how do we do this? If you remember the posterior probability calculations from the previous section, there essentially server as the soft assignments. We can make use of these data by incorporating it into the calculations as follows:
+So how do we do this? If you remember the posterior probability calculations from the previous section, these essentially serve as soft assignments. We can make use of these data by incorporating it into the calculations as follows:
 
 * $\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})x_{i,k}}{P(x_{i} | x_{i} \in k_{j})}$
 * $\sigma_{k} = \frac{\sum_{i}^{N}(P(x_{i} | x_{i} \in k_{j})x_{i,k} - \mu_{k})^2}{P(x_{i} | x_{i} \in k_{j})}$
@@ -355,30 +355,114 @@ sum.of.comps.shift.ln <- log(sum.of.comps.shift, base = exp(1))
 sum(sum.of.comps.shift.ln)
 ```
 
-The log likelihood is now `r sum(sum.of.comps.shift.ln)` a value that is smaller than the reported log likelihood from mixtools. A larger log likelihood actually indicates a better fit of the model and so this actually makes sense that we would see our "shifted" GMM producing a small log likelihood. 
+The log likelihood is now `r sum(sum.of.comps.shift.ln)` a value that is smaller than the reported log likelihood from mixtools. A **larger log likelihood actually indicates a better fit of the model** and so this actually makes sense that we would see our "shifted" GMM producing a small log likelihood. 
 
-Now that we have an idea of how to compare between different fits, we can get some initution as to how we could potentially find a good model fit. All we really need to do is try a range of models, compare them using the log likelihood as a metric, and then just select the one of that gaves us maximum log likelihood. This sounds great, but how many models do we try? Moreover, where do we even start in terms of potential models to try?
+Now that we have an idea of how to compare between different fits, we can get some initution as to how we could potentially find a good model fit. All we really need to do is try a range of models, compare them using the log likelihood as a metric, and then just select the one of that gaves us maximum log likelihood. This sounds great, but a few isuses:
+
+1. Where do we even start in terms of potential models to try? 
+1. How many models do we try? 
+
+These two issues are classified as initialization and convergence problems. Let's cover both of these in the new sections
 
 ### Initializing a GMM
 
-This is actually an issue of initialization: What model parameters do we first assign?
+When it comes to initialization of a GMM, we are asking the fundamental question of **what model parameters do we first assign?**. 
 
 For GMM, it's very common to first run k-means on your data to get some hard-labels on the data. With these hard-labels, we then use MLE to estimate the component parameters for our initialization. Let's try that here:
 
 ```{r}
-wait.kmeans.cluster <- kmeans(wait, 2)$cluster
+wait.kmeans <- kmeans(wait, 2)
+wait.kmeans.cluster <- wait.kmeans$cluster
 
 wait.df <- data_frame(x = wait, cluster = wait.kmeans.cluster)
-wait.summary.df <- wait.df %>%
-	group_by(cluster) %>%
-	summarize(mu = mean(x), std = sd(x))
 
-wait.summary.df
+wait.df %>%
+	mutate(num = 1:n()) %>%
+	ggplot(aes(y = num, x = x, color = factor(cluster))) +
+	geom_point() +
+	ylab("Data Point Number") +
+	scale_color_discrete(name = "Cluster")
 ```
 
-This is 1G
+Since we specified 2 clusters, k-means nicely splits the data into clusters with means and standard deviation as follows:
+
+```{r}
+wait.summary.df <- wait.df %>%
+	group_by(cluster) %>%
+	summarize(mu = mean(x), std = sd(x), size = n())
+
+wait.summary.df %>%
+	dplyr::select(cluster, mu, std)
+```
+
+Because we have hard labels from k-means, then the equation:
+
+$$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})}{N}$$
+
+Applies as is. This means:
+
+```{r}
+wait.summary.df <- wait.summary.df %>%
+	mutate(alpha = size / sum(size))
+
+wait.summary.df %>%
+	dplyr::select(cluster, size, alpha)
+```
+
+Using this data, we can initialize our first GMM model with these parameters and calculate a loglikelihood:
+
+```{r}
+comp1.init.prod <- dnorm(x = wait, 
+												 mean = wait.summary.df[1, ][["mu"]],
+                         sd = wait.summary.df[1, ][["std"]]) *
+									 wait.summary.df[1, ][["alpha"]]
+
+comp2.init.prod <- dnorm(x = wait, 
+												 mean = wait.summary.df[2, ][["mu"]],
+                         sd = wait.summary.df[2, ][["std"]]) *
+									 wait.summary.df[2, ][["alpha"]]
+
+normalizer.init <- comp1.init.prod + comp2.init.prod
+
+comp1.init.post <- comp1.init.prod / normalizer.init
+comp2.init.post <- comp2.init.prod / normalizer.init
+
+sum.of.comps.init <- comp1.init.prod + comp2.init.prod
+sum.of.comps.init.ln <- log(sum.of.comps.init, base = exp(1))
+sum(sum.of.comps.init.ln)
+```
+
+Keep in mind that k-means is just one way of initializing a GMM. 
+
+## Convergence of GMM using the Expectation Maximization Algorithm
+
+We now know how we can initialize a GMM and calculate the loglikelihood of it. So the question is how do we go from this initialization to a final "optimal model"? We can employ a technique called the Expectation Maximization (EM) algorithm to help us. This sounds like a big term and potentially confusing, but really all it is a parameter estimation method but extending to situations where we have uncertainity in some of the data.
+
+For the example we are working with, the uncertainity we are dealing with is the "labels" on our data points. If we were 100% certain of our labels, then parameter estimation is simply. We just employ MLE and grab the mean, standard deviation, alphas and then we are finished. But because we aren't, we need to use EM to help us. The EM algorithm consists of 2 major steps, the E and Step which repeat over and over again.
+
+1. E Step: Expectation Step. In this step, we determine the responsibility each component has to point x
+2. M Step: Maximization Step. In this step, we "re-calculate" the parameters of our components using MLE (hence why it is called Maximization Step).
+
+Inituitvely, I like to think of what is happening as :
+
+1. First assign the responsibilities of each component to each point
+1. Let's assume these responsibilities are correct, and then let's update our component parameters 
+1. Now with these updated components, let's recalculate the responsibilities. 
+1. This then means we need to update our component parameters again which then means we need to recalculate our responsibilities.
+1. We repeat this over and over again things "stop changing".
+
+Formally specifically, "stop changing" refers to the concept of "convergence". How you determine convergence depends on you. In this situation, we will define convergence of the GMM model when the log likelihood does not change beyond some value:
+
+```{r}
+
+e_step <- function() {
+}
+
+m_step <- function() {
+}
 
 
+```
 
 We probably want to be a bit smart about this and leverge information 
 
@@ -393,8 +477,7 @@ Formally speaking, the log likelihood equation from above is actually considered
 
 ```
 
-
-What we are trying to do is maximize this 
+What we are trying to do is maximize this k
 
 In other words, we can produc
 
@@ -419,3 +502,4 @@ The benefit of this approach is that:
 ## References
 
 * [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
+* [What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)
