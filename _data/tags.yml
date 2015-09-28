@@ -37,3 +37,6 @@ cairo:
 v8: 
     slug: v8
     name: V8
+picard: 
+    slug: picard
+    name: Picard
