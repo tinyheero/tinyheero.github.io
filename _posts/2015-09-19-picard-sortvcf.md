@@ -1,7 +1,7 @@
 ---
 layout: post
-title:  "Using the Picard SortVcf"
-tags: [bioinfo, picard, sortvcf]
+title:  "\"VariantContextComparator.java:84\" when Using Picard's SortVcf"
+tags: [bioinfo, picard]
 ---
 
 If you've ever had to sort a vcf file by the same order of as a reference file, then the [SortVcf](http://broadinstitute.github.io/picard/command-line-overview.html#SortVcf) function from Picard tools is what you need. The function can be easily run with the following command:
