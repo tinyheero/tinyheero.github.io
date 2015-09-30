@@ -166,7 +166,7 @@ All we've done here is substitute in the parameters of the mixture model.
 
 In case you were wondering what the $P(X|\mu,\sigma,\alpha)$ means, don't worry about that for now. We will explain exactly what this means later on in the post.
 
-### Calculating the Posterior Probabilities
+### Calculating the Posterior Probabilities (i.e. Responsibilities)
 
 If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
 
@@ -413,19 +413,14 @@ Using this data, we can initialize our first GMM model with these parameters and
 
 ```{r}
 comp1.init.prod <- dnorm(x = wait, 
-												 mean = wait.summary.df[1, ][["mu"]],
-                         sd = wait.summary.df[1, ][["std"]]) *
-									 wait.summary.df[1, ][["alpha"]]
+                         mean = wait.summary.df[1, ][["mu"]],
+                         sd = wait.summary.df[1, ][["std"]]) * 
+                   wait.summary.df[1, ][["alpha"]]
 
 comp2.init.prod <- dnorm(x = wait, 
-												 mean = wait.summary.df[2, ][["mu"]],
+                         mean = wait.summary.df[2, ][["mu"]],
                          sd = wait.summary.df[2, ][["std"]]) *
-									 wait.summary.df[2, ][["alpha"]]
-
-normalizer.init <- comp1.init.prod + comp2.init.prod
-
-comp1.init.post <- comp1.init.prod / normalizer.init
-comp2.init.post <- comp2.init.prod / normalizer.init
+                   wait.summary.df[2, ][["alpha"]]
 
 sum.of.comps.init <- comp1.init.prod + comp2.init.prod
 sum.of.comps.init.ln <- log(sum.of.comps.init, base = exp(1))
@@ -440,7 +435,7 @@ We now know how we can initialize a GMM and calculate the loglikelihood of it. S
 
 For the example we are working with, the uncertainity we are dealing with is the "labels" on our data points. If we were 100% certain of our labels, then parameter estimation is simply. We just employ MLE and grab the mean, standard deviation, alphas and then we are finished. But because we aren't, we need to use EM to help us. The EM algorithm consists of 2 major steps, the E and Step which repeat over and over again.
 
-1. E Step: Expectation Step. In this step, we determine the responsibility each component has to point x
+1. E Step: Expectation Step. In this step, we determine the responsibility each component has to data point x (i.e. posterior probabilities of each data point x to each component)
 2. M Step: Maximization Step. In this step, we "re-calculate" the parameters of our components using MLE (hence why it is called Maximization Step).
 
 Inituitvely, I like to think of what is happening as :
@@ -451,18 +446,100 @@ Inituitvely, I like to think of what is happening as :
 1. This then means we need to update our component parameters again which then means we need to recalculate our responsibilities.
 1. We repeat this over and over again things "stop changing".
 
-Formally specifically, "stop changing" refers to the concept of "convergence". How you determine convergence depends on you. In this situation, we will define convergence of the GMM model when the log likelihood does not change beyond some value:
+Formally specifically, "stop changing" refers to the concept of "convergence". How you determine convergence depends on you. In this situation, we will define convergence of the GMM model when the log likelihood does not change beyond some value. Let's first write the functions for the E and M Step; We will also define a loglikelihood function:
 
 ```{r}
 
-e_step <- function() {
+#' Expectation Step 
+#'
+#' Calculate the Responsibilites (Posterior Probabilities) that each component
+#' has to each data point
+e_step <- function(x, mu.vector, sd.vector, alpha.vector) {
+	comp1.prod <- dnorm(x, mu.vector[1], sd.vector[1]) * alpha.vector[1]
+	comp2.prod <- dnorm(x, mu.vector[2], sd.vector[2]) * alpha.vector[2]
+	sum.of.comps <- comp1.prod + comp2.prod
+	comp1.post <- comp1.prod / sum.of.comps
+	comp2.post <- comp2.prod / sum.of.comps
+
+	sum.of.comps.ln <- log(sum.of.comps, base = exp(1))
+	sum.of.comps.ln.sum <- sum(sum.of.comps.ln)
+
+	list("loglik" = sum.of.comps.ln.sum,
+			 "posterior.df" = cbind(comp1.post, comp2.post))
 }
 
-m_step <- function() {
+#' Maximization Step
+#'
+#' Update the Component Parameters
+m_step <- function(x, posterior.df) {
+  comp1.n <- sum(posterior.df[, 1])
+  comp2.n <- sum(posterior.df[, 2])
+
+	comp1.mu <- 1/comp1.n * sum(posterior.df[, 1] * x)
+	comp2.mu <- 1/comp2.n * sum(posterior.df[, 2] * x)
+
+	comp1.var <- sum(posterior.df[, 1] * (x - comp1.mu)^2) * 1/comp1.n
+	comp2.var <- sum(posterior.df[, 2] * (x - comp2.mu)^2) * 1/comp2.n
+
+	comp1.alpha <- comp1.n / length(x)
+	comp2.alpha <- comp2.n / length(x)
+	list("mu" = c(comp1.mu, comp2.mu),
+       "var" = c(comp1.var, comp2.var),
+       "alpha" = c(comp1.alpha, comp2.alpha))
 }
 
+get_loglikelihood <- function(xe_step) {
+	normalizer <- sum(posterior.df)
+	comp1.post <- posterior.df[, 1] / normalizer
+	comp2.post <- posterior.df[, 2] / normalizer
+
+
+	sum.of.comps <- comp1.prod + comp2.prod
+	sum.of.comps.ln <- log(sum.of.comps, base = exp(1))
+}
+```
+
+Now that we have these functions, let's first initialize:
+
+```{r}
+```
+
+Now we just need to write a loop to go between these functions for each iteration. Each iteration will consist of us first calling the `e_step` function and then calling the `m_step` function if needed. We will run this for 50 iterations or when the loglikelihood difference between two iteration is less than `1e-6` (whichever comes first):
+
+```{r}
+for (i in 1:50) {
+	if (i == 1) {
+		e.step <- e_step(wait, wait.summary.df[["mu"]], wait.summary.df[["std"]], 
+													wait.summary.df[["alpha"]])
+		m.step <- m_step(wait, e.step[["posterior.df"]])
+		cur.loglik <- e.step[["loglik"]]
+		loglik.vector <- e.step[["loglik"]]
+	} else {
+		e.step <- e_step(wait, m.step[["mu"]], sqrt(m.step[["var"]]), m.step[["alpha"]])
+		m.step <- m_step(wait, e.step[["posterior.df"]])
+		loglik.vector <- c(loglik.vector, e.step[["loglik"]])
+
+		loglik.diff <- abs((cur.loglik - e.step[["loglik"]]))
+		if(loglik.diff < 1e-6) {
+			break
+		} else {
+			cur.loglik <- e.step[["loglik"]]
+			cur.mu <- 
+		}
+	}
+}
+loglik.vector
+```
+
+As you can see, we actually stopping running EM after 16 iterations between the log likelihood didn't change much (specifically, the difference between the 15th and 16th iteration was < 1e6). We classify this as convergence of the algorithm and this represents our final fit. Let's wrap this into a nice function now:
+
+```{r}
+run_em <- function(x) {
+
+}
 
 ```
+
 
 We probably want to be a bit smart about this and leverge information 
 
