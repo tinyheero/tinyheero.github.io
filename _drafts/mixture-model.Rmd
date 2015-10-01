@@ -24,9 +24,25 @@ plot_mix_comps <- function(x, mu, sigma, lam) {
 }
 ```
 
-## Why would you need Mixture Model Clustering?
+## What Are Mixture Models?
 
-Let's say someone presented you with the following density plot: 
+If you've been exposed to machine learning in your work or studies, chances are you've heard of the term **mixture model**. But what exactly is a mixture model and why should you care?
+
+Mathematically speaking, a mixture model is a mixture of k component distributions which make up a mixture distribution $f(x)$:
+
+$$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x)$$
+
+The $\alpha_{k}$ represents a mixing weight for the kth component and $\sum_{k=1}^{K} = 1$. The $f_k(x)$ components in principle are arbitrary in the sense that you can choose any sort of distribution. In practice, parametric distributions, like gaussians, are often used since a lot work has been done to understand their behaviour. So when you substitute each $f_k(x)$ for a gaussian you get gaussian mixture models (GMM). Likewise, if you substitute each $f_k(x)$ for a binomial distribution, you get binomial mixture models (BMM). Since each parametric distribution has it's own parameters, we can represent the parameters of each component with a $\theta_{k}$:
+
+$$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x;\theta_{k})$$
+
+## Why Would You Use a Mixture Model?
+
+A Mixture model is probabilistic model for representing subpopulations of data without requiring that the observed data to be first labeled to identify the subpopulations. Mathematically, it is
+
+Let's use an example to demonstrate this more concretely
+
+To explain what mixture models are, lLet's say someone presented you with the following density plot: 
 
 ```{r, message = FALSE}
 options(scipen = 999)
@@ -524,7 +540,6 @@ for (i in 1:50) {
 			break
 		} else {
 			cur.loglik <- e.step[["loglik"]]
-			cur.mu <- 
 		}
 	}
 }
@@ -578,5 +593,6 @@ The benefit of this approach is that:
 
 ## References
 
+* [Mixture Models](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf)
 * [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
 * [What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)
