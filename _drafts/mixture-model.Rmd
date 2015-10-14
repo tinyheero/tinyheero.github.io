@@ -1,32 +1,33 @@
 ---
 title: "Using Mixture Models for Clustering in R"
-author: "Fong Chun Chan"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
-output: html_document
+layout: post
+tags: [R, mixmodels]
 ---
 
 ```{r echo = FALSE}
 library("knitr")
-knitr::opts_chunk$set(fig.path='{{ site.url }}/images/mixture-model-')
+knitr::opts_chunk$set(fig.path='{{ site.url }}/assets/mixture-model-')
 ```
-
-## What Are Mixture Models?
 
 If you've been exposed to machine learning in your work or studies, chances are you've heard of the term **mixture model**. But what exactly is a mixture model and why should you care?
 
-A mixture model is a mixture of k component distributions which make up a mixture distribution $f(x)$:
+A mixture model is a mixture of k component distributions that collectively make a mixture distribution <span class="inlinecode">$f(x)$</span>:
 
+<div>
 $$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x)$$
+</div>
 
-The $\alpha_{k}$ represents a mixing weight for the k^th^ component and $\sum_{k=1}^{K}\alpha_{k} = 1$. The $f_k(x)$ components in principle are arbitrary in the sense that you can choose any sort of distribution. In practice, parametric distribution (e.g. gaussians), are often used since a lot work has been done to understand their behaviour. If you substitute each $f_k(x)$ for a gaussian you get what is known as a gaussian mixture models (GMM). Likewise, if you substitute each $f_k(x)$ for a binomial distribution, you get a binomial mixture model (BMM). Since each parametric distribution has it's own parameters, we can represent the parameters of each component with a $\theta_{k}$:
+The <span class="inlinecode">$\alpha_{k}$</span> represents a mixing weight for the <span class="inlinecode">$k^{th}$</span> component where <span class="inlinecode">$\sum_{k=1}^{K}\alpha_{k} = 1$</span>. The <span class="inlinecode">$f_k(x)$</span> components in principle are arbitrary in the sense that you can choose any sort of distribution. In practice, parametric distribution (e.g. gaussians), are often used since a lot work has been done to understand their behaviour. If you substitute each <span class="inlinecode">$f_k(x)$</span> for a gaussian you get what is known as a gaussian mixture models (GMM). Likewise, if you substitute each <span class="inlinecode">$f_k(x)$</span> for a binomial distribution, you get a binomial mixture model (BMM). Since each parametric distribution has it's own parameters, we can represent the parameters of each component with a <span class="inlinecode">$\theta_{k}$</span>:
 
+<div>
 $$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x;\theta_{k})$$
+</div>
 
 ## Why Would You Use a Mixture Model?
 
 Let's motivate the reason of why you woud use a mixture model by using an example. Let's say someone presented you with the following density plot: 
 
-```{r example_density_plot, message = FALSE}
+```{r example_density_plot, dev = "png", message = FALSE}
 library("ggplot2")
 library("dplyr")
 
@@ -48,17 +49,17 @@ This data is 2-column data.frame
 * eruptions: Length of eruption (in mins)
 * waiting: Time in between eruptions (in mins)
 
-Putting the data into context suggests that the eruption times may be coming from two different sub-populations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. You can probably take an intutive guess as to how you could split this data. 
+Putting the data into context suggests that the eruption times may be coming from two different subpopulations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. You can probably take an intutive guess as to how you could split this data. 
 
-For instance, there likely is a population with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (black vertical line in figure below).
+For instance, there likely is a subpopulation with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (black vertical line in figure below).
 
-```{r naive_cluster}
+```{r naive_cluster, dev = "png"}
 p + 
 	geom_vline(x = 53, col = "red") + 
 	geom_vline(x = 80)
 ```
 
-In fact, what we've done is a naive attempt at trying to group the data into different populations/clusters. But surely there must be some objective and "automatic" way of defining these clusters? This is where mixture models come in by providing a "model-based approach" to clustering through the use of statistical distributions. In the next section, we will utilize an R package to perfom some mixture model clustering.
+In fact, what we've done is a naive attempt at trying to group the data into subpopulations/clusters. But surely there must be some objective and "automatic" way of defining these clusters? This is where mixture models come in by providing a "model-based approach" to clustering through the use of statistical distributions. In the next section, we will utilize an R package to perfom some mixture model clustering.
 
 ## Using a Gaussian Mixture Model for Clustering
 
@@ -68,14 +69,14 @@ $$ \mathcal{N}(\mu, \sigma^2) $$
 
 The normal distribution is parameterized by two variables:
 
-* $\mu$: Mean; Center of the mass
-* $\sigma^2$: Variance; Spread of the mass
+* <span class="inlinecode">$\mu$</span>: Mean; Center of the mass
+* <span class="inlinecode">$\sigma^2$</span>: Variance; Spread of the mass
 
 When Gaussians are used for mixture model clustering, they are referred to as [Gaussian Mixture Models (GMM)](https://en.wikipedia.org/wiki/Mixture_model#Gaussian_mixture_model). As it turns out, our earlier intuition on where the means and variance of the subpopulation in the plot above is a perfect example of how we could apply a GMM. Specifically, we could try to represent each subpopulation as its own distribution (aka. mixture component). The entire set of data could then be represented as a mixture of 2 Gaussian distributions (aka. 2-component GMM)
 
 In R, there are several packages that provide an implementation of GMM already (e.g. [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html), [mclust](http://www.stat.washington.edu/mclust/)). As there exists [a nice blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) on using mixtools on the `faithful` dataset, we will just borrow a bit his code to demonstrate the GMM in action:
 
-```{r mixtools, message = FALSE}
+```{r mixtools, dev = "png", message = FALSE}
 library("mixtools")
 
 #' Plot a Mixture Component
@@ -137,9 +138,9 @@ post.df %>%
 	filter(x > 66, x < 68)
 ```
 
-It's important to understand that no "labels" have been assigned here actually. Unlike k-means which assigns each data point to a cluster (defined as a "hard-label"), Mixture models provide what are called "soft-labels". The end-user decides on what "threshold" to use to assign data into the components. For instance, one could use 0.3 as posterior threshold to assign data to comp.1 and get the following label distribution.
+It's important to understand that no "labels" have been assigned here actually. Unlike k-means which assigns each data point to a cluster (defined as a "hard-label"), mixture models provide what are called "soft-labels". The end-user decides on what "threshold" to use to assign data into the components. For instance, one could use 0.3 as posterior threshold to assign data to comp.1 and get the following label distribution.
 
-```{r soft_label_0_3}
+```{r soft_label_0_3, dev = "png"}
 post.df %>%
 	mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
 	ggplot(aes(x = factor(label))) +
@@ -150,7 +151,7 @@ post.df %>%
 
 Or one could use 0.8 and get the following label distribution:
 
-```{r soft_label_0_8}
+```{r soft_label_0_8, dev = "png"}
 post.df %>%
 	mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
 	ggplot(aes(x = factor(label))) +
@@ -159,17 +160,15 @@ post.df %>%
 	ylab("Number of Data Points")
 ```
 
-And that's the gist of using a mixture model to clustering data in R!
-
 ## Summary
 
-As you'll seen from the example, the usage of mixture model clustering can be very powerful in providing an objective way to clustering data. Some benefits to using mixture model clustering are:
+As you'll seen from the above example, the usage of mixture model clustering can be very powerful in providing an objective way to clustering data. Some benefits to using mixture model clustering are:
 
-* Choice of Component Distribution: In this post, we've used a gaussian distribution of each component. But we are not limited by using just gaussians. We also use binomials, multinomials, student-t, and other topics of distributions for mixture mode cluster
-* "Soft Labels": As mentioned in the post, there are no "hard" labels in mixture model clustering. Instead of what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
-* Density Estimation: We get a measure how much data each component represents through the mixing weights.
+* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can also use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have.
+* **"Soft Labels"**: There are no "hard" labels in mixture model clustering. Instead what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
+* **Density Estimation**: We get a measure how much data each component represents through the mixing weights.
 
-This post serves as a soft introduction into what mixture models are how you can use them for clustering. If you are like me, you might be interested in knowing that is happening "under the hood". In a subsequent post, I will walk through the math and show how you can implement your very own mixture model in R.
+If you are like me, you might be interested in knowing what is happening "under the hood". In a subsequent post, I will walk through the math and show how you can implement your very own mixture model in R. So stay tuned!
 
 ## References
 
