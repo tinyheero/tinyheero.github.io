@@ -40,3 +40,6 @@ v8:
 picard: 
     slug: picard
     name: Picard
+mixmodels: 
+    slug: mixmodels
+    name: Mixture Models
