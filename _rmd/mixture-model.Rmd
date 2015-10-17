@@ -51,19 +51,19 @@ This data is 2-column data.frame
 
 Putting the data into context suggests that the eruption times may be coming from two different subpopulations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. You can probably take an intutive guess as to how you could split this data. 
 
-For instance, there likely is a subpopulation with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (black vertical line in figure below).
+For instance, there likely is a subpopulation with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (blue vertical line in figure below).
 
 ```{r naive_cluster, dev = "png"}
 p + 
-	geom_vline(x = 53, col = "red") + 
-	geom_vline(x = 80)
+	geom_vline(x = 53, col = "red", size = 2) + 
+	geom_vline(x = 80, col = "blue", size = 2)
 ```
 
 In fact, what we've done is a naive attempt at trying to group the data into subpopulations/clusters. But surely there must be some objective and "automatic" way of defining these clusters? This is where mixture models come in by providing a "model-based approach" to clustering through the use of statistical distributions. In the next section, we will utilize an R package to perfom some mixture model clustering.
 
 ## Using a Gaussian Mixture Model for Clustering
 
-As mentioned in the beginning, a mixture model consist of a mixture of distributions. The first thing you need to do when performing perform mixture model clustering is to determine what type of statistical distribution you want to use for the components. For this post, we will use one of the most common statistical distributions used for mixture model clustering which is the [Gaussian/Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution):
+As mentioned in the beginning, a mixture model consist of a mixture of distributions. The first thing you need to do when performing mixture model clustering is to determine what type of statistical distribution you want to use for the components. For this post, we will use one of the most common statistical distributions used for mixture model clustering which is the [Gaussian/Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution):
 
 $$ \mathcal{N}(\mu, \sigma^2) $$
 
@@ -164,7 +164,7 @@ post.df %>%
 
 As you'll seen from the above example, the usage of mixture model clustering can be very powerful in providing an objective way to clustering data. Some benefits to using mixture model clustering are:
 
-* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can also use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have.
+* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have.
 * **"Soft Labels"**: There are no "hard" labels in mixture model clustering. Instead what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
 * **Density Estimation**: We get a measure how much data each component represents through the mixing weights.
 
