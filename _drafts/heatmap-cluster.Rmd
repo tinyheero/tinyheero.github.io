@@ -5,15 +5,21 @@ date: "August 25, 2015"
 output: html_document
 ---
 
-Heatmaps are graphical representations of individual values by different colors. For instance, let's sample some matrix data from standard normal distribution:
+## Overall Objectives of this Post
+
+* Describe what heatmaps are
+* Generate heatmaps from Matrix Data
+* Describe the connection between heatmaps/clustering 
+
+## What are Heatmaps?
+
+Let's say you were presented with the following 5x5 table/matrix. 
 
 ```{r, message = FALSE}
 library("dplyr")
 library("knitr")
 set.seed(1)
-```
 
-```{r}
 mat <- matrix(rnorm(25), 5, 5, 
               dimnames = list(LETTERS[1:5], 1:5))
 mat %>%
@@ -21,20 +27,168 @@ mat %>%
   kable
 ```
 
-Here we have generated a 5x5 matrix. It's not immediately obvious which values in the matrix may be outliers/extremes. But if we convert this into a heatmap:
+Your first intuition may be whether there is anything interesting in this matrix/table?  It's not immediately obvious which values in the matrix may be outliers/extremes. But if we convert this matrix into graphical representation:
 
 ```{r}
+# mat[5:1] is done to make the heatmap output in the same order as the table 
+# above.
 heatmap(mat[5:1, ], Rowv = NA, Colv = NA, scale = "none")
 ```
 
-The `mat[5:1, ]` snippet is done to make the heatmap come out in the same order as the table above.
+Each cell in the matrix has now been converted into a different color. Now you can immediately see the red cells in the heatmap which indicate that (D,5) and (D,3) appear to be outliers in this data. Referring back to the matrix confirms this as `r mat["D", 5]` (D,5) and `r mat["D", 3]` (D,3) are the most extreme negative values in the matrix. 
 
+This example demonstrates the utility of heatmaps which are graphical representations of individual values by different colors. You can find examples of heatmaps in various fields ([Wikipedia has numerous example](https://en.wikipedia.org/wiki/Heat_map#Examples)). 
 
-For instance, in the biological sciences I often work with what are referred to "expression matrices". Specifically, in matrix 
+> It's important to note that a heatmap does not have in a "matrix/table" form
 
-it is often used to represent "expression data".
+For instance, [Wikipedia has an example of a "Choropleth heatmap"](https://commons.wikimedia.org/wiki/File%3A2012_US_Senate_election_in_Massachusetts_results_by_municipality.svg).
 
-They are often most useful when you have the values in a matrix form 
+![Wikipedia Example of Choropleth Heatmap](https://upload.wikimedia.org/wikipedia/commons/2/28/2012_US_Senate_election_in_Massachusetts_results_by_municipality.svg "Wikipedia Example of Choropleth Heatmap")
+
+Here the different regions on the map are represented with different colors to indicate how the votes are distributed between the two candidates. **This is also considered a heatmap** and provides a nice graphical representation of which candidate in doing better in certain regions. Without a heatmap to represent such data, it would be difficult to see such patterns.
+
+## Generating Heatmaps from Matrix Data in R
+
+Now that you know what heatmaps are, let's see how we can generate these heatmaps in R where the data is in matrix form. Let's use the same matrix `mat` from the beginning. The easiest way to generate a heatmap in R is to use the `image` function:
+
+```{r}
+image(mat)
+```
+
+You might notice how this looks a bit different. Specifically the order of the cells appears to be different. As it turns out, the `image` function transpose the data such that the rows become columns and columns become rows. We can fix this by using the `t` (transpose) function on the matrix before using the `image` function
+
+```{r }
+image(t(mat))
+```
+
+This is better now except the order of the rows seems to be different from the input matrix. Specifically, the `image` function actually flips the ordering of the rows. We can fix this:
+
+```{r}
+image(t(mat[nrow(mat):1, ]))
+```
+
+All we are doing here is reversing the rows before we pass it into the `image` function. Such that when the function reverses it again it will be in the same order as the input (perhaps there is a better solution to this). 
+
+This is almost what we want except we have lost all our x and y labels! There is a way around this where you can manually add the labels, but at this point it's better to just introduce the `heatmap` function. The `heatmap` function is available from base R. We can use it like this:
+
+```{r}
+# mat[5:1] is done to make the heatmap output in the same order as the table 
+# above.
+heatmap(mat[5:1, ], Rowv = NA, Colv = NA, scale = "none")
+```
+
+This is in fact the same code that I used at the beginning of the post. The `heatmap` function actually calls `t(mat)` to generate the heatmap and thus it will result in the same row re-ordering issue we mentioned already. Hence, why the row re-ordering code is used again. The benefit of this is that we also get the x- and y-labels added automatically for us.  **You may have noticed additional parameters that I have set (Rowv, Colv, scale). I will explain how to use these in the next section**.
+
+If you want to change to use a different color scheme. The `col` parameter allows you (actually belongs to the `image` function) modify this. By default the color scheme is set to `heat.colors(12)`:
+
+```{r}
+heat.colors(12)
+```
+
+This basically gives us a color palette which can be used to correspond to the values of the matrix. The `RColorBrewer` R package provides a way to make your color palette:
+
+```{r}
+library("RColorBrewer")
+my.palette <- colorRampPalette(c("green", "black", "red"))(n = 12)
+heatmap(mat[5:1, ], Rowv = NA, Colv = NA, scale = "none", col = my.palette)
+```
+
+Here we setting a color gradient such as it goes from green -> black -> red which corresponds to low -> mid -> high values. You can play around this to get the exact color scheme you want. In addition to the base `heatmap` function, there have been a handful of R packages that have improved on the base `heatmap` function (e.g. [gplots - heatmap.2](https://cran.r-project.org/web/packages/gplots/index.html), [heatmap.plus](https://cran.r-project.org/web/packages/heatmap.plus/index.html), [d3heatmap](https://cran.r-project.org/web/packages/d3heatmap/index.html)). The newest one (to the best of my knowledge and at the time of this writing) is d3heatmap from RStudio. This package leverages off [D3](http://d3js.org/) to provide an interactive heatmap:
+
+```{r}
+library("d3heatmap")
+d3heatmap(mat, Rowv = NA, Colv = NA, colors = heat.colors(12))
+```
+
+You can now hover over the cells and see the individual values, zoom in and out. The function also no longer does the row re-ordering so we don't need to do that hack to maintain the initial ordering. 
+
+## Heatmap and Clustering
+
+While heatmaps provide a fantastic way to graphical visualize values, they don't provide the immediate capacity to allow you to answer questions such as where certain samples/rows are similar. This is where the concept of clustering comes in. Clustering is essentially a machine learning technique to aims to "group" together (i.e. cluster) similar things. To see how heatmap and clustering is related, I will use an example from the biological sciences. Heatmaps are often used in this field to represent "gene expression" matrices. Specifically, the rows represent different genes and columns represent different samples. Each cell in the matrix then represents the expression of that specific gene in a specific patient. For the sake of this post, we will refer to the genes as features. You will often see final products like this:
+
+```{r}
+mat.file <- "mirna-normalized-expression-subset-lim-2015.txt"
+mat.lim <- as.matrix(read.table(mat.file, sep = "\t"))
+
+d3heatmap(mat.lim,
+					scale = "row", 
+					colors = rev(brewer.pal(9, "RdBu")),
+					width = 750, 
+					height = 1000,
+					yaxis_width = 180)
+```
+
+This is a nice final output. We can clearly see two "clusters" as indicated by the dendrogram/tree on the top. The samples on the left cluster demonstrates higher expression (red) while the samples in the right cluster exhibit lower expression for these features (blue) (*Technically these are microRNAs and so it is incorrect to refer to them as gene expression. This is why for the sake of this post, we will refer to them as features*)
+
+The `d3heatmap` function actually performs the clustering automatically for you. In the previous section, I had turned it off to demonstrates only the heatmap component. Also, I've added `scale = "row"` which performs row normalization which has an important effect in the visualization. Let's see what happens if you were to just generate the heatmap without any clustering (both on the row and column level using `Rowv = NA` and `Colv = NA` and any scaling):
+
+```{r}
+d3heatmap(mat.lim,
+					colors = rev(brewer.pal(9, "RdBu")),
+					Rowv = NA, 
+					Colv = NA,
+					width = 750, 
+					height = 1000, 
+					yaxis_width = 180)
+```
+
+That looks really funny hey? What is actually happening? Let's take a look at expression data we are working with. 
+
+```{r message = FALSE, fig.width = 10}
+library("reshape2")
+library("ggplot2")
+
+mat.lim %>%
+	melt %>%  
+	ggplot(aes(x = Var1, y = value)) +
+	geom_boxplot() +
+	theme(axis.text.x = element_text(angle = 90, vjust = 0.5))
+```
+
+The boxplot above shows the distribution of expression values for each gene across the samples. Immediately, certain features are much more highly expressed in all samples compared to other features. And similarly some features are much more lowly expressed than all other features. What's basically happening is that the **between-feature differences** are much greater than the between sample differences. A highly expressed feature will appear a row of all the same colors. For instance, 
+
+```{r}
+mira.highest <- mat.lim %>%
+	melt %>%
+	group_by(Var1) %>%
+	summarize(mean.vals = mean(value)) %>%
+	arrange(desc(mean.vals)) %>%
+	slice(1) %>%
+	.$Var1 %>%
+	as.character
+```
+
+The `r mira.highest` is the most highly expressed feature in the dataset. Can you identify which row in above heatmap it is (red means high expression)? It should be one of the rows that is basically almost all red. So how do we get around this? This is where scaling comes in
+
+```{r}
+# read.matrix(
+# 
+# read_load_mat
+# 
+# mat.lim[mat.lim < 1] <- 1
+# mat.lim.log2 <- log2(mat.lim)
+# 
+# mirna <- de.df %>%
+# 	filter(miRNA %in% rownames(mat.lim)) %>% 
+# 	arrange(log2_fold_change) %>%
+# 	slice(1:100) %>%
+# 	.$miRNA
+# 	
+# # mat.lim.log2 %>%
+# # 	melt %>%
+# # 	group_by(Var1) %>%
+# # 	summarize(test = var(value)) %>%
+# # 	
+# # 
+# CB.samples <- c("MX0411_GTAGCC", "MX0411_TACAAG", "MX0411_TCAAGT", "MX0411_TGCTTT", "MX0781_AGATGT", "MX0781_CTGGGT", "MX0781_GCCGGT", "MX0781_TATCGT", "MX0781_GAGAGT", "MX0781_ATCAGT", "MX0781_TCTTCT", "MX0781_CTATCT", "MX0781_GATGCT", "MX0781_AGCGCT", "MX0781_CGGCCT", "MX0781_AATTAT", "MX0781_CCGTAT", "MX0781_TAGGAT", "MX0781_GTTTGT")
+# DLBCL.samples <- colnames(mat.lim)[1:19]
+# 
+# #mat.lim.log2[mirna[1:100], c(DLBCL.samples, CB.samples)
+# #mat.lim.log2[mirna, c(DLBCL.samples, CB.samples)
+# 
+# colnames(mat.lim)
+# 
+```
 
 One of the most common techniques to visualize matrix data is to use heatmaps which represent the individual values of a cell by different colors. Doing this, allows for the immediate contrast between different cells and if clustering is performed will allow users to easily distinguish between different columns and rows. It is used in a variety of different fields, and  For instance, let's take a look at this figure:
 
