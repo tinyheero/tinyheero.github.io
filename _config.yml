@@ -13,3 +13,6 @@ highlighter: pygments
 
 # Build settings
 markdown: redcarpet
+redcarpet:
+    extensions: ["no_intra_emphasis"]
+#markdown: kramdown
