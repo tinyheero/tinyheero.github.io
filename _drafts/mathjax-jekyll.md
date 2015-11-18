@@ -1,12 +1,14 @@
 ---
 layout: post
-title:  "Maintaining Math Equations when Converting a Rmarkdown Document for a Jekyll Blog"
+title:  "Rendering Math Equations when Converting Rmarkdown Document for a Jekyll Site"
 tags: [rmarkdown, mathjax]
 ---
 
-In some of the posts I've written in my blog (e.g. [Using Mixture Models for Clustering in R]({% post_url 2015-10-13-mixture-model %})) I've first written them in rmarkdown and then converted them into a markdown file to be subsequently processed by jekyll. Nicole White made a [fantastic post on how to publish an rmarkdown file for a jekyll blog](http://nicolewhite.github.io/2015/02/07/r-blogging-with-rmarkdown-knitr-jekyll.html) and this is what helped me at first. 
+In some of the posts I've written in my blog (e.g. [Using Mixture Models for Clustering in R]({% post_url 2015-10-13-mixture-model %})), I've first written them in rmarkdown and then converted them into a markdown file to be subsequently processed by jekyll. Nicole White made a [fantastic post on how to publish an rmarkdown file for a jekyll blog](http://nicolewhite.github.io/2015/02/07/r-blogging-with-rmarkdown-knitr-jekyll.html) and this is what helped me at first. 
 
-One aspect that isn't mentioned is how to get the math equations specified in rmarkdown rendered in a jekyll site. This post will attempt to address this issue.
+One aspect that isn't mentioned is how to get the math equations in your rmarkdown rendered, using Mathjax, in a jekyll site. As it turns out, it's not super straightforward and often doesn't render. **The fundamental problem is that jekyll markdown parsers will first attempt to parse the equations which often messes them up before MathJax can intrepret them**. The problem is further complicated by the fact that different jekyll markdown parsers will handle the equation blocks slightly different. 
+
+This post will explain what I did to get it working on this jekyll site which uses the redcarpet markdown parser
 
 # Step 1: Add the Mathjax Javascript Library
 
@@ -20,10 +22,6 @@ This makes it so that the Mathjax javascript library is loaded on your jekyll si
 
 # Step 2: "Protecting" Your Display Equations
 
-. **The fundamental problem is that jekyll markdown parsers will first attempt to parse the equations which often messes them up before MathJax can intrepret them**. The problem is further complicated by the fact that different jekyll markdown parsers will handle the equation blocks slightly different. 
-
-
-
 In rmarkdown, to write a display equation you would use:
 
 ```
@@ -34,7 +32,7 @@ Depending on your jekyll markdown parser, this may or may not render in your jek
 
 $$ f(x) = \sum_{k=1}^{K}\alpha_{k} $$
 
-But if your parser is redcarpet with no extensions, then this will not render (NOTE: if you enable the `no_intra_emphasis` extension for redcarpet then it will work). 
+But if your parser is redcarpet with no extensions, then this will NOT render (NOTE: if you enable the `no_intra_emphasis` extension for redcarpet then it will work). 
 
 The issue is because the markdown parser tries to parse it and ends up messing up the output. The best way to get around this to work for all markdown parsers is to "protect" your display equations by wrapping them in a `<div>` block as suggested in this [thread](http://stackoverflow.com/questions/10987992/using-mathjax-with-jekyll):
 
@@ -46,7 +44,7 @@ $$ f(x) = \sum_{k=1}^{K}\alpha_{k} $$
 
 Doing this makes it so that the markdown parser doesn't try to parse these display equations before MathJax.
 
-# Step 3: Using Jquery for Inline Equations
+# Step 3: Using "jQuery" for Inline Equations
 
 Inline equations are bit trickier to get working. In rmarkdown, you would write an inline equation like this:
 
@@ -54,24 +52,31 @@ Inline equations are bit trickier to get working. In rmarkdown, you would write 
 $f(x) = \sum_{k=1}^{K}\alpha_{k}$
 ```
 
-This won't render because Mathjax does not recognize the tag `$...$` at all and thus doesn't try to parse them. After scouring the internet, I found this [resource](http://blog.hupili.net/articles/site-building-using-Jekyll.html) that provides a bit of insight into how to get around this.
+This won't render because Mathjax does not recognize the tag `$...$` at all and thus doesn't try to parse them. After scouring the internet, I found this [resource (section 5)](http://blog.hupili.net/articles/site-building-using-Jekyll.html) that provides a bit of insight into how to get around this.
 
-What we can do is use jquery to recognize these inline equations and then specifically get Mathjax to re-typeset them for us. What we can do is wrap our inline equations in some unique inline identifier like:
+The strategy that I employed was to use [jQuery](https://jquery.com/) to recognize these inline equations and then specifically get Mathjax to re-typeset them for us. To get jQuery to recognize these inline equation, I wrapped my inline equations in some unique inline identifier like:
 
 ```
 <span class="inlinecode">$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x)$</span>
 ```
 
-Here we have wrapped out equation 
+Here I wrapped the inline equation using an html span element with class inlinecode. Next, I [downloaded jQuery](http://jquery.com/download/) (specifically jquery-1.11.3.min.js for me) and then added this file to my jekyll site at `js/jquery-1.11.3.min.js`. Then I added a javascript file, `js/jq_mathjax_parse.js` that used jQuery to perform the re-typesetting. 
 
-Now we need to get jquery to recognize all the values wrapped in 
+```{js}
+$(document).ready(function(){
+  $(".inlinecode").map(function(){
+    match = /^\$(.*)\$$/.exec($(this).html());
+    if (match){
+      $(this).replaceWith("\\(" + match[1] + "\\)");
+      MathJax.Hub.Queue(["Typeset",MathJax.Hub,$(this).get(0)]);
+    }
+  });
+});
+```
 
-Rather for inline 
+With the `js/jquery-1.11.3.min.js` and `js/jq_mathjax_parse.js` javascript files, I next added these two files to my 
 
-
-Several 
-
-Once you knit your rmarkdown to a markdown file, the 
+Once you knit your Rmarkdown to a markdown file, the 
 
  me, I added the following line of code to my `_includes/head.html` file.
 
