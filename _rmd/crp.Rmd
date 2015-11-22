@@ -1,0 +1,39 @@
+```{r}
+#' Chinese Restaurant Process
+#'
+#' This function will generate a table of assignments of a num.clusters.
+#' The alpha parameter controls how often a new table assignment occurs when a 
+#' new customer comes. The higher the alpha value the more distinct tables and 
+#' vice versa for smaller alpha values.
+#'
+#' This is an R implementation of Edwin Chen's ruby code at 
+#' \url{http://blog.echen.me/2012/03/20/infinite-mixture-models-with-nonparametric-bayes-and-the-dirichlet-process/}
+#'
+#' @param num.clusters Number of customers
+#' @param alpha Dispersion parameter
+crp <- function(num.customers, alpha) {
+	if (num.customers == 0) {
+		stop("num.clusters has to be > 0")
+	}
+
+	table.assignments <- c(1) # first customer sits at table 1
+	next.open.table <- 2 # index of the next empty table
+
+  # Now generate table assignments for the rest of the customers.
+	for (i in 1:num.customers) {
+		rand.val <- runif(1, 0, 1)
+
+		if (rand.val < (alpha / (alpha + (i)))) {
+      # Customer sits at new table.
+      table.assignments <- c(table.assignments, next.open.table)
+      next.open.table <- next.open.table + 1
+		} else {
+      # Customer sits at an existing table.
+      # He chooses which table to sit at by giving equal weight to each
+      # customer already sitting at a table. 
+      which.table <- table.assignments[sample(length(table.assignments), 1)]
+      table.assignments <- c(table.assignments, which.table)
+		}
+	}
+	table.assignments
+}
