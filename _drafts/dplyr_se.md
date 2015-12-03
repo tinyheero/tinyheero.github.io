@@ -11,6 +11,14 @@ title:  "NSE"
 select_(.dots = c("test", "test2"))
 ```
 
+# mutate
+
+```{r}
+mutate_call <- lazyeval::interp(~ a + b, a = as.name(col1), b = as.name(col2))
+mtcars %>% 
+	mutate_(.dots = setNames(list(mutate_call), new_col_name))
+```
+
 # rename
 
 ```{r}
