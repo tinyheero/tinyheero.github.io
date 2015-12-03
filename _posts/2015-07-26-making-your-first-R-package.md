@@ -140,6 +140,8 @@ Imports:
 
 Notice how I didn't specify any version for dplyr which simply indicates that the package requires some version of dplyr. Also remember the comma between each dependency. I've been burned a few times by that!
 
+You can additionally add packages to the Depends section of the DESCRIPTION file instead of the Imports section. What's the difference? The only difference is that packages in the Depends section are loading and attached while packages in the Imports section are only loaded. For more details on this, I refer you to the [namespace section](http://r-pkgs.had.co.nz/namespace.html) of R packages.
+
 # How do I Document My Functions?
 
 So how do you get that nice documentation in R when I go `?load_mat`. We can leverage off the [roxygen2](https://cran.r-project.org/web/packages/roxygen2/index.html) which provides a very simple way of documenting our functions and then produces `man/load_mat.Rd` files which is what we see when we go `?load_mat`. Both [Hilary (Step 3: Add documentation)](http://hilaryparker.com/2014/04/29/writing-an-r-package-from-scratch/) and [Hadley (Object documentation)](http://r-pkgs.had.co.nz/man.html) discuss this at length and I refer you to there pages. 
