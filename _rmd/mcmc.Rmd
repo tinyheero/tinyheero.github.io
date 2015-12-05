@@ -1,0 +1,95 @@
+
+
+# Create Test Data
+
+Here we create some linear relationship between x and y. But we add some noise in the y-value.
+
+```{r}
+trueA <- 5
+trueB <- 0 # y-intercept
+trueSd <- 10
+sampleSize <- 31
+ 
+# create independent x-values 
+x <- (-(sampleSize-1)/2):((sampleSize-1)/2)
+
+# create dependent values according to ax + b + N(0,sd)
+y <-  trueA * x + trueB + rnorm(n = sampleSize, mean = 0, sd = trueSd)
+ 
+plot(x,y, main="Test Data")
+```
+
+# Defining the statistical model
+***
+
+In machine learning, there are 3 elements to any model:
+
+1. Representation (Hypothesis Function)
+2. Evaluation (Loss Function; Objective Function)
+3. Optimization
+
+The representation of our statistical model will be:
+
+$$Y = aX + b + N(0, sd)$$
+
+# Defining the Likelihood (Loss Function)
+***
+
+We define our likelihood function (aka. loss/objective function). In brief, a likelihood function is:
+
+> probability (density) with which we would expect the observed data to occur conditional on the parameters of the model that we look at. 
+
+The loss function of a traditional simple linear regression is:
+
+$$L = \sum_{i=1}^{n}(Y_{i} - (\beta_{0} + \beta_{1}X_{i}))^2$$
+
+```{r}
+#' @param param Vector of length x containing slope, y-intercept, and standard
+#'   deviation.
+likelihood <- function(param) {
+
+	a <- param[1]
+	b <- param[2]
+
+	# param[3] = trueSd
+	in.sd <- param[3]
+		
+	# Make predictions given slope (a)
+	# NB: x is fixed data
+	# NB: b == trueB
+	pred <- a*x + b
+
+	# log is used to get log likelihoods
+	# For each pred, we run dnorm with the pred as a mean, in.sd (fixed across
+	# dnorm runs) with the corresponding y value. 
+	#
+	# The idea is to get the probability density of observing the deviation of
+	# prediction to the true value. We then sum up the probability density values
+	# across all of these predictions.
+	singlelikelihoods <- dnorm(y, mean = pred, sd = in.sd, log = TRUE)
+	sumll <- sum(singlelikelihoods)
+	sumll
+}
+
+# Example: plot the likelihood profile of the slope a
+
+#' @param x Slope of the line
+slopevalues <- function(in.slope) {
+	# trueB is fixed
+	# trueSd is fixed
+	likelihood(param = c(in.slope, trueB, trueSd))
+}
+
+# Produce a vector of slopes
+slope <- seq(3, 7, by = .05)
+in.slope <- 3
+
+# Run slopevalues for each slope value
+slopelikelihoods <- lapply(slope, slopevalues)
+
+plot(seq(3, 7, by=.05), slopelikelihoods , type = "l", 
+		 xlab = "values of slope parameter a", 
+		 ylab = "Log likelihood")
+```
+
+Our stati
