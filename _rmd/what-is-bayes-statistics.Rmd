@@ -1,0 +1,96 @@
+Having been in field of bioinformatics, I've come across many different methods that use bayesian statistics. What is Bayesian Statistics?
+
+# Statistical Inference
+
+In order to discuss what Bayesian Statistics is
+
+* Frequentist 
+
+# Bayesian Statistics Syllabus
+
+> Goal of Bayesian is to derive the posterior distribution. Basically, we want a value for every single value of theta (parameters)
+
+To obtain this distribution, we use bayes rule.
+
+* Likelihood: P(data | theta)
+* Prior: This represents our "prior" knowledge of the parameters. This is where people think bayesian statistics is very subjective since the results can manipulated very easily.
+	+ Jeffrey's prior 
+* Denominator: P(data)
+
+* If the prior and likelihood are conjugate, then we can write the equation in closed form (solve analytically)
+* BUGS - Gibbs Sampling
+* Hierarchical model: Prior has a probability distribution which parameters have priors themselves.
+
+# Bayesian vs. Frequentists statistics
+
+* Frequentists:
+	* Parameters are fixed
+	* relies on infinite number of repetitions
+* Bayesian statistics:
+	* data is fixed, but parameters vary (there is uncertainity in the initial conditions)
+	* anything about which we are uncertain, including the true value of a parameter, can be thought of as being a random variable to which we can assign a probability distribution, known specifically as prior information.
+
+# What is a probability distributions?
+
+* probability of a specific value in a continuous probability distribution function is 0
+* probability of a specific value in a discrete probability mass function is 0
+
+* [What is a probability distribution?](https://www.youtube.com/watch?v=jbhi96p4mwI&index=5&list=PLFDbGp5YzjqXQ4oE4w9GVWdiokWB9gEpm)
+
+# What is a marginal probability?
+
+## Discrete Variables
+
+$$P(X = 1, Y = 1) = 0.3$$
+
+To find a patient who is $P(Y = 1)$ to just summing up the probability Y = 1 across all X. This is actually just the marginal probability since we are marginalizing over all X. 
+
+The marginal probability of X is:
+
+$$P(X = x) = \sum_{y}P(X = x, Y = y)$$
+
+Basically we are saying:
+
+> Let's forget about Y, and just consider all the possibilities of X
+
+## Continuous Variables
+
+$$f(M) = int_{0}^{\infty}f(H,W)dw$$
+
+Similar to the discrete case:
+
+$$P(X = x) = \sum_{y}P(X = x, Y = y)$$
+
+The integral is just an analog of the sum in the continuous space.
+
+# Condition Probability
+
+$$P(X = 1 | Y = 1)$$
+
+We are talking about constraining the space we are interested in.
+
+$$P(X = x | Y = y) = \frac{P(X = x, Y = y)}{P(Y = y)}$$
+
+# Bayes' Rule in Statistics
+
+* In classicial statistic, we assume there is some true point value in the population ($\theta$). The reason why we don't get the true value is because our sample is different. 
+So we think the population parameter is fixed and is set. Our sample is what is changing.
+* In bayes, the population parameter varies, and it is the data that is fixed.
+
+In bayesian statistics, the ultimate goal is to derive the posterior distribution.
+
+* The P(data) (i.e. denominator of bayes rule) is the hardest term to solve. We typically need to integate over a complicated equation. We basically need to consider all possibilities of $\theta$ our parameter in the model.
+* P(data) doesn't really make sense unless we put it in the context of a model.
+
+So the first thing we do is:
+
+1. Model for the data
+1. Specify a prior; Our belief of the choices of the parameter
+1. Derive the likelihood (which is based on the model choice)
+1. Derive the denominator (which is based on the likelihood)
+1. Find posterior distribution (ultimate goal!)
+
+# References
+
+* [What is Bayesian statistics - John W Stevens](http://www.medicine.ox.ac.uk/bandolier/painres/download/whatis/What_is_Bay_stats.pdf)
+* [Bayesian statistics syllabus](https://www.youtube.com/watch?v=U1HbB0ATZ_A&list=PLFDbGp5YzjqXQ4oE4w9GVWdiokWB9gEpm)
