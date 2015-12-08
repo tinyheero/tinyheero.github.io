@@ -7,84 +7,61 @@ output:
     toc: true
 ---
 
-## TL;DR - Summary
+In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM) for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run `normalmixEM`? Where are these posterior probabilites coming from? How does it fit the components? To understand all this, it helps to represent the GMM using what is called a probablistic graphical model (PGM). 
 
-* Learn why you would use mixture model clustering
-* Use gaussian mixture model clustering from the mixtools R package
-* Implement your own gaussian mixture model in R
+```{r}
+library("DiagrammeR")
+grViz("
+  digraph dot {
 
-```{r load_packages, message = FALSE}
+    graph [compound = true, nodesep = .5, ranksep = .25,
+           color = crimson,
+           /*, rankdir='LR', style=filled, fillcolor = blue*/
+          ]
+
+			subgraph cluster1 {
+				node [fixedsize = true]
+				mu [shape = square, label = '&mu;@_{k}'];
+				sigma [shape = square, label = '&sigma;@^{2}@_{k}'];
+				label = 'K';
+			}
+  }
+  ",
+engine = "dot")
+
+```
+
+(Figure is from the [Wikipedia page on mixture models](https://en.wikipedia.org/wiki/Mixture_model)):
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Nonbayesian-gaussian-mixture.svg", style="width: 300px;" alt = "Probabilistic Graphical Model of a Gaussian Mixture Model" />
+
+This looks nasty if you've never seen a PGM before. But I attempt to walk through it the graphical model. First let's start with the top left box:
+
+Here the variable K = Number of Components. For a GMM, our components are gaussian distributions which are parameterized by the mean ($\mu$) and the variance $\sigma_{k}$. Therefore, the $\mu_{k}$ and $\sigma_{k}$ represent the mean and variance of the kth component respectively. So if we have a 2 component GMM, then you would actually have two of these boxes. 
+
+* X = Dataset of n elements (x~1~, ..., x~n~). So x~i~ represents the ith element.
+
+
+
+we need to first understand the mathematical representation of a GMM:
+
+$$ P(X|\mu,\sigma,\alpha) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k}^{2}) $$
+
+* X = Dataset of n elements (x~1~, ..., x~n~).
+* $\alpha_{k}$ = Mixing weight of the kth component. $\sum_{k=1}^{K}\alpha_{k} = 1$.
+* $\mathcal{N}(x|\mu_{k},\sigma_{k})$ Gaussian probability density function (pdf) of the kth component defined by the parameters $\mu_{k}$ and $\sigma_{k}$.
+* $\mu_{k}$ = Mean of the kth component.
+* $\sigma_{k}^{2}$ = Variance of the kth component.
+
+It looks complicated. but if we use the example from the previous post then this breaksdown to:
+
+```{r, warning = FALSE, message = FALSE}
+library("dplyr")
 library("mixtools")
+library("ggplot2")
 library("reshape2")
 
-
-```
-
-## What Are Mixture Models?
-
-If you've been exposed to machine learning in your work or studies, chances are you've heard of the term **mixture model**. But what exactly is a mixture model and why should you care?
-
-Mathematically speaking, a mixture model is a mixture of k component distributions which make up a mixture distribution $f(x)$:
-
-$$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x)$$
-
-The $\alpha_{k}$ represents a mixing weight for the kth component and $\sum_{k=1}^{K}\alpha_{k} = 1$. The $f_k(x)$ components in principle are arbitrary in the sense that you can choose any sort of distribution. In practice, parametric distribution (e.g. gaussians), are often used since a lot work has been done to understand their behaviour. If you substitute each $f_k(x)$ for a gaussian you get what is known as a gaussian mixture models (GMM). Likewise, if you substitute each $f_k(x)$ for a binomial distribution, you get a binomial mixture model (BMM). Since each parametric distribution has it's own parameters, we can represent the parameters of each component with a $\theta_{k}$:
-
-$$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x;\theta_{k})$$
-
-## Why Would You Use a Mixture Model?
-
-Let's motivate the reason of why you woud use a mixture model by using an example. Let's say someone presented you with the following density plot: 
-
-```{r, message = FALSE}
-library("ggplot2")
-library("dplyr")
-
-options(scipen = 999)
-
-p <- ggplot(faithful, aes(x = waiting)) +
-	geom_density()
-p
-```
-
-We can immediately see that the resulting distribution appears to be bi-modal (i.e. there are two bumps) suggesting that these data might be coming from two different sources. These data are actually from the `faithful` dataset available in R:
-
-```{r}
-head(faithful)
-```
-
-This data is 2-column data.frame 
-
-* eruptions: Length of eruption (in mins)
-* waiting: Time in between eruptions (in mins)
-
-Putting the data into context suggests that the eruption times may be coming from two different sub-populations. There could be several reasons for this. For instance, maybe at different times of the year the geyser eruptions are more frequent. You can probably take an intutive guess as to how you could split this data. 
-
-For instance, there likely is a population with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (black vertical line in figure below).
-
-```{r}
-p + 
-	geom_vline(x = 53, col = "red") + 
-	geom_vline(x = 80)
-```
-
-In fact, what we've done is a naive attempt at trying to group the data into different populations/clusters. 
-
-This is where mixture models can come in handy. They provide a "model-based approach" to clustering by using statistical distributions to cluster the data and optimize the fit between the data and the parameters. One of the most common statistical distributions used for mixture model clustering is the [Gaussian/Normal Distribution](https://en.wikipedia.org/wiki/Normal_distribution):
-
-$$ \mathcal{N}(\mu, \sigma^2) $$
-
-The normal distribution is parameterized by two variables:
-
-* $\mu$: Mean; Center of the mass
-* $\sigma^2$: Variance; Spread of the mass
-
-As mentioned in the introduction, when gaussians are used for mixture model clustering they are referred to as [Gaussian Mixture Models (GMM)](https://en.wikipedia.org/wiki/Mixture_model#Gaussian_mixture_model). As it turns out, our early intuition on where the means and variance of the subpopulation in the plot above is a perfect example of how we could apply a GMM. Specifically, we could try to represent each subpopulation as its own distribution (aka. mixture component). The entire set of data could then be represented as a mixture of 2 Gaussian distributions (aka. 2-component GMM)
-
-In R, there are several packages that provide an implementation of GMM already (e.g. [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html), [mclust](http://www.stat.washington.edu/mclust/)). As there exists [a nice blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) on using mixtools on the `faithful` dataset, we will just borrow a bit his code to demonstrate the GMM in action:
-
-```{r mixtools, message = FALSE}
-#' Function to Plot Mixture Component
+#' Plot a Mixture Component
 #' 
 #' @param x Input Data
 #' @param mu Mean of Component
@@ -98,87 +75,9 @@ set.seed(1)
 wait <- faithful$waiting
 mixmdl <- normalmixEM(wait, k = 2)
 
-data.frame(x = mixmdl$x) %>%
-  ggplot() +
-  geom_histogram(aes(x, ..density..), binwidth = 1, colour = "black", 
-                 fill = "white") +
-  stat_function(geom = "line", fun = plot_mix_comps,
-                arg = list(mixmdl$mu[1], mixmdl$sigma[1], lam = mixmdl$lambda[1]),
-                colour = "red", lwd = 1.5) +
-  stat_function(geom = "line", fun = plot_mix_comps,
-                arg = list(mixmdl$mu[2], mixmdl$sigma[2], lam = mixmdl$lambda[2]),
-                colour = "blue", lwd = 1.5) +
-  ylab("Density")
-```
-
-The key is the `normalmixEM` function which builds a 2-component GMM (`k = 2` indicates to use 2 components). So how do we interpret this? It's actually quite simply; The red and blue lines simply indicate 2 different fitted Gaussian distributions. Specifically, the means of the 2 Gaussians (red and blue) are respectively:
-
-```{r}
-mixmdl$mu
-```
-
-With respectively variances of:
-
-```{r}
-mixmdl$sigma
-```
-
-You might also notice how the "heights" of the two components (herein we will refer to distribution as component) are different. Specifically, the blue component is "higher" than the red component. This is because the blue component encapsulates more density (i.e. more data) compared to the red component. How much exactly? You can get this value by using:
-
-```{r}
-mixmdl$lambda
-```
-
-Formally, these are referred to as the mixing weights (aka. mixing proportions, mixing coefficients). One can interpret this as the red component representing `r round(mixmdl$lambda[1]*100, 3)`% and the blue component representing `r round(mixmdl$lambda[2]*100, 3)`% of the input data. Another important aspect is that each input data point is actually assigned a posterior probability of belonging to one of these components. We can retrieve these data by using the following code:
-
-```{r}
 post.df <- as.data.frame(cbind(x = mixmdl$x, mixmdl$posterior))
 head(post.df, 10)  # Retrieve first 10 rows
 ```
-
-The x column indicates the value of the data while comp.1 and comp.2 refers to the posterior probability of belonging to either component respectively. If you look at the x value in the first row, `r post.df[1, "x"]`, you will see that it sits pretty close to the middle of the blue component (the mean of the blue component `r round(mixmdl$mu[2], 3)`). So it makes sense that the posterior of this data point belonging to this component should be high (`r round(post.df[1, "comp.2"], 5)` vs. `r round(post.df[1, "comp.1"], 5)`). And simiarly, the data that sits inbetween the two components will have posterior probabilities that are not strongly associated with either component:
-
-```{r, message = FALSE}
-post.df %>%
-	filter(x > 66, x < 68)
-```
-
-It's important to understand that no "labels" have been assigned here actually. Unlike k-means which assigns each data point to a cluster (defined as a "hard-label"), Mixture models provide what are called "soft-labels". The end-user decides on what "threshold" to use to assign data into the components. For instance, one could use 0.3 as posterior threshold to assign data to comp.1 and get the following label distribution.
-
-```{r}
-post.df %>%
-	mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
-	ggplot(aes(x = factor(label))) +
-	geom_bar() +
-	xlab("Component") +
-	ylab("Number of Data Points")
-```
-
-Or one could use 0.8 and get the following label distribution:
-
-```{r}
-post.df %>%
-	mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
-	ggplot(aes(x = factor(label))) +
-	geom_bar() +
-	xlab("Component") +
-	ylab("Number of Data Points")
-```
-
-## Under the Hood of a GMM
-
-If you are like me, then not knowing what is happening "under the hood" may bug you. What is actually happening when I run `normalmixEM`? Where are these posterior probabilites coming from? How does it fit the components? To understand all this, we need to first understand the mathematical representation of a GMM:
-
-$$ P(X|\mu,\sigma,\alpha) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k}^{2}) $$
-
-* X = Dataset of n elements (x~1~, ..., x~n~).
-* K = Number of components.
-* $\alpha_{k}$ = Mixing weight of the kth component. $\sum_{k=1}^{K}\alpha_{k} = 1$.
-* $\mathcal{N}(x|\mu_{k},\sigma_{k})$ Gaussian probability density function (pdf) of the kth component defined by the parameters $\mu_{k}$ and $\sigma_{k}$.
-* $\mu_{k}$ = Mean of the kth component.
-* $\sigma_{k}^{2}$ = Variance of the kth component.
-
-It looks complicated. but if we use our example from above then this breaksdown to:
 
 $$P(X) = `r round(mixmdl$lambda[1], 3)`\mathcal{N}(X|`r round(mixmdl$mu[1], 3)`, `r round(mixmdl$sigma[1], 3)`) + `r round(mixmdl$lambda[2], 3)`\mathcal{N}(X|`r round(mixmdl$mu[2], 3)`, `r round(mixmdl$sigma[2], 3)`)$$
 
@@ -186,7 +85,7 @@ All we've done here is substitute in the parameters of the mixture model.
 
 In case you were wondering what the $P(X|\mu,\sigma,\alpha)$ means, don't worry about that for now. We will explain exactly what this means later on in the post.
 
-### Calculating the Posterior Probabilities (i.e. Responsibilities)
+## Calculating the Posterior Probabilities (i.e. Responsibilities)
 
 If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
 
@@ -613,3 +512,4 @@ This post serves a soft introduction into how to implement your own mixture mode
 * [Mixture Models](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf)
 * [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
 * [What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)
+* [Using DiagrammeR for PGM](http://www.di.fc.ul.pt/~jpn/r/GraphicalTools/diagrammeR.html)
