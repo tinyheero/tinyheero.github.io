@@ -43,3 +43,9 @@ picard:
 mixmodels: 
     slug: mixmodels
     name: Mixture Models
+rmarkdown: 
+    slug: rmarkdown 
+    name: Rmarkdown
+mathjax: 
+    slug: mathjax
+    name: MathJax
