@@ -5,45 +5,89 @@ date: "August 25, 2015"
 output: 
   html_document:
     toc: true
+tags: [R, mixmodels, expectation_maximization]
 ---
 
-In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM) for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run `normalmixEM`? Where are these posterior probabilites coming from? How does it fit the components? To understand all this, it helps to represent the GMM using what is called a probablistic graphical model (PGM). 
+In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM), one type of mixure model, for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run the `normalmixEM` function?  How does it know where to "put" the components? 
+
+The way to think about this problem is to understand that this is a parameter estimation (i.e. model selection) problem. This will be becore more clear below:
 
 ```{r}
-library("DiagrammeR")
-grViz("
-  digraph dot {
-
-    graph [compound = true, nodesep = .5, ranksep = .25,
-           color = crimson,
-           /*, rankdir='LR', style=filled, fillcolor = blue*/
-          ]
-
-			subgraph cluster1 {
-				node [fixedsize = true]
-				mu [shape = square, label = '&mu;@_{k}'];
-				sigma [shape = square, label = '&sigma;@^{2}@_{k}'];
-				label = 'K';
-			}
-  }
-  ",
-engine = "dot")
-
+#Where are these posterior probabilites coming from?
 ```
 
-(Figure is from the [Wikipedia page on mixture models](https://en.wikipedia.org/wiki/Mixture_model)):
+## Parameter Estimation in the "Complete Data" Scenario
 
-<img src="https://upload.wikimedia.org/wikipedia/commons/e/ed/Nonbayesian-gaussian-mixture.svg", style="width: 300px;" alt = "Probabilistic Graphical Model of a Gaussian Mixture Model" />
+Let's start with the scenario where you are given the following 1-dimensional data with the colors representing the "source" they are from:
 
-This looks nasty if you've never seen a PGM before. But I attempt to walk through it the graphical model. First let's start with the top left box:
+```{r parameter_est_complete_data, dev = "png", message = FALSE}
+library("ggplot2")
+library("dplyr")
 
-Here the variable K = Number of Components. For a GMM, our components are gaussian distributions which are parameterized by the mean ($\mu$) and the variance $\sigma_{k}$. Therefore, the $\mu_{k}$ and $\sigma_{k}$ represent the mean and variance of the kth component respectively. So if we have a 2 component GMM, then you would actually have two of these boxes. 
+options(scipen = 999)
 
-* X = Dataset of n elements (x~1~, ..., x~n~). So x~i~ represents the ith element.
+comp1.vals <- data_frame(comp = "A", 
+												 vals = rnorm(50, mean = 1, sd = 0.5))
+comp2.vals <- data_frame(comp = "B", 
+												 vals = rnorm(50, mean = 1.5, sd = 0.5))
 
+vals.df <- bind_rows(comp1.vals, comp2.vals)
 
+vals.df %>%
+	ggplot(aes(x = vals, y = 0, color = factor(comp))) +
+	geom_point(alpha = 0.4) +
+	scale_color_discrete(name = "Source of Data")
+```
 
-we need to first understand the mathematical representation of a GMM:
+Let's say you believe the data source is actually a gaussian distribution. Then with these values and knowledge of their data source, how could you derive the parameters of the gaussian distribution that gave this data? 
+
+Remembering that the gaussian distribution is parameterized by two variables:
+
+* <span class="inlinecode">$\mu$</span>: Mean; Center of the mass
+* <span class="inlinecode">$\sigma^2$</span>: Variance; Spread of the mass
+
+Let's give this a try and see what values we get:
+
+```{r}
+vals.df %>%
+	group_by(comp) %>%
+	summarize(mean_vals = mean(vals),
+						sd_vals = sd(vals))
+```
+
+This is very close to the true parameters of the gaussian which were mean, standard deviation of (1, 0.5), (1.5, 0.5) for the respective gaussians (NOTE: the more data we sample, the closer we get to the true parameters).
+
+As it turns out, what've just done is called maximum likelihood estimation (MLE). In layman terms, what we've essentially done is estimate the parameters that most likely gave rise to the data we are observing. 
+
+## Parameter Estimation in the "Incomplete Data" Scenario
+
+Now let us consider the following scenario where you have the same data but you don't know the source now.
+
+```{r}
+# vals.df %>%
+# 	ggplot(aes(x = vals, y = 0)) +
+# 	geom_point() +
+# 	stat_function(fun = dnorm, args = list(comp1.vals, 0.5, 1))
+```
+
+Without the labels on the data indicating their source, we are hopeless in applying MLE. But if we somehow find a way to "complete" (i.e. find the labels for each data point), then we can go back to using maximum likelihood estimation. One way around this could be to:
+
+1. Set some initial parameter estimates on your gaussians.
+1. Assign (label) the data to one of the gaussians based on which one most likely generated the data.
+1. Treat the labels as being correct and then use MLE to re-estimate the parameters for the different gaussians.
+1. Repeat steps 2 and 3 until there is convergence.
+
+This iterative approach is the basis for something called the expectation maximization (EM) algorithm. The main difference is rather than assigning the data to one of the possible gaussians, EM considers the possibilities of the data belonging to all of the possible gaussians. This is analogous to the concept of "hard" and "soft" labeling that I mentioned in my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}). Working in a probablistic framework allows us to assign probabilities (weights) of data belonging to a gaussian so that we don't have to "commit" the data to any one gaussian. 
+
+The best way to remember what EM is used for is as follows:
+
+> The expectation maximization algorithm is a natural generalization of maximum likelihood estimation to the incomplete data case. -- Chuong B Do & Serafim Batzoglou. What is the expectation maximization algorithm? Nature Biotechnology. 2008.
+
+Now that we have these concepts in play, let's get down to actually figuring out how to fit our own GMM!
+
+## Mathematical Representation of a GMM
+
+If we want to fit our own GMM, we have to understand how to mathematically (it's not that bad) a GMM:
 
 $$ P(X|\mu,\sigma,\alpha) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k}^{2}) $$
 
@@ -53,13 +97,11 @@ $$ P(X|\mu,\sigma,\alpha) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{
 * $\mu_{k}$ = Mean of the kth component.
 * $\sigma_{k}^{2}$ = Variance of the kth component.
 
-It looks complicated. but if we use the example from the previous post then this breaksdown to:
-
-```{r, warning = FALSE, message = FALSE}
-library("dplyr")
+```{r, warning = FALSE, message = FALSE, echo = FALSE}
+#library("dplyr")
 library("mixtools")
-library("ggplot2")
-library("reshape2")
+#library("ggplot2")
+#library("reshape2")
 
 #' Plot a Mixture Component
 #' 
@@ -75,9 +117,10 @@ set.seed(1)
 wait <- faithful$waiting
 mixmdl <- normalmixEM(wait, k = 2)
 
-post.df <- as.data.frame(cbind(x = mixmdl$x, mixmdl$posterior))
-head(post.df, 10)  # Retrieve first 10 rows
+#post.df <- as.data.frame(cbind(x = mixmdl$x, mixmdl$posterior))
 ```
+
+It looks complicated. but if we use the example from the previous post then this breaksdown to:
 
 $$P(X) = `r round(mixmdl$lambda[1], 3)`\mathcal{N}(X|`r round(mixmdl$mu[1], 3)`, `r round(mixmdl$sigma[1], 3)`) + `r round(mixmdl$lambda[2], 3)`\mathcal{N}(X|`r round(mixmdl$mu[2], 3)`, `r round(mixmdl$sigma[2], 3)`)$$
 
@@ -85,7 +128,75 @@ All we've done here is substitute in the parameters of the mixture model.
 
 In case you were wondering what the $P(X|\mu,\sigma,\alpha)$ means, don't worry about that for now. We will explain exactly what this means later on in the post.
 
-## Calculating the Posterior Probabilities (i.e. Responsibilities)
+## Initializing a GMM
+
+When it comes to initialization of a GMM, we are asking the fundamental question of **what model parameters do we first assign?**. 
+
+For GMM, it's very common to first run k-means on your data to get some hard-labels on the data. With these hard-labels, we can use MLE to estimate the component parameters for our initialization (remember MLE works in the "Complete Data" scenario). Let's try that here:
+
+```{r}
+wait.kmeans <- kmeans(wait, 2)
+wait.kmeans.cluster <- wait.kmeans$cluster
+
+wait.df <- data_frame(x = wait, cluster = wait.kmeans.cluster)
+
+wait.df %>%
+	mutate(num = 1:n()) %>%
+	ggplot(aes(y = num, x = x, color = factor(cluster))) +
+	geom_point() +
+	ylab("Data Point Number") +
+	scale_color_discrete(name = "Cluster")
+```
+
+Since we specified 2 clusters, k-means nicely splits the data into clusters with means and standard deviation as follows:
+
+```{r}
+wait.summary.df <- wait.df %>%
+	group_by(cluster) %>%
+	summarize(mu = mean(x), std = sd(x), size = n())
+
+wait.summary.df %>%
+	dplyr::select(cluster, mu, std)
+```
+
+Because we have hard labels from k-means, then the equation:
+
+$$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})}{N}$$
+
+Applies as is. This means:
+
+```{r}
+wait.summary.df <- wait.summary.df %>%
+	mutate(alpha = size / sum(size))
+
+wait.summary.df %>%
+	dplyr::select(cluster, size, alpha)
+```
+
+Using this data, we can initialize our first GMM model with these parameters and calculate a loglikelihood:
+
+```{r}
+comp1.init.prod <- dnorm(x = wait, 
+                         mean = wait.summary.df[1, ][["mu"]],
+                         sd = wait.summary.df[1, ][["std"]]) * 
+                   wait.summary.df[1, ][["alpha"]]
+
+comp2.init.prod <- dnorm(x = wait, 
+                         mean = wait.summary.df[2, ][["mu"]],
+                         sd = wait.summary.df[2, ][["std"]]) *
+                   wait.summary.df[2, ][["alpha"]]
+
+sum.of.comps.init <- comp1.init.prod + comp2.init.prod
+sum.of.comps.init.ln <- log(sum.of.comps.init, base = exp(1))
+sum(sum.of.comps.init.ln)
+```
+
+Keep in mind that k-means is just one way of initializing a GMM. 
+
+## Calculating the Component Responsibilities of Each Data
+
+Now that we have the initial 
+Posterior Probabilities (i.e. Responsibilities)
 
 If you were given all the parameters of the mixture model (e.g. $\alpha_{1}$, ..., $\alpha_{k}$, $\mu_{1}$, ..., $\mu_{k}$, $\sigma_{1}$, ...$\sigma_{k}$), you would be able to ask the simple question:
 
@@ -283,71 +394,6 @@ Now that we have an idea of how to compare between different fits, we can get so
 
 These two issues are classified as initialization and convergence problems. Let's cover both of these in the new sections
 
-### Initializing a GMM
-
-When it comes to initialization of a GMM, we are asking the fundamental question of **what model parameters do we first assign?**. 
-
-For GMM, it's very common to first run k-means on your data to get some hard-labels on the data. With these hard-labels, we then use MLE to estimate the component parameters for our initialization. Let's try that here:
-
-```{r}
-wait.kmeans <- kmeans(wait, 2)
-wait.kmeans.cluster <- wait.kmeans$cluster
-
-wait.df <- data_frame(x = wait, cluster = wait.kmeans.cluster)
-
-wait.df %>%
-	mutate(num = 1:n()) %>%
-	ggplot(aes(y = num, x = x, color = factor(cluster))) +
-	geom_point() +
-	ylab("Data Point Number") +
-	scale_color_discrete(name = "Cluster")
-```
-
-Since we specified 2 clusters, k-means nicely splits the data into clusters with means and standard deviation as follows:
-
-```{r}
-wait.summary.df <- wait.df %>%
-	group_by(cluster) %>%
-	summarize(mu = mean(x), std = sd(x), size = n())
-
-wait.summary.df %>%
-	dplyr::select(cluster, mu, std)
-```
-
-Because we have hard labels from k-means, then the equation:
-
-$$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})}{N}$$
-
-Applies as is. This means:
-
-```{r}
-wait.summary.df <- wait.summary.df %>%
-	mutate(alpha = size / sum(size))
-
-wait.summary.df %>%
-	dplyr::select(cluster, size, alpha)
-```
-
-Using this data, we can initialize our first GMM model with these parameters and calculate a loglikelihood:
-
-```{r}
-comp1.init.prod <- dnorm(x = wait, 
-                         mean = wait.summary.df[1, ][["mu"]],
-                         sd = wait.summary.df[1, ][["std"]]) * 
-                   wait.summary.df[1, ][["alpha"]]
-
-comp2.init.prod <- dnorm(x = wait, 
-                         mean = wait.summary.df[2, ][["mu"]],
-                         sd = wait.summary.df[2, ][["std"]]) *
-                   wait.summary.df[2, ][["alpha"]]
-
-sum.of.comps.init <- comp1.init.prod + comp2.init.prod
-sum.of.comps.init.ln <- log(sum.of.comps.init, base = exp(1))
-sum(sum.of.comps.init.ln)
-```
-
-Keep in mind that k-means is just one way of initializing a GMM. 
-
 ## Convergence of GMM using the Expectation Maximization Algorithm
 
 We now know how we can initialize a GMM and calculate the loglikelihood of it. So the question is how do we go from this initialization to a final "optimal model"? We can employ a technique called the Expectation Maximization (EM) algorithm to help us. This sounds like a big term and potentially confusing, but really all it is a parameter estimation method but extending to situations where we have uncertainity in some of the data.
@@ -511,5 +557,5 @@ This post serves a soft introduction into how to implement your own mixture mode
 
 * [Mixture Models](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf)
 * [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
-* [What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)
+* [Nature Computational Biology Primer - What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)
 * [Using DiagrammeR for PGM](http://www.di.fc.ul.pt/~jpn/r/GraphicalTools/diagrammeR.html)
