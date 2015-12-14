@@ -33,3 +33,9 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Linear Discriminant Analysis (LDA)
         + Support Vector Machines (SVM)
 1. Unsupervised Learning
+
+### References
+
+* [An Introduction to Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/download.html)
+
+
