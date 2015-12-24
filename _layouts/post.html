@@ -4,7 +4,7 @@ layout: default
 
 {% assign post = page %}
 {% if post.tags.size > 0 %}
-    {% capture tags_content %}Tagged With{% if post.tags.size == 1 %}<i class="fa fa-tag"></i>{% else %}<i class="fa fa-tags"></i>{% endif %}: {% endcapture %}
+    {% capture tags_content %}{% if post.tags.size == 1 %}<i class="fa fa-tag"></i>{% else %}<i class="fa fa-tags"></i>{% endif %}: {% endcapture %}
     {% for post_tag in post.tags %}
       {% assign tag = site.data.tags[post_tag] %}
       {% if tag %}
