@@ -10,18 +10,20 @@ tags: [R, mixmodels, EM]
 
 ```{r echo = FALSE}
 library("knitr")
-knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-implement/")
+knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
 ```
 
 In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM), one type of mixure model, for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run the `normalmixEM` function from mixtools?  How does it know where to "put" the components?  In this post, I will cover how we can implement your own GMM in R. 
 
 First, we have to undestand The way to think about this problem is to understand that this is a parameter estimation (i.e. model selection) problem. We will first start this post by discussing a bit about parameter estimation and specifically in the context of two scenarios: Complete and Incomplete Data.
 
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
 ## Parameter Estimation in the "Complete Data" Scenario
 
 Let's start with the scenario where you are given the following 1-dimensional data with the colors representing the "source" they are from:
 
-```{r parameter_est_complete_data, dev = "svg", message = FALSE}
+```{r parameter_est_complete_data, dev = "svg", message = FALSE, fig.height = 2}
 library("ggplot2")
 library("dplyr")
 library("reshape2")
@@ -36,10 +38,14 @@ comp2.vals <- data_frame(comp = "B",
 vals.df <- bind_rows(comp1.vals, comp2.vals)
 
 vals.df %>%
-  ggplot(aes(x = vals, y = 0, color = factor(comp))) +
+  ggplot(aes(x = vals, y = "A", color = factor(comp))) +
   geom_point(alpha = 0.4) +
   scale_color_discrete(name = "Source of Data") +
-	xlab("Values")
+  xlab("Values") +
+  theme(axis.ticks.y = element_blank(),
+				axis.text.y = element_blank(),
+				axis.title.y = element_blank(),
+				legend.position = "top")
 ```
 
 Let's say you believe that the data sources are actually a gaussian distribution. Then with these values and knowledge of their data source, how could you estimate the parameters of the gaussian distributions (<span class="inlinecode">$\mathcal{N}(X|\mu,\sigma$</span>)? In other words, what parameters most likely gave rise to the data we are observing. 
@@ -64,11 +70,14 @@ This is very close to the true parameters of the gaussian which were mean and st
 
 Now let us consider the following scenario where you have the same data but you don't know the source now.
 
-```{r parameter_est_incomplete_data, dev = "svg", message = FALSE}
+```{r parameter_est_incomplete_data, dev = "svg", message = FALSE, fig.height = 2}
 vals.df %>%
   ggplot(aes(x = vals, y = 0)) +
   geom_point(alpha = 0.4) +
-	xlab("Values")
+	xlab("Values") +
+  theme(axis.ticks.y = element_blank(),
+				axis.text.y = element_blank(),
+				axis.title.y = element_blank())
 ```
 
 Without the labels on the data (often called latent variables) indicating their source, we are hopeless in applying MLE. But if we somehow find a way to "complete" the data (i.e. find the labels for each data point), then we can go back to using MLE. One way around this could be to:
@@ -124,7 +133,7 @@ When it comes to initialization of a GMM, we are asking the fundamental question
 
 Where <span class="inlinecode">$N_{k}$</span> indicates the number of data points in the kth component. Let's try that here:
 
-```{r kmeans_init, dev = "svg"}
+```{r kmeans_init, dev = "svg", fig.height = 4}
 wait <- faithful$waiting
 
 wait.kmeans <- kmeans(wait, 2)
@@ -136,6 +145,7 @@ wait.df %>%
   mutate(num = row_number()) %>%
   ggplot(aes(y = num, x = x, color = factor(cluster))) +
   geom_point() +
+  ylab("Values") +
   ylab("Data Point Number") +
   scale_color_discrete(name = "Cluster")
 ```
@@ -348,7 +358,7 @@ for (i in 1:50) {
   } else {
     # Repeat E and M steps till convergence
     e.step <- e_step(wait, m.step[["mu"]], sqrt(m.step[["var"]]), 
-										 m.step[["alpha"]])
+                     m.step[["alpha"]])
     m.step <- m_step(wait, e.step[["posterior.df"]])
     loglik.vector <- c(loglik.vector, e.step[["loglik"]])
 
@@ -390,13 +400,14 @@ data.frame(x = wait) %>%
                  fill = "white") +
   stat_function(geom = "line", fun = plot_mix_comps,
                 arg = list(m.step$mu[1], sqrt(m.step$var[1]), 
-													 lam = m.step$alpha[1]),
+                           lam = m.step$alpha[1]),
                 colour = "red", lwd = 1.5) +
   stat_function(geom = "line", fun = plot_mix_comps,
                 arg = list(m.step$mu[2], sqrt(m.step$var[2]), 
-													 lam = m.step$alpha[2]),
+                           lam = m.step$alpha[2]),
                 colour = "blue", lwd = 1.5) +
-  ylab("Density")
+  ylab("Density") +
+  xlab("Values")
 ```
 
 ## Summary
