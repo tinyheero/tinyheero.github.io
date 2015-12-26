@@ -1,12 +1,18 @@
 ---
 title: "Implementating Your Own Mixture Model in R"
 author: "Fong Chun Chan"
-date: "August 25, 2015"
+date: "December 26, 2015"
+layout: post
 output: 
   html_document:
     toc: true
-tags: [R, mixmodels, expectation_maximization]
+tags: [R, mixmodels, EM]
 ---
+
+```{r echo = FALSE}
+library("knitr")
+knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-implement/")
+```
 
 In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM), one type of mixure model, for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run the `normalmixEM` function from mixtools?  How does it know where to "put" the components?  In this post, I will cover how we can implement your own GMM in R. 
 
@@ -16,7 +22,7 @@ First, we have to undestand The way to think about this problem is to understand
 
 Let's start with the scenario where you are given the following 1-dimensional data with the colors representing the "source" they are from:
 
-```{r parameter_est_complete_data, dev = "png", message = FALSE}
+```{r parameter_est_complete_data, dev = "svg", message = FALSE}
 library("ggplot2")
 library("dplyr")
 library("reshape2")
@@ -36,12 +42,12 @@ vals.df %>%
   scale_color_discrete(name = "Source of Data")
 ```
 
-Let's say you believe that the data sources are actually a gaussian distribution. Then with these values and knowledge of their data source, how could you estimate the parameters of the gaussian distributions $\mathcal{N}(X|\mu,\sigma$)? In other words, what parameters most likely gave rise to the data we are observing. 
+Let's say you believe that the data sources are actually a gaussian distribution. Then with these values and knowledge of their data source, how could you estimate the parameters of the gaussian distributions (<span class="inlinecode">$\mathcal{N}(X|\mu,\sigma$</span>)? In other words, what parameters most likely gave rise to the data we are observing. 
 
-We can use [maximum likelihood estimation](https://en.wikipedia.org/wiki/Normal_distribution#Estimation_of_parameters) to estimate the mean and variance:
+We can use [maximum likelihood estimation](https://en.wikipedia.org/wiki/Normal_distribution#Estimation_of_parameters) (MLE) to estimate the mean and standard deviation:
 
-* $\mu_{k} = \frac{\sum_{i}^{N_{k}}x_{i,k}}{N_{k}}$
-* $\sigma_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$
+* <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N_{k}}x_{i,k}}{N_{k}}$</span>
+* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$</span>
 
 Let's give this a try and see what values we get:
 
@@ -58,7 +64,7 @@ This is very close to the true parameters of the gaussian which were mean and st
 
 Now let us consider the following scenario where you have the same data but you don't know the source now.
 
-```{r}
+```{r parameter_est_incomplete_data, dev = "svg", message = FALSE}
 vals.df %>%
   ggplot(aes(x = vals, y = 0)) +
   geom_point(alpha = 0.4)
@@ -89,17 +95,21 @@ The EM algorithm consists of 3 major steps:
 
 Steps 2 and 3 are repeated until convergence. We will cover each of these steps and how convergence is reached below. But first we must understand how to mathematically represent a GMM:
 
-$$ P(X|\mu,\sigma,\alpha) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k}^{2}) $$
+<div>
+$$P(X|\mu,\sigma,\alpha) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(X|\mu_{k},\sigma_{k}^{2})$$
+</div>
 
 * X = Dataset of n elements (x~1~, ..., x~n~).
-* $\alpha_{k}$ = Mixing weight of the kth component. $\sum_{k=1}^{K}\alpha_{k} = 1$.
-* $\mathcal{N}(x|\mu_{k},\sigma_{k})$ Gaussian probability density function (pdf) of the kth component defined by the parameters $\mu_{k}$ and $\sigma_{k}$.
-* $\mu_{k}$ = Mean of the kth component.
-* $\sigma_{k}^{2}$ = Variance of the kth component.
+* <span class="inlinecode">$\alpha_{k}$</span> = Mixing weight of the kth component. <span class="inlinecode">$\sum_{k=1}^{K}\alpha_{k} = 1$</span>.
+* <span class="inlinecode">$\mathcal{N}(x|\mu_{k},\sigma_{k})$</span> [Gaussian probability density function (pdf)](https://en.wikipedia.org/wiki/Normal_distribution) of the kth component defined by the parameters <span class="inlinecode">$\mu_{k}$</span> and <span class="inlinecode">$\sigma_{k}$</span>.
+* <span class="inlinecode">$\mu_{k}$</span> = Mean of the kth component.
+* <span class="inlinecode">$\sigma_{k}^{2}$</span> = Variance of the kth component.
 
 So for a two component GMM, we would mathematically represent this as:
 
+<div>
 $$P(X|\mu,\sigma,\alpha) = \alpha_1\mathcal{N}(X|\mu_{1},\sigma_{1}^{2}) + \alpha_2\mathcal{N}(X|\mu_{2},\sigma_{2}^{2})$$
+</div>
 
 In case you were wondering what the $P(X|\mu,\sigma,\alpha)$ means, don't worry about that for now. We will explain exactly what this means later on in the post.
 
@@ -113,7 +123,7 @@ When it comes to initialization of a GMM, we are asking the fundamental question
 
 Where $N_{k}$ indicates the number of data points in the kth component. Let's try that here:
 
-```{r}
+```{r kmeans_init, dev = "svg"}
 wait <- faithful$waiting
 
 wait.kmeans <- kmeans(wait, 2)
@@ -122,14 +132,14 @@ wait.kmeans.cluster <- wait.kmeans$cluster
 wait.df <- data_frame(x = wait, cluster = wait.kmeans.cluster)
 
 wait.df %>%
-  mutate(num = 1:n()) %>%
+  mutate(num = row_number()) %>%
   ggplot(aes(y = num, x = x, color = factor(cluster))) +
   geom_point() +
   ylab("Data Point Number") +
   scale_color_discrete(name = "Cluster")
 ```
 
-Since we specified 2 clusters, k-means nicely splits the data into clusters with means and standard deviation as follows:
+Since we specified 2 clusters, k-means nicely splits the data into 2 clusters with means and standard deviation as follows:
 
 ```{r}
 wait.summary.df <- wait.df %>%
@@ -140,7 +150,7 @@ wait.summary.df %>%
 	select(cluster, mu, std)
 ```
 
-We can also generate the initial alpha values as follows:
+We can also generate the initial mixing weights as follows:
 
 ```{r}
 wait.summary.df <- wait.summary.df %>%
@@ -160,11 +170,11 @@ $$P(x_{i} \in k_{j} | x_{i}) = \frac{P(x_{i} | x_{i} \in k_{j})P(k_{j})}{P(x_{i}
 
 The parts of this equation are related to the GMM equation above as follows:
 
-* $P(x_{i} | x_{i} \in k_{j})$ = $\mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}})$ (Likelihood)
-* $P(k_{j})$ = $\alpha_{k_{j}}$ (Prior)
-* $P(x_{i}) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{i}|\mu_{k},\sigma_{k})$ (Marginal Probability)
+* $P(x_{i} | x_{i} \in k_{j})$ = $\mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}})$
+* $P(k_{j})$ = $\alpha_{k_{j}}$
+* $P(x_{i}) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{i}|\mu_{k},\sigma_{k})$
 
-What we are interested in is $P(x_{i} \in k_{j} | x_{i})$ which is called the posterior probability. Knowing these equations, we can easily calculate this. For instance, what is the posterior of x = 66 belong to the first component? We can first calculate the top part of the equation like this in R:
+What we are interested in is $P(x_{i} \in k_{j} | x_{i})$ which is called the posterior probability. Knowing these equations, we can easily calculate this. For instance, what is the posterior probability of x = 66 belong to the first component? We can first calculate the top part of the equation like this in R:
 
 ```{r}
 comp1.prod <- 
@@ -247,7 +257,7 @@ This called the likelihood (see this [post for a good explanation on what a like
 
 $$ \ln P(X|\mu,\sigma,\alpha) = \sum_{n=1}^{N}\ln \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{n}|\mu_{k},\sigma_{k}^{2}) $$
 
-The reason why we do this is because if we simply calculate the likelihood we would end up dealing with very small values which can be problematic. So we take the natural logarithm of the likelihood to circumvent this. What we do is the take the natural log of the sum of the components. Then we sum up all these natural logs. 
+The reason why we do this is because if we simply calculate the likelihood we would end up dealing with very small values which can be problematic. So we take the natural logarithm of the likelihood to circumvent this. 
 
 > The larger the log likelihood = Better the model parameters fit the data
 
@@ -260,7 +270,7 @@ sum.of.comps.ln <- log(sum.of.comps, base = exp(1))
 sum(sum.of.comps.ln)
 ```
 
-So to test for convergency, we can calculate the log likelihood at the end of each EM step (i.e. model fit with these parameters) and then test whether it has changed "significantly" from the last EM step. If it has, then we repeat another step of EM. If not, then we consider that EM has converged and then these are our final parameters.
+So to test for convergency, we can calculate the log likelihood at the end of each EM step (i.e. model fit with these parameters) and then test whether it has changed "significantly" (defined by the user) from the last EM step. If it has, then we repeat another step of EM. If not, then we consider that EM has converged and then these are our final parameters.
 
 ### Putting it All Together
 
@@ -269,8 +279,8 @@ Now that we have all these pieces of information together, let's put it altogeth
 ```{r}
 #' Expectation Step of the EM Algorithm
 #'
-#' Calculate the soft labels (posterior probabilities) that each component
-#' has to each data point
+#' Calculate the posterior probabilities (soft labels) that each component
+#' has to each data point.
 #'
 #' @param sd.vector Vector containing the standard deviations of each component
 #' @param sd.vector Vector containing the mean of each component
@@ -355,7 +365,7 @@ m.step
 
 Which produces the following mixture model:
 
-```{r}
+```{r final_gmm, dev = "svg"}
 #' Plot a Mixture Component
 #' 
 #' @param x Input Data
@@ -381,7 +391,7 @@ data.frame(x = wait) %>%
 
 ## Summary
 
-In this post, I have demonstrated how to implement your own mixture model where each component is a gaussian. The logic can easily be extended to other types of mixture models by simply substituting the components for appropriate statistical distribution needed. We used the well known expectation maximization algorithm to allow us to use maximum likelihood estimation in the incomplete data scenario. 
+In this post, I have demonstrated how to implement your own mixture model where each component is a gaussian. The logic can easily be extended to other types of mixture models by simply substituting the components for the appropriate statistical distribution needed. We used the well known expectation maximization algorithm to allow us to use maximum likelihood estimation in the incomplete data scenario. 
 
 I hope this post gives you some insight into the inner workings of how to fit a gaussian mixture model!
 
