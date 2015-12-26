@@ -15,7 +15,9 @@ knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
 
 In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM), one type of mixure model, for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run the `normalmixEM` function from mixtools?  How does it know where to "put" the components?  In this post, I will cover how we can implement your own GMM in R. 
 
-First, we have to undestand The way to think about this problem is to understand that this is a parameter estimation (i.e. model selection) problem. We will first start this post by discussing a bit about parameter estimation and specifically in the context of two scenarios: Complete and Incomplete Data.
+First, we have to undestand The way to think about this problem is to understand that this is a parameter estimation (i.e. model selection) problem. We will first start this post by discussing a bit about parameter estimation. Then we will introduce the expectation-maximization (EM) algorithm and how it can be used in parameter estimation. Then we will walk through how to implement the EM algorithm. 
+
+**Table of Contents**
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
 
