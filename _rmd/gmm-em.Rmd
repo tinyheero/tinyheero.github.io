@@ -1,6 +1,6 @@
 ---
 title: "Fitting a Mixture Model Using the Expectation-Maximization Algorithm in R"
-date: "December 26, 2015"
+date: "January 3rd, 2016"
 layout: post
 output: 
   html_document:
