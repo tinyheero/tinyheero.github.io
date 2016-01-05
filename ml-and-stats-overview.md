@@ -39,9 +39,10 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Linear Discriminant Analysis (LDA)
         + Support Vector Machines (SVM)
 1. Unsupervised Learning
+    * Cluster Analysis
+        + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
 
 ### References
 
-* [An Introduction to Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/download.html)
-
-
+* [Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
+* [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
