@@ -37,6 +37,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
     * Classification
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
+            - Naive Bayes Classifier
         + Support Vector Machines (SVM)
 1. Unsupervised Learning
     * Cluster Analysis
