@@ -8,7 +8,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 > This page is very much a work-in-progress
 
-# Statistics
+## Statistics
 
 1. Probabilities
 	* Probability Distribution
@@ -25,7 +25,11 @@ Being a somewhat structured person, it's important for me to see how topics rela
 	* Classical Frequentist vs. Bayesian 
 	* Bayes' Rule
 
-# Machine Learning
+### References
+
+* [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
+
+## Machine Learning
 
 1. Supervised Learning
     * Regression
@@ -35,3 +39,9 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Linear Discriminant Analysis (LDA)
         + Support Vector Machines (SVM)
 1. Unsupervised Learning
+
+### References
+
+* [An Introduction to Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/download.html)
+
+

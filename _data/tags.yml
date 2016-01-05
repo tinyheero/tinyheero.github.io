@@ -49,3 +49,6 @@ rmarkdown:
 mathjax: 
     slug: mathjax
     name: MathJax
+EM: 
+    slug: EM
+    name: Expectation-Maximization

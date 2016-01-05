@@ -112,7 +112,7 @@ The key is the `normalmixEM` function which builds a 2-component GMM (`k = 2` in
 mixmdl$mu
 ```
 
-With respectively variances of:
+With respectively standard deviations of:
 
 ```{r}
 mixmdl$sigma

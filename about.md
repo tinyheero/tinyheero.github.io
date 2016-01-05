@@ -14,3 +14,11 @@ I have a passion for applying statistical and machine learning approaches to big
 1. I have expertise in dealing with big data in the R programming language (e.g. data.table, tidyr, dplyr) and a thorough understanding of the core principles around R
 1. I have extensive experience in doing reproducible research through interactive applications and D3 web reporting (e.g. Rmarkdown, knitr, pandoc, git, shiny)
 1. I have expertise in developing/managing big data processing pipelines through the Make engine with experience in using ruffus, bpipe, snakemake, and nextflow. 
+
+## Software
+
+### cofeatureR
+
+An R package for generating cofeature (feature by sample) matrices. The package utilizies ggplot2::geom_tile to generate the matrix allowing for easy additions from the base matrix.
+
+<a href="https://github.com/tinyheero/cofeatureR"><i class="fa fa-github fa-lg"></i></a>, [CRAN](https://cran.rstudio.com/web/packages/cofeatureR/)
