@@ -15,6 +15,12 @@ Being a somewhat structured person, it's important for me to see how topics rela
 	* Joint Probability
 	* Marginal Probability
 	* Conditional Probability
+1. Probabiity Distributions
+  * Continuous
+    + Gaussian (Normal) Distribution
+  * Discrete
+    + Binomial Distribution
+      * Bernoulli Distribution (n = 1)
 1. Bayesian Statistics
 	* Classical Frequentist vs. Bayesian 
 	* Bayes' Rule
