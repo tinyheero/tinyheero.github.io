@@ -21,7 +21,7 @@ if (interactive()){
 filename <- arguments$filename
 
 # Check that it's a .Rmd file.
-if(!grepl(".Rmd", filename)) {
+if (!grepl(".Rmd", filename)) {
   stop("You must specify a .Rmd file.")
 }
 
@@ -30,7 +30,7 @@ dir <- paste0("../_posts/", Sys.Date(), "-")
 output <- paste0(dir, sub(".Rmd", ".md", filename))
 knit(filename, output)
 
-# Copy .png files to the images directory.
+# Copy image files to the images directory.
 if (!is.null(arguments$imgdir)) {
   fromdir <- paste0("{{ site.url }}/assets/", arguments$imgdir, "/")
   todir <- paste0("../assets/", arguments$imgdir, "/")
