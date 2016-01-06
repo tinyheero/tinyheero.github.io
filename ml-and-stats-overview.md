@@ -32,7 +32,11 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
         + Support Vector Machines (SVM)
+        + Random Forest
 1. Unsupervised Learning
+    * K-means
+    * Principle Component Analysis (PCA)
+    * DBSCAN
 
 ### References
 
