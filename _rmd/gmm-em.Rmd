@@ -45,9 +45,9 @@ vals.df %>%
   scale_color_discrete(name = "Source of Data") +
   xlab("Values") +
   theme(axis.ticks.y = element_blank(),
-				axis.text.y = element_blank(),
-				axis.title.y = element_blank(),
-				legend.position = "top")
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "top")
 ```
 
 Let's say you believe that the data sources are actually a gaussian distribution. Then with these values and knowledge of their data source, how could you estimate the parameters of the gaussian distributions (<span class="inlinecode">$\mathcal{N}(X|\mu,\sigma$</span>)? In other words, what parameters most likely gave rise to the data we are observing. 
@@ -76,10 +76,10 @@ Now let us consider the following scenario where you have the same data but you 
 vals.df %>%
   ggplot(aes(x = vals, y = 0)) +
   geom_point(alpha = 0.4) +
-	xlab("Values") +
+  xlab("Values") +
   theme(axis.ticks.y = element_blank(),
-				axis.text.y = element_blank(),
-				axis.title.y = element_blank())
+        axis.text.y = element_blank(),
+        axis.title.y = element_blank())
 ```
 
 Without the labels on the data (often called latent variables) indicating their source, we are hopeless in applying MLE. But if we somehow find a way to "complete" the data (i.e. find the labels for each data point), then we can go back to using MLE. One way around this could be to:
@@ -156,21 +156,21 @@ Since we specified 2 clusters, k-means nicely splits the data into 2 clusters wi
 
 ```{r}
 wait.summary.df <- wait.df %>%
-	group_by(cluster) %>%
-	summarize(mu = mean(x), std = sd(x), size = n())
+  group_by(cluster) %>%
+  summarize(mu = mean(x), std = sd(x), size = n())
 
 wait.summary.df %>%
-	select(cluster, mu, std)
+  select(cluster, mu, std)
 ```
 
 We can also generate the initial mixing weights as follows:
 
 ```{r}
 wait.summary.df <- wait.summary.df %>%
-	mutate(alpha = size / sum(size))
+  mutate(alpha = size / sum(size))
 
 wait.summary.df %>%
-	select(cluster, size, alpha)
+  select(cluster, size, alpha)
 ```
 
 ### Expectation: Calculating the "Soft Labels" of Each Data Point (E-step)
@@ -420,6 +420,7 @@ I hope this post gives you some insight into the inner workings of how to fit a 
 
 ## References
 
+* [Youtube Videos on Mixture Models](https://www.youtube.com/playlist?list=PLBv09BD7ez_4e9LtmK626Evn1ion6ynrt)
 * [Mixture Models](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf)
 * [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
 * [Nature Computational Biology Primer - What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)

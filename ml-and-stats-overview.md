@@ -15,6 +15,12 @@ Being a somewhat structured person, it's important for me to see how topics rela
 	* Joint Probability
 	* Marginal Probability
 	* Conditional Probability
+1. Probabiity Distributions
+  * Continuous
+    + Gaussian (Normal) Distribution
+  * Discrete
+    + Binomial Distribution
+      * Bernoulli Distribution (n = 1)
 1. Bayesian Statistics
 	* Classical Frequentist vs. Bayesian 
 	* Bayes' Rule
@@ -31,15 +37,17 @@ Being a somewhat structured person, it's important for me to see how topics rela
     * Classification
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
+            - Naive Bayes Classifier
         + Support Vector Machines (SVM)
         + Random Forest
 1. Unsupervised Learning
     * K-means
     * Principle Component Analysis (PCA)
     * DBSCAN
+    * Cluster Analysis
+        + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
 
 ### References
 
-* [An Introduction to Statistical Learning](http://www-stat.stanford.edu/~tibs/ElemStatLearn/download.html)
-
-
+* [Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
+* [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
