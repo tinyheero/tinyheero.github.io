@@ -1,10 +1,24 @@
 #!/usr/bin/env Rscript
+library("argparse")
 library("knitr")
 
-# Get the filename given as an argument in the shell.
-args <- commandArgs(TRUE)
-filename <- args[1]
-imgdir <- args[2]
+parser <- ArgumentParser(description = "Convert Rmarkdown to Jekyll Markdown")
+
+parser$add_argument("--imgdir", nargs = 1, type = "character", 
+                    help = "Set the directory name that stores the images.")
+
+parser$add_argument("filename", nargs = 1, type = "character", 
+                    help = "Rmarkdown filename")
+
+if (interactive()){
+	opt <- c("--imgdir", "gmm-em")
+  filename <- "gmm-em.Rmd"
+	arguments <- parser$parse_args(c(filename, opt))
+} else {
+  arguments <- parser$parse_args()
+}
+
+filename <- arguments$filename
 
 # Check that it's a .Rmd file.
 if(!grepl(".Rmd", filename)) {
@@ -12,16 +26,21 @@ if(!grepl(".Rmd", filename)) {
 }
 
 # Knit and place in _posts.
-dir = paste0("../_posts/", Sys.Date(), "-")
-output = paste0(dir, sub(".Rmd", ".md", filename))
+dir <- paste0("../_posts/", Sys.Date(), "-")
+output <- paste0(dir, sub(".Rmd", ".md", filename))
 knit(filename, output)
 
 # Copy .png files to the images directory.
-fromdir <- paste0("{{ site.url }}/assets/", imgdir, "/")
-todir <- paste0("../assets/", imgdir, "/")
+if (!is.null(arguments$imgdir)) {
+  fromdir <- paste0("{{ site.url }}/assets/", arguments$imgdir, "/")
+  todir <- paste0("../assets/", arguments$imgdir, "/")
+} else {
+  fromdir <- paste0("{{ site.url }}/assets/")
+  todir <- paste0("../assets/", imgdir)
+}
 
-pics = list.files(fromdir)
-pics = sapply(pics, function(x) paste(fromdir, x, sep="/"))
+pics <- list.files(fromdir)
+pics <- sapply(pics, function(x) paste(fromdir, x, sep="/"))
 file.copy(pics, todir, overwrite = TRUE)
 
 #unlink("{{ site.url }}", recursive = TRUE)
