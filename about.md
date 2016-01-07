@@ -21,11 +21,21 @@ I have a passion for applying statistical and machine learning approaches to big
   <div class="list-group-item">
     <h4 class="list-group-item-heading">cofeatureR</h4>
     <p class="list-group-item-text">An R package for generating cofeature (feature by sample) matrices. The package utilizies ggplot2::geom_tile to generate the matrix allowing for easy additions from the base matrix.</p>
-    <br />
-
-    <a href="https://github.com/tinyheero/cofeatureR"><i class="fa fa-github fa-lg"></i></a>, <a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a>
+		<br />
+		<ul class="list-inline">
+		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
+			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
+		</u>
   </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">CHL26predictor</h4>
+		<p class="list-group-item-text">An R Package for the Classical Hodgkin Lymphoma (CHL) 26 Gene Overall Survival Predictor. This is the companion R package for the predictor that has been published.</p>
+		<br />
+		<ul class="list-inline">
+		  <li><i class="fa fa-github fa-lg"></i> <a href=="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
+		</ul>
 </div>
+
 
 ### Selected Publications 
 
