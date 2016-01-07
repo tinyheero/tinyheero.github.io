@@ -17,8 +17,12 @@ I have a passion for applying statistical and machine learning approaches to big
 
 ## Software
 
-### cofeatureR
+<div class="list-group">
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">cofeatureR</h4>
+    <p class="list-group-item-text">An R package for generating cofeature (feature by sample) matrices. The package utilizies ggplot2::geom_tile to generate the matrix allowing for easy additions from the base matrix.</p>
+    <br />
 
-An R package for generating cofeature (feature by sample) matrices. The package utilizies ggplot2::geom_tile to generate the matrix allowing for easy additions from the base matrix.
-
-<a href="https://github.com/tinyheero/cofeatureR"><i class="fa fa-github fa-lg"></i></a>, [CRAN](https://cran.rstudio.com/web/packages/cofeatureR/)
+    <a href="https://github.com/tinyheero/cofeatureR"><i class="fa fa-github fa-lg"></i></a>, <a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a>
+  </div>
+</div>
