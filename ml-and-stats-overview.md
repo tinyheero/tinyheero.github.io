@@ -6,24 +6,29 @@ permalink: /ml-and-stats-overview/
 
 Being a somewhat structured person, it's important for me to see how topics relate to each other. With machine learning and statistics being such expansive topics, I struggled (and still do) to understand how all the different methods related to each other. This page is my attempt to structure the various topics/methods of machine learning and statistics. My ultimate goal will be to have a post on each of these topics.
 
-> This page is very much a work-in-progress
+<div class="alert alert-dismissible alert-warning">
+  <h4>Warning!</h4>
+  <p>This page is very much a work-in-progress</p>
+</div>
 
 ## Statistics
 
 1. Probabilities
-	* Probability Distribution
-	* Joint Probability
-	* Marginal Probability
-	* Conditional Probability
+    * Probability Distribution
+    * Joint Probability
+    * Marginal Probability
+    * Conditional Probability
 1. Probabiity Distributions
-  * Continuous
-    + Gaussian (Normal) Distribution
-  * Discrete
-    + Binomial Distribution
-      * Bernoulli Distribution (n = 1)
+    * Continuous
+        + Gaussian (Normal) Distribution
+        + Dirichlet Distribution
+    * Discrete
+        + Binomial Distribution
+            - Bernoulli Distribution
+        + Multinomial Distribution
 1. Bayesian Statistics
-	* Classical Frequentist vs. Bayesian 
-	* Bayes' Rule
+    * Classical Frequentist vs. Bayesian 
+    * Bayes' Rule
 
 ### References
 
@@ -41,11 +46,12 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Support Vector Machines (SVM)
         + Random Forest
 1. Unsupervised Learning
-    * K-means
     * Principle Component Analysis (PCA)
     * DBSCAN
     * Cluster Analysis
+        + K-means
         + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
+        + Latent Dirichlet Allocation (LDA)
 
 ### References
 

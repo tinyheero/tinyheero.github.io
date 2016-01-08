@@ -1,0 +1,25 @@
+---
+title: "Dirichlet Distribution"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document:
+    toc: true
+---
+
+## What is te Dirichlet Distribution?
+
+* Dirichlet distribution is a probability distribution on probability distributions
+* A variable, $\theta$, that is dirichlet distributed is represented as $\theta \sim Dir(\alpha)$
+
+## Probability Density Function
+	
+$$p(\theta) = \frac{1}{\beta(\alpha)}\prod_{i=1}^{n}\theta_{i}^{\alpha_{i-1}}I(\theta \in S)$$
+
+* $\beta$: Beta function
+* $\theta = (\theta_{1}, ..., \theta_{n})$. Set of n-dimensional vectors.
+* $\alpha = (\alpha_{1}, ..., \alpha_{n}), \alpha_{i} > 0$.
+
+## References
+
+* [(ML 7.7.A1) Dirichlet distribution](https://www.youtube.com/watch?v=nfBNOWv1pgE)
