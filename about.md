@@ -46,13 +46,13 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
 </div>
 
-
-### Selected Publications 
+<h3>Selected Publications <small><a href="https://scholar.google.co.in/citations?user=BbZVuYMAAAAJ&hl=en&oi=ao" target="_new">[Google Scholar]</a></small>
+</h3>
 
 <div class="list-group">
   <div class="list-group-item">
     <h4 class="list-group-item-heading">An RCOR1 loss-associated gene expression signature identifies a prognostically significant DLBCL subgroup</h4>
-    <div>Fong Chun Chan, Adele Telenius, Shannon Healy, Susana Ben-Neriah, <i>et al.</i> 2015. Blood.</div>
+    <div>Fong Chun Chan, Adele Telenius, Shannon Healy, Susana Ben-Neriah, <i>et al.</i> 2015. <a href="http://www.bloodjournal.org/">Blood</a>.</div>
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/25395426"><span class="label label-success">PubMed</span></a></li>
@@ -61,7 +61,7 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Recurrent somatic mutations of PTPN1 in primary mediastinal B cell lymphoma and Hodgkin lymphoma</h4>
-    <div>Jay Gunawardana, Fong Chun Chan, Adele Telenius, Bruce Woolcock, <i>et al.</i> 2014. Nature Genetics.</div>
+    <div>Jay Gunawardana, Fong Chun Chan, Adele Telenius, Bruce Woolcock, <i>et al.</i> 2014. <a href="http://www.nature.com/ng/index.html">Nature Genetics</a>.</div>
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/24531327"><span class="label label-success">PubMed</span></a></li>
@@ -70,7 +70,7 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Genomic rearrangements involving programmed death ligands are recurrent in primary mediastinal large B-cell lymphoma</h4>
-    <div>David D W Twa, Fong Chun Chan, Susana Ben-Neriah, Bruce W Woolcock, <i>et al.</i> 2014. Blood.</div>
+    <div>David D W Twa, Fong Chun Chan, Susana Ben-Neriah, Bruce W Woolcock, <i>et al.</i> 2014. <a href="http://www.bloodjournal.org/">Blood</a>.</div>
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/24497532"><span class="label label-success">PubMed</span></a></li>
@@ -79,7 +79,7 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Gene expression-based model using formalin-fixed paraffin-embedded biopsies predicts overall survival in advanced-stage classical Hodgkin lymphoma</h4>
-    <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. Journal of Clinical Oncology.</div>
+    <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://jco.ascopubs.org/">Journal of Clinical Oncology</a>.</div>
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984"><span class="label label-success">PubMed</span></a></li>
