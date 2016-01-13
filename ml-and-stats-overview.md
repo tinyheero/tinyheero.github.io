@@ -26,6 +26,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Binomial Distribution
             - Bernoulli Distribution
         + Multinomial Distribution
+        + Multivariate Hypergeometric Distribution
+            - If sampling is done without replacement.
 1. Bayesian Statistics
     * Classical Frequentist vs. Bayesian 
     * Bayes' Rule
@@ -56,4 +58,5 @@ Being a somewhat structured person, it's important for me to see how topics rela
 ### References
 
 * [Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
+    + [Standard Online - This is the corresponding free online course based on this material](https://statlearning.class.stanford.edu)
 * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)

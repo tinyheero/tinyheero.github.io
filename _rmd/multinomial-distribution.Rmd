@@ -1,0 +1,38 @@
+---
+title: "Multinomial Distribution"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document
+---
+
+## What is the Multinomial Distribution?
+
+* Generalization of the binomial distribution
+* Number of outputs from a trial is greater than 2. For example:
+    + Blood types (O, A, B, AB)
+    + Dice rolls (1, 2, 3, 4, 5, 6)
+* Conditions
+    + There are n independent trials
+    + Each trial results in one of k mutually exclusive outcomes
+    + On any single trial, these k outcomes occur with probabilities $p_{1}, ..., p_{k}$. ($\sum_{i=1}^{k}p_{i} = 1$)
+* Let the random variable $X_{i}$ represent the number of occurrences of outcome i. Then
+
+    $$P(X_{1} = x_{1}, ..., X_{k} = x_{k}) = \frac{n!}{x_{1}!...x_{k}!}p_{1}^{x_{1}}...p_{k}^{x_{k}}$$
+
+    + $X_{i} = 0, 1, ..., n$. In other words, all random variables take on discrete values. 
+    + $\sum_{i=1}^{k}X_{i} = n$
+    + $E(X_{i}) = np_{i}$
+    + $Var(X_{i}) = np_{i}(1-p_{i})$
+
+## Blood Type Example
+
+In a random sample of 10 Americans, what is the probability 6 have O, 2 have A, 1 has B, and 1 has AB? We can represent this question like this:
+
+$$P(X_{1} = 6, X_{2} = 2,  X_{3} = 1, X_{4} = 1) = \frac{10!}{6!2!1!1!}0.44^{6}0.42^{2}0.10^{1}0.04^{1}$$
+
+This would give us the answer 0.01290.
+
+## References
+
+* [jbstatistics - Introduction to the Multinomial Distribution](https://www.youtube.com/watch?v=syVW7DgvUaY)
