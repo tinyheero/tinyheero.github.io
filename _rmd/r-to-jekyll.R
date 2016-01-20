@@ -36,7 +36,7 @@ if (!is.null(arguments$imgdir)) {
   todir <- paste0("../assets/", arguments$imgdir, "/")
 } else {
   fromdir <- paste0("{{ site.url }}/assets/")
-  todir <- paste0("../assets/", imgdir)
+  todir <- paste0("../assets/", arguments$imgdir)
 }
 
 pics <- list.files(fromdir)
