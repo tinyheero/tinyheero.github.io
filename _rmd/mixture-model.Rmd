@@ -1,7 +1,7 @@
 ---
-title: "Using Mixture Models for Clustering in R"
+title: "Using Mixture Models for Clustering"
 layout: post
-tags: [R, mixmodels]
+tags: [mixmodels, R]
 ---
 
 ```{r echo = FALSE}
@@ -27,7 +27,7 @@ $$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x;\theta_{k})$$
 
 Let's motivate the reason of why you woud use a mixture model by using an example. Let's say someone presented you with the following density plot: 
 
-```{r example_density_plot, dev = "png", message = FALSE}
+```{r example_density_plot, dev = "png", message = FALSE, fig.height = 6}
 library("ggplot2")
 library("dplyr")
 
@@ -53,10 +53,10 @@ Putting the data into context suggests that the eruption times may be coming fro
 
 For instance, there likely is a subpopulation with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (blue vertical line in figure below).
 
-```{r naive_cluster, dev = "png"}
+```{r naive_cluster, dev = "png", fig.height = 6}
 p + 
-	geom_vline(x = 53, col = "red", size = 2) + 
-	geom_vline(x = 80, col = "blue", size = 2)
+	geom_vline(xintercept = 53, col = "red", size = 2) + 
+	geom_vline(xintercept = 80, col = "blue", size = 2)
 ```
 
 In fact, what we've done is a naive attempt at trying to group the data into subpopulations/clusters. But surely there must be some objective and "automatic" way of defining these clusters? This is where mixture models come in by providing a "model-based approach" to clustering through the use of statistical distributions. In the next section, we will utilize an R package to perfom some mixture model clustering.
@@ -76,7 +76,7 @@ When Gaussians are used for mixture model clustering, they are referred to as [G
 
 In R, there are several packages that provide an implementation of GMM already (e.g. [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html), [mclust](http://www.stat.washington.edu/mclust/)). As there exists [a nice blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) on using mixtools on the `faithful` dataset, we will just borrow a bit his code to demonstrate the GMM in action:
 
-```{r mixtools, dev = "png", message = FALSE}
+```{r mixtools, dev = "png", message = FALSE, fig.height = 6}
 library("mixtools")
 
 #' Plot a Mixture Component
@@ -168,7 +168,7 @@ As you'll seen from the above example, the usage of mixture model clustering can
 * **"Soft Labels"**: There are no "hard" labels in mixture model clustering. Instead what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
 * **Density Estimation**: We get a measure how much data each component represents through the mixing weights.
 
-If you are like me, you might be interested in knowing what is happening "under the hood". In a subsequent post, I will walk through the math and show how you can implement your very own mixture model in R. So stay tuned!
+If you are like me, you might be interested in knowing what is happening "under the hood". [In a subsequent post, I will walk through the math and show how you can implement your very own mixture model in R]({% post_url 2016-01-03-gmm-em %}). So stay tuned!
 
 ## References
 

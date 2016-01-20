@@ -1,7 +1,7 @@
 ---
-title: "Using Mixture Models for Clustering in R"
+title: "Using Mixture Models for Clustering"
 layout: post
-tags: [R, mixmodels]
+tags: [mixmodels, R]
 ---
 
 
@@ -67,8 +67,8 @@ For instance, there likely is a subpopulation with a mean eruption of ~53 with s
 
 ```r
 p + 
-	geom_vline(x = 53, col = "red", size = 2) + 
-	geom_vline(x = 80, col = "blue", size = 2)
+	geom_vline(xintercept = 53, col = "red", size = 2) + 
+	geom_vline(xintercept = 80, col = "blue", size = 2)
 ```
 
 ![plot of chunk naive_cluster]({{ site.url }}/assets/mixture-model-naive_cluster-1.png) 
@@ -140,7 +140,7 @@ mixmdl$mu
 ## [1] 54.61489 80.09109
 ```
 
-With respectively variances of:
+With respectively standard deviations of:
 
 
 ```r
@@ -233,7 +233,7 @@ As you'll seen from the above example, the usage of mixture model clustering can
 * **"Soft Labels"**: There are no "hard" labels in mixture model clustering. Instead what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
 * **Density Estimation**: We get a measure how much data each component represents through the mixing weights.
 
-If you are like me, you might be interested in knowing what is happening "under the hood". In a subsequent post, I will walk through the math and show how you can implement your very own mixture model in R. So stay tuned!
+If you are like me, you might be interested in knowing what is happening "under the hood". [In a subsequent post, I will walk through the math and show how you can implement your very own mixture model in R]({% post_url 2016-01-03-gmm-em %}). So stay tuned!
 
 ## References
 
