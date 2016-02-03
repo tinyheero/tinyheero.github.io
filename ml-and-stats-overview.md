@@ -35,6 +35,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 ### References
 
 * [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
+* [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 
 ## Machine Learning / Statistical Learning
 
@@ -54,6 +55,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + K-means
         + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
         + Latent Dirichlet Allocation (LDA)
+1. Other
+    * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
 
 ### References
 
