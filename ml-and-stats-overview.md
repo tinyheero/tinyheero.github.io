@@ -36,7 +36,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 * [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
 
-## Machine Learning
+## Machine Learning / Statistical Learning
 
 1. Supervised Learning
     * Regression
