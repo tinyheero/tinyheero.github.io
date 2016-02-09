@@ -21,12 +21,12 @@ The documentation on the `svgPanZoom` function gives us an idea on how to do thi
 
 Since SVG is nothing more than just XML, we simply have to load the SVG as a single character value:
 
-```{r}
+~~~r
 library("svgPanZoom")
 file.name <- "/path/to/svg"
 in.svg <- readChar(file.name, nchars = file.info(file.name)$size)
 svgPanZoom(in.svg, controlIconsEnabled = TRUE)
-```
+~~~
 
 You can see the **[output of this here](http://rpubs.com/fongchun/svgPanZoom-pre-generated-svg).**
 

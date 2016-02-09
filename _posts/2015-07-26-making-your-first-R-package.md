@@ -30,15 +30,15 @@ RStudio provides a great interface for creating R packages. However I am not a R
 
 Hadley Wickham has provided the R community with [devtools](https://cran.r-project.org/web/packages/devtools/index.html) which helps with building R packages. We will be using this package to make our lives easier:
 
-```{r}
+~~~r
 install.packages("devtools")
-```
+~~~
 
 You'll also need roxygen2 for documenting your functions (see below).
 
-```{r}
+~~~r
 install.packages("roxygen2")
-```
+~~~
 
 At the time of this post, I am using the versions 1.7.0 and 4.1.0 for devtools and roxygen2 respectively.
 
@@ -63,7 +63,7 @@ You now have the bare bones of your first R package. First start by filling out 
 
 All your R functions that you want in your R package belong in the R directory. You can create an .R file that has the same name as the function you want in it. For instance, let's create a file called `R/load_mat.R` and add the following contents to the file:
 
-```{r}
+~~~r
 load_mat <- function(infile){
   in.dt <- data.table::fread(infile, header = TRUE)
   in.dt <- in.dt[!duplicated(in.dt[, 1]), ]
@@ -71,11 +71,11 @@ load_mat <- function(infile){
   rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
   in.mat
 }
-```
+~~~
 
 This is a simple function that takes in a file and convert it into a matrix with the proper column and row names based on the format of the in file. You don't need to have stick to the rule of one function is one .R file. Each .R file can have multiple functions in them. So:
 
-```{r}
+~~~r
 load_mat <- function(infile){
   in.dt <- data.table::fread(infile, header = TRUE)
   in.dt <- in.dt[!duplicated(in.dt[, 1]), ]
@@ -87,11 +87,11 @@ load_mat <- function(infile){
 load_mat2 <- function(infile){
    ...
 }
-```
+~~~
 
 In general, try to group together related functions into the same .R file (e.g. if you have a bunch of loading functions then putting them in `R/load.R` would be a good idea). One important thing to note here, is you need to add the `@export` tag above your function to indicate this function to be "exposed" to users to use. For example:
 
-```{r}
+~~~r
 #' @export
 load_mat <- function(infile){
   in.dt <- data.table::fread(infile, header = TRUE)
@@ -100,7 +100,7 @@ load_mat <- function(infile){
   rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
   in.mat
 }
-```
+~~~
 
 The `#' @export` syntax is actually an Roxygen tag which we will discuss below. By doing this, this ensures that the `load_mat()` function gets added to the NAMESPACE (when you run `devtools::document()`) to indicate that it needs to be exposed.
 
@@ -108,7 +108,7 @@ The `#' @export` syntax is actually an Roxygen tag which we will discuss below. 
 
 You'll see that the `load_mat()` function actually depends on the `data.table::fread()` function to read in files super quickly. Notice how I did NOT do something like this:
 
-```{r}
+~~~r
 library("data.table")
 load_mat <- function(infile){
   in.dt <- fread(infile, header = TRUE)
@@ -117,7 +117,7 @@ load_mat <- function(infile){
   rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
   in.mat
 }
-```
+~~~
 
 In other words, specifically load the data.table package and thus save me the step of having to use the `data.table::fread()`. Doing this is actually a big no-no in R packages as using a `library()` in an R function can globally effect the availability of functions. To re-iterate:
 
@@ -125,18 +125,18 @@ In other words, specifically load the data.table package and thus save me the st
 
 If your R functions require functions from external packages, the way to do this is to use the ["double colon" approach](https://stat.ethz.ch/R-manual/R-devel/library/base/html/ns-dblcolon.html). You also need to indicate that your R package depends on these external packages. To do this, you will need you add this information your DESCRIPTION file under the Imports content. For this case, we need the data.table R package, so we added the following to our DESCRIPTION file:
 
-```
+~~~
 Imports:
 	data.table (>= 1.9.4)
-```
+~~~
 
 Notice how I also specified the version of the data.table. Basically I am saying that this package I am building requires the data.table package and specifically a version of it that is >= 1.9.4. You can indicate multiple external dependencies by just adding them in the next line:
 
-```
+~~~
 Imports:
 	data.table (>= 1.9.4),
 	dplyr
-```
+~~~
 
 Notice how I didn't specify any version for dplyr which simply indicates that the package requires some version of dplyr. Also remember the comma between each dependency. I've been burned a few times by that!
 
@@ -148,7 +148,7 @@ So how do you get that nice documentation in R when I go `?load_mat`. We can lev
 
 For instance, here is how you might document the `load_mat()` function:
 
-```{r}
+~~~r
 #' Load a Matrix
 #'
 #' This function loads a file as a matrix. It assumes that the first column
@@ -166,17 +166,17 @@ load_mat <- function(infile){
   rownames(in.mat) <- unlist(in.dt[, 1, with = FALSE])
   in.mat
 }
-```
+~~~
 
 Once you've got your documentation completed, you can simply run:
 
-```{r}
+~~~r
 devtools::document()
-```
+~~~
 
 This will generate the `load_mat.Rd` file in the man folder:
 
-```
+~~~
 % Generated by roxygen2 (4.1.0): do not edit by hand
 % Please edit documentation in R/load.R
 \name{load_mat}
@@ -197,7 +197,7 @@ contains the rownames and the subsequent columns are the sample identifiers.
 Any rows with duplicated row names will be dropped with the first one being
 kepted.
 }
-```
+~~~
 
 You will get one `.Rd` file for each function in your R package.
 
@@ -213,18 +213,18 @@ Thankfully, there are mechanisms to do this. Your data can exist in 3 locations 
 
 The data folder is meant to store binary data (in .rda format) that is made available to users. The easiest way to do this is to use the `devtools::use_data()` function on whatever R object you have. For instance:
 
-```{r}
+~~~r
 x <- c(1:10)
 devtools::use_data(x)
-```
+~~~
 
 This ends up creating and saving the x object into data/x.rda. When you load up your package, the x variable will be available for you to use. You can this one step further, by actually providing the code that generated the binary data. To do this, the standard thing to do is create a `data-raw` folder. Then create a file .R file with the same name as your binary data. Inside this .R files, you put the exact same code as above. This gives you a record of how the binary data is generated.
 
 You don't want to include these .R files in the actual R package. So what we do is place the `data-raw` folder into the `.Rbuildignore` file like this:
 
-```
+~~~
  ^data-raw$
-```
+~~~
 
 This ensures that when we build and install the package (see below) we ignore the folder `data-raw`.
 
@@ -232,17 +232,17 @@ This ensures that when we build and install the package (see below) we ignore th
 
 Sometimes you actually need to make raw data available to users for your package. For instance, you may have some loading functions that you want to demonstrate. You'll need the raw (i.e. tsv files) to demonstrate how these functions work. The best way to do this is to put the raw data in the folder `inst/extdata`. When the package gets installed, the data becomes available through the `system.file()` function. For instance if I had the file  `inst/extdata/model-coef.tsv`, once the package is installed I can access this file by going:
 
-```{r}
+~~~r
 system.file("extdata", "model-coef.tsv", package = "myfirstpackage")
-```
+~~~
 
 # Making Vignettes
 
 Vignettes are extremely important to give people a high-level understanding of what your R package can do. To get started with generating a vignette, you can use the `devtools::use_vignette()` function for this. For instance,
 
-```{r}
+~~~r
 devtools::use_vignette("introduction")
-```
+~~~
 
 This will create a `vignette/introduction.Rmd` file. This is a vignette template Rmarkdown file that you can then use to fill out steps on how you can use your package. 
 
@@ -258,9 +258,9 @@ How do we actually install and use our package? We can use the `devtools::load_a
 
 To actually install your package, you use the `devtools::install()` function which installs your R package into your R system library. Then you will be able to load up your package with:
 
-```{r}
+~~~r
 library("myfirstpackage")
-```
+~~~
 
 Along with all the data that comes with the package!
 
@@ -275,9 +275,9 @@ There are several avenues in how you can distribute. The easiest way is to distr
 
 If you have data, you can also add those files to the repository. Once this is all done and you've pushed it to GitHub, anyone can install it using the following command:
 
-```{r}
+~~~r
 devtools::install_github("yourusername/myfirstpackage")
-```
+~~~
 
 That's it! Now anyone can use your wonderful package! 
 

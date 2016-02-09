@@ -25,27 +25,27 @@ $$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x;\theta_{k})$$
 Let's motivate the reason of why you woud use a mixture model by using an example. Let's say someone presented you with the following density plot: 
 
 
-```r
+~~~r
 library("ggplot2")
 library("dplyr")
 
 options(scipen = 999)
 
 p <- ggplot(faithful, aes(x = waiting)) +
-	geom_density()
+  geom_density()
 p
-```
+~~~
 
-![plot of chunk example_density_plot]({{ site.url }}/assets/mixture-model-example_density_plot-1.png) 
+![plot of chunk example_density_plot]({{ site.url }}/assets/mixture-model-example_density_plot-1.png)
 
 We can immediately see that the resulting distribution appears to be bi-modal (i.e. there are two bumps) suggesting that these data might be coming from two different sources. These data are actually from the `faithful` dataset available in R:
 
 
-```r
+~~~r
 head(faithful)
-```
+~~~
 
-```
+~~~
 ##   eruptions waiting
 ## 1     3.600      79
 ## 2     1.800      54
@@ -53,7 +53,7 @@ head(faithful)
 ## 4     2.283      62
 ## 5     4.533      85
 ## 6     2.883      55
-```
+~~~
 
 This data is 2-column data.frame 
 
@@ -65,13 +65,13 @@ Putting the data into context suggests that the eruption times may be coming fro
 For instance, there likely is a subpopulation with a mean eruption of ~53 with some variance around this mean (red vertical line in figure below.) Another population with a mean eruption of ~80 with again some variance around this mean (blue vertical line in figure below).
 
 
-```r
+~~~r
 p + 
-	geom_vline(xintercept = 53, col = "red", size = 2) + 
-	geom_vline(xintercept = 80, col = "blue", size = 2)
-```
+  geom_vline(xintercept = 53, col = "red", size = 2) + 
+  geom_vline(xintercept = 80, col = "blue", size = 2)
+~~~
 
-![plot of chunk naive_cluster]({{ site.url }}/assets/mixture-model-naive_cluster-1.png) 
+![plot of chunk naive_cluster]({{ site.url }}/assets/mixture-model-naive_cluster-1.png)
 
 In fact, what we've done is a naive attempt at trying to group the data into subpopulations/clusters. But surely there must be some objective and "automatic" way of defining these clusters? This is where mixture models come in by providing a "model-based approach" to clustering through the use of statistical distributions. In the next section, we will utilize an R package to perfom some mixture model clustering.
 
@@ -91,7 +91,7 @@ When Gaussians are used for mixture model clustering, they are referred to as [G
 In R, there are several packages that provide an implementation of GMM already (e.g. [mixtools](https://cran.r-project.org/web/packages/mixtools/index.html), [mclust](http://www.stat.washington.edu/mclust/)). As there exists [a nice blog post by Ron Pearson](http://exploringdatablog.blogspot.ca/2011/08/fitting-mixture-distributions-with-r.html) on using mixtools on the `faithful` dataset, we will just borrow a bit his code to demonstrate the GMM in action:
 
 
-```r
+~~~r
 library("mixtools")
 
 #' Plot a Mixture Component
@@ -107,13 +107,13 @@ plot_mix_comps <- function(x, mu, sigma, lam) {
 set.seed(1)
 wait <- faithful$waiting
 mixmdl <- normalmixEM(wait, k = 2)
-```
+~~~
 
-```
+~~~
 ## number of iterations= 29
-```
+~~~
 
-```r
+~~~r
 data.frame(x = mixmdl$x) %>%
   ggplot() +
   geom_histogram(aes(x, ..density..), binwidth = 1, colour = "black", 
@@ -125,52 +125,52 @@ data.frame(x = mixmdl$x) %>%
                 arg = list(mixmdl$mu[2], mixmdl$sigma[2], lam = mixmdl$lambda[2]),
                 colour = "blue", lwd = 1.5) +
   ylab("Density")
-```
+~~~
 
-![plot of chunk mixtools]({{ site.url }}/assets/mixture-model-mixtools-1.png) 
+![plot of chunk mixtools]({{ site.url }}/assets/mixture-model-mixtools-1.png)
 
 The key is the `normalmixEM` function which builds a 2-component GMM (`k = 2` indicates to use 2 components). So how do we interpret this? It's actually quite simply; The red and blue lines simply indicate 2 different fitted Gaussian distributions. Specifically, the means of the 2 Gaussians (red and blue) are respectively:
 
 
-```r
+~~~r
 mixmdl$mu
-```
+~~~
 
-```
+~~~
 ## [1] 54.61489 80.09109
-```
+~~~
 
 With respectively standard deviations of:
 
 
-```r
+~~~r
 mixmdl$sigma
-```
+~~~
 
-```
+~~~
 ## [1] 5.871244 5.867716
-```
+~~~
 
 You might also notice how the "heights" of the two components (herein we will refer to distribution as component) are different. Specifically, the blue component is "higher" than the red component. This is because the blue component encapsulates more density (i.e. more data) compared to the red component. How much exactly? You can get this value by using:
 
 
-```r
+~~~r
 mixmdl$lambda
-```
+~~~
 
-```
+~~~
 ## [1] 0.3608869 0.6391131
-```
+~~~
 
 Formally, these are referred to as the mixing weights (aka. mixing proportions, mixing coefficients). One can interpret this as the red component representing 36.089% and the blue component representing 63.911% of the input data. Another important aspect is that each input data point is actually assigned a posterior probability of belonging to one of these components. We can retrieve these data by using the following code:
 
 
-```r
+~~~r
 post.df <- as.data.frame(cbind(x = mixmdl$x, mixmdl$posterior))
 head(post.df, 10)  # Retrieve first 10 rows
-```
+~~~
 
-```
+~~~
 ##     x          comp.1         comp.2
 ## 1  79 0.0001030875283 0.999896912472
 ## 2  54 0.9999093397312 0.000090660269
@@ -182,48 +182,48 @@ head(post.df, 10)  # Retrieve first 10 rows
 ## 8  85 0.0000012235720 0.999998776428
 ## 9  51 0.9999901530788 0.000009846921
 ## 10 85 0.0000012235720 0.999998776428
-```
+~~~
 
 The x column indicates the value of the data while comp.1 and comp.2 refers to the posterior probability of belonging to either component respectively. If you look at the x value in the first row, 79, you will see that it sits pretty close to the middle of the blue component (the mean of the blue component 80.091). So it makes sense that the posterior of this data point belonging to this component should be high (0.9999 vs. 0.0001). And simiarly, the data that sits inbetween the two components will have posterior probabilities that are not strongly associated with either component:
 
 
-```r
+~~~r
 post.df %>%
-	filter(x > 66, x < 68)
-```
+  filter(x > 66, x < 68)
+~~~
 
-```
+~~~
 ##    x    comp.1    comp.2
 ## 1 67 0.4235423 0.5764577
-```
+~~~
 
 It's important to understand that no "labels" have been assigned here actually. Unlike k-means which assigns each data point to a cluster (defined as a "hard-label"), mixture models provide what are called "soft-labels". The end-user decides on what "threshold" to use to assign data into the components. For instance, one could use 0.3 as posterior threshold to assign data to comp.1 and get the following label distribution.
 
 
-```r
+~~~r
 post.df %>%
-	mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
-	ggplot(aes(x = factor(label))) +
-	geom_bar() +
-	xlab("Component") +
-	ylab("Number of Data Points")
-```
+  mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
+  ggplot(aes(x = factor(label))) +
+  geom_bar() +
+  xlab("Component") +
+  ylab("Number of Data Points")
+~~~
 
-![plot of chunk soft_label_0_3]({{ site.url }}/assets/mixture-model-soft_label_0_3-1.png) 
+![plot of chunk soft_label_0_3]({{ site.url }}/assets/mixture-model-soft_label_0_3-1.png)
 
 Or one could use 0.8 and get the following label distribution:
 
 
-```r
+~~~r
 post.df %>%
-	mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
-	ggplot(aes(x = factor(label))) +
-	geom_bar() +
-	xlab("Component") +
-	ylab("Number of Data Points")
-```
+  mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
+  ggplot(aes(x = factor(label))) +
+  geom_bar() +
+  xlab("Component") +
+  ylab("Number of Data Points")
+~~~
 
-![plot of chunk soft_label_0_8]({{ site.url }}/assets/mixture-model-soft_label_0_8-1.png) 
+![plot of chunk soft_label_0_8]({{ site.url }}/assets/mixture-model-soft_label_0_8-1.png)
 
 ## Summary
 

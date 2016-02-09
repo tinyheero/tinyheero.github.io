@@ -16,9 +16,9 @@ This post will explain how to setup your R markdown and Jekyll site to handle th
 
 The first thing you need to do is add the MathJax javascript library to your Jekyll site. You'll need to find in your Jekyll site where the html head is defined (for me this was `_includes/head.html` and add the following line of code to it.
 
-```{html}
+~~~html
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-```
+~~~
 
 This makes it so that the MathJax javascript library is loaded on your Jekyll site.
 
@@ -26,9 +26,9 @@ This makes it so that the MathJax javascript library is loaded on your Jekyll si
 
 In R markdown, to write a display equation you would use:
 
-```
+~~~
 $$f(x) = \sum_{k=1}^{K}\alpha_{k}$$
-```
+~~~
 
 Depending on your Jekyll markdown parser, this may or may not render in your Jekyll website. For instance, if your markdown parser is kmarkdown (default) then this would render like this:
 
@@ -38,11 +38,11 @@ But if your parser is redcarpet with no extensions, then this will NOT render (N
 
 The issue is because the markdown parser tries to parse it and ends up messing up the output. The best way to get around this to work for all markdown parsers is to "protect" your display equations by wrapping them in a `<div>` block as suggested in this [thread](http://stackoverflow.com/questions/10987992/using-mathjax-with-jekyll):
 
-```
+~~~
 <div>
 $$f(x) = \sum_{k=1}^{K}\alpha_{k}$$
 </div>
-```
+~~~
 
 Doing this makes it so that the markdown parser doesn't try to parse these display equations before MathJax.
 
@@ -50,21 +50,21 @@ Doing this makes it so that the markdown parser doesn't try to parse these displ
 
 Inline equations are bit trickier to get working. In R markdown, you would write an inline equation like this:
 
-```
+~~~
 $f(x) = \sum_{k=1}^{K}\alpha_{k}$
-```
+~~~
 
 This won't render because MathJax does not recognize the tag `$...$` at all and thus doesn't try to parse them. After scouring the internet, I found this [resource (section 5)](http://blog.hupili.net/articles/site-building-using-Jekyll.html) that provides a bit of insight into how to get around this.
 
 The strategy is to use [jQuery](https://jquery.com/) to recognize these inline equations and then specifically get MathJax to re-typeset them. To get jQuery to recognize these inline equations, you can wrap the inline equations in some unique inline identifier:
 
-```{html}
+~~~html
 <span class="inlinecode">$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x)$</span>
-```
+~~~
 
 Here I wrapped the inline equation using an html span element with the css class inlinecode. Next, I [downloaded jQuery](http://jquery.com/download/) (specifically jquery-1.11.3.min.js for me) and then added this file to my Jekyll site at `js/jquery-1.11.3.min.js`. Then I added a javascript file, `js/jq_mathjax_parse.js` that used jQuery to perform the re-typesetting ([this is a modified version of the code listed here)](https://github.com/hupili/blog/blob/3662d015ad8c169ea2a5352a053d974c9697ebd9/assets/themes/twitter-hpl/custom/jq_mathjax_parse.js).
 
-```{js}
+~~~js
 $(document).ready(function(){
   $(".inlinecode").map(function(){
     match = /^\$(.*)\$$/.exec($(this).html());
@@ -74,25 +74,25 @@ $(document).ready(function(){
     }
   });
 });
-```
+~~~
 
 What happens is that the javascript will look for html elements with the css class inlinecode, retrieve the value inside the element, and then re-typeset it. With the the `js/jquery-1.11.3.min.js` and `js/jq_mathjax_parse.js` javascript files saved in their proper location, I added these two files to my `_includes/head.html` file. This means the `_includes/head.html` file should have 3 additional lines now (including the line added in Step 1: Add the MathJax Javascript Library):
 
-```
+~~~
 <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/javascript" src={{ "{{ '/js/jquery-1.11.3.min.js' | prepend: site.baseurl "}}}}></script>
 <script type="text/javascript" src={{ "{{ '/js/jq_mathjax_parse.js' | prepend: site.baseurl "}}}}></script>
-```
+~~~
 
 # Step 4: Setup the "no_intra_emphasis" extension
 
 For the redcarpet markdown parser, you will also need to set the "no_intra_emphasis" extension in your `_config.yml` file:
 
-```{yaml}
+~~~yaml
 markdown: redcarpet
 redcarpet:
     extensions: ["no_intra_emphasis"]
-```
+~~~
 
 This ensures that underscores "\_" in your equations will not generate `<em>` tags which causes problems for MathJax.
 
@@ -100,7 +100,7 @@ This ensures that underscores "\_" in your equations will not generate `<em>` ta
 
 Once you've wrapped your equations properly and setup your javascript files, you are now ready to knit your R markdown into a markdown. I ended up following the instructions posted by [Nicole White](http://nicolewhite.github.io/2015/02/07/r-blogging-with-rmarkdown-knitr-jekyll.html) to do this. How I like to do this is to have a `_rmd` folder which contains all the R markdown documents that I have and a script called `r-to-jekyll.R`. This script contains the following contents (taken from [Nicole White's post](http://blog.hupili.net/articles/site-building-using-Jekyll.html)):
 
-```{r}
+~~~r
 #!/usr/bin/env Rscript
 library("knitr")
 
@@ -127,7 +127,7 @@ pics = sapply(pics, function(x) paste(fromdir, x, sep="/"))
 file.copy(pics, todir)
 
 unlink("{{ site.url }}", recursive = TRUE)
-```
+~~~
 
 What this does is it will knit a R markdown file (.Rmd), given as the first arugment, into a markdown (.md) and place the output file into the `_posts` directory with the current date as a prefix. Importantly, it will leave all the "equation wrappers" in place so that the Jekyll markdown parser won't touch them. It will additionally copy all the images it generates into the `assets` folder so that the post is ready to go.
 

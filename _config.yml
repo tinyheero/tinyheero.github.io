@@ -9,10 +9,9 @@ baseurl: "" # the subpath of your site, e.g. /blog/
 twitter_username: fongchunchan
 github_username:  tinyheero
 
-highlighter: pygments
+markdown: kramdown
 
-# Build settings
-markdown: redcarpet
-redcarpet:
-    extensions: ["no_intra_emphasis"]
-#markdown: kramdown
+kramdown:
+    input: GFM
+
+highlighter: rouge

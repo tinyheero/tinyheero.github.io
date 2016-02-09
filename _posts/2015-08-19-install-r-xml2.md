@@ -7,13 +7,13 @@ tags: [R, xml2]
 
 I recently tried to install the [xml2 R package](https://cran.r-project.org/web/packages/xml2/index.html) (v0.1.1) on my Mac that was running OS X Yosemite (v10.10.4 - 14E46) with Xcode (v6.4 - 6E35b), I ran the following command in my R console:
 
-```r
+~~~r
 install.packages("xml2", repos = "http://cran.stat.sfu.ca/")
-```
+~~~
 
 Only to be met with the following errors:
 
-```
+~~~
 trying URL 'http://cran.stat.sfu.ca/src/contrib/xml2_0.1.1.tar.gz'
 Content type 'application/x-gzip' length 73772 bytes (72 Kb)
 opened URL
@@ -41,19 +41,19 @@ The downloaded source packages are in
 Warning message:
 In install.packages("xml2", repos = "http://cran.stat.sfu.ca/") :
   installation of package ‘xml2’ had non-zero exit status
-```
+~~~
 
 I solved this issue by using [homebrew](http://brew.sh) to install libxml2:
 
-```
+~~~
 brew install libxml2
-```
+~~~
 
 This should install libxml2 into the folder `/usr/local/Cellar/libxml2`. At the time of this writing, version 2.9.2 was the formula in homebrew. So the exact folder would be `/usr/local/Cellar/libxml2/2.9.2`. 
 
 The next step was to indicate this specific libxml2 folder to use for the installation process. To do this, I downloaded the package source of xml2 and extracted the .tar.gz file. Inside of this folder, you'll find a `configure` file, if you can inspect this file:
 
-```
+~~~
 # Use backticks to be bourne compliant
 PKGCONFIG=`command -v pkg-config`
 
@@ -88,7 +88,7 @@ else
 fi
 
 exit 0
-```
+~~~
 
 We need to set the environment variable `LIBXML_INCDIR` to point to the libxml2 location:
 
@@ -96,8 +96,8 @@ We need to set the environment variable `LIBXML_INCDIR` to point to the libxml2 
 
 Now run (from inside the extract libxml2 folder):
 
-```
+~~~
 R CMD INSTALL .
-```
+~~~
 
 You should be able to successfully install the xml2 R package now!
