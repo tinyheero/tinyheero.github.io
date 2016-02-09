@@ -34,7 +34,7 @@ library("dplyr")
 options(scipen = 999)
 
 p <- ggplot(faithful, aes(x = waiting)) +
-	geom_density()
+  geom_density()
 p
 ```
 
@@ -55,8 +55,8 @@ For instance, there likely is a subpopulation with a mean eruption of ~53 with s
 
 ```{r naive_cluster, dev = "png", fig.height = 6}
 p + 
-	geom_vline(xintercept = 53, col = "red", size = 2) + 
-	geom_vline(xintercept = 80, col = "blue", size = 2)
+  geom_vline(xintercept = 53, col = "red", size = 2) + 
+  geom_vline(xintercept = 80, col = "blue", size = 2)
 ```
 
 In fact, what we've done is a naive attempt at trying to group the data into subpopulations/clusters. But surely there must be some objective and "automatic" way of defining these clusters? This is where mixture models come in by providing a "model-based approach" to clustering through the use of statistical distributions. In the next section, we will utilize an R package to perfom some mixture model clustering.
@@ -135,29 +135,29 @@ The x column indicates the value of the data while comp.1 and comp.2 refers to t
 
 ```{r, message = FALSE}
 post.df %>%
-	filter(x > 66, x < 68)
+  filter(x > 66, x < 68)
 ```
 
 It's important to understand that no "labels" have been assigned here actually. Unlike k-means which assigns each data point to a cluster (defined as a "hard-label"), mixture models provide what are called "soft-labels". The end-user decides on what "threshold" to use to assign data into the components. For instance, one could use 0.3 as posterior threshold to assign data to comp.1 and get the following label distribution.
 
 ```{r soft_label_0_3, dev = "png"}
 post.df %>%
-	mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
-	ggplot(aes(x = factor(label))) +
-	geom_bar() +
-	xlab("Component") +
-	ylab("Number of Data Points")
+  mutate(label = ifelse(comp.1 > 0.3, 1, 2)) %>% 
+  ggplot(aes(x = factor(label))) +
+  geom_bar() +
+  xlab("Component") +
+  ylab("Number of Data Points")
 ```
 
 Or one could use 0.8 and get the following label distribution:
 
 ```{r soft_label_0_8, dev = "png"}
 post.df %>%
-	mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
-	ggplot(aes(x = factor(label))) +
-	geom_bar() +
-	xlab("Component") +
-	ylab("Number of Data Points")
+  mutate(label = ifelse(comp.1 > 0.8, 1, 2)) %>%
+  ggplot(aes(x = factor(label))) +
+  geom_bar() +
+  xlab("Component") +
+  ylab("Number of Data Points")
 ```
 
 ## Summary
