@@ -5,7 +5,7 @@ menu: main
 permalink: /about/
 ---
 
-<img src={{ site.url }}/assets/fong-internet.jpg alt="Fong Chun Chan" style="width: 300px;" class="floatright"/>
+<img src="{{ site.url }}/assets/fong-internet.jpg" alt="Fong Chun Chan" style="width: 300px;" class="floatright" />
 
 I am currently undertaking a PhD in Bioinformatics under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/). My main research interest surrounds the implications of tumour diversity on disease progression in B-cell lymphomas. In particular, how tumour and microenvironment evolution plays a role in treatment resistance as understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. 
 
@@ -25,14 +25,14 @@ I have a passion for applying statistical and machine learning approaches to big
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
 			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
-		</u>
+		</ul>
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">CHL26predictor</h4>
 		<p class="list-group-item-text">An R Package for the Classical Hodgkin Lymphoma (CHL) 26 Gene Overall Survival Predictor. This is the companion R package for the predictor that has been published.</p>
 		<br />
 		<ul class="list-inline">
-		  <li><i class="fa fa-github fa-lg"></i> <a href=="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
+		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
 		</ul>
   </div>
   <div class="list-group-item">
@@ -42,7 +42,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
 			<li><img src="http://www.r-pkg.org/badges/version/survutils" /></li>
-		</u>
+		</ul>
   </div>
 </div>
 
