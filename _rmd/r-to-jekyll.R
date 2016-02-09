@@ -11,9 +11,9 @@ parser$add_argument("filename", nargs = 1, type = "character",
                     help = "Rmarkdown filename")
 
 if (interactive()){
-	opt <- c("--imgdir", "gmm-em")
+  opt <- c("--imgdir", "gmm-em")
   filename <- "gmm-em.Rmd"
-	arguments <- parser$parse_args(c(filename, opt))
+  arguments <- parser$parse_args(c(filename, opt))
 } else {
   arguments <- parser$parse_args()
 }
@@ -28,6 +28,10 @@ if (!grepl(".Rmd", filename)) {
 # Knit and place in _posts.
 dir <- paste0("../_posts/", Sys.Date(), "-")
 output <- paste0(dir, sub(".Rmd", ".md", filename))
+
+# Since May 2016, default markdown parser is kmarkdown which uses ~~~ as the
+# default fenced block marker
+render_markdown(fence_char = "~")
 knit(filename, output)
 
 # Copy image files to the images directory.
