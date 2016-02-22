@@ -54,7 +54,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
     * Cluster Analysis
         + K-means
         + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
-        + Latent Dirichlet Allocation (LDA)
+        + Latent Dirichlet Allocation (LDA) - Topic Modeling
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
 
