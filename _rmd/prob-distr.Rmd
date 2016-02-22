@@ -1,0 +1,33 @@
+Probability distributions is a way to represent all possible outcomes and their respective mutually exclusive probabilities. These probabilities need to satisfy 3 properties:
+
+1. Value has to be non-negative (can't have negative probability).
+1. Sum of probabilites across all possible outcomes must equal 1.
+1. For two mutually exclusive events, the probability of one or the other is the sum of their individual properties.
+
+# Discrete Distributions: Probability Mass
+
+* When our sample space consists of discrete outcomes (e.g. outcomes of a coin flip), then each distinct outcome has a probability associated with it. 
+* When our sample space consists of continuous outcomes (e.g. diamond prices), then things get a bit more complicated. We can ask the question "what is the probability that a diamond's price is equal to \$326.52?" The answer to this question is actually quite small which might seem counter-initutive. But think about the scenario where you had 1000 diamonds and the chances of finding a diamond that was priced at exactly \$326.52 Not \$326.51 or \$326.53, but exactly \$326.52 If you think of that that way, then yeah the probability is actually really really low. But if we rephrase the question as 'what is the probability of finding diamond worth at between \$320 and \$420, then this probability starts taking on meaningful values. 
+
+```{r}
+library("ggplot2")
+library("dplyr")
+library("cowplot")
+
+p1 <- diamonds %>%
+  ggplot(aes(x = price)) +
+  geom_histogram(binwidth = 100)
+
+p2 <- diamonds %>%
+  ggplot(aes(x = price)) +
+  geom_density()
+
+plot_grid(p1, p2, nrow = 2, align = "v")
+```
+
+The probability of a discrete outcome, such as the probabiluty of falling into an interval on a continuous scale, is referred as as a probability mass. Where mass refers to the amount of "stuff"
+
+
+# References
+
+* [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
