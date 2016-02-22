@@ -6,7 +6,7 @@ tags: [excel]
 
 I recently had to prepare some supplemental material for a publication where I had to combine all supplemental tables into one excel sheet. The idea was that each supplemental table would be in its own tab and labelled 1, 2, 3, etc. I started with 15 supplemental tables in separate excel files and after copying and pasting 2 tables manually into one excel sheet I lost patience and thought surely there was SOME WAY to do this automatically. 
 
-After sourcing the internet, turns out there wasn't really any tutorial on how to do this. I ended up writing some visual basic code to do this:
+After scouring the internet, turns out there wasn't really any tutorial on how to do this. I ended up writing some microsoft visual basic code to do this:
 
 ```
 Function toArray(col As Collection)
@@ -62,4 +62,12 @@ For i = LBound(workbookArray) To UBound(workbookArray)
 End Sub
 ```
 
-To use this code, one needs to create a macro. For this to work, it requires one to create a new spreadsheet that holds all the merged spreadsheets.
+To use this code:
+
+1. Create a new spreadsheet that will hold all the merged spreadsheets.
+1. In the new spreadsheet, go to the "Developer"  tab and choose Editor. Then right click and choose "Insert -> Module".
+1. This should open a window where you can copy and paste the above code.
+1. In the same folder, create a list-of-tables.txt file. This file should contain the path to each individual supplemental table you want to merge in
+
+## How it Works
+
