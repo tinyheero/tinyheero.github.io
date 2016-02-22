@@ -4,9 +4,9 @@ title:  "Merging Excel Sheets"
 tags: [excel]
 ---
 
-I recently had to prepare some supplemental material for a publication where I had to combine all supplemental tables into one excel sheet. The idea was that each supplemental table would be in its own tab and labelled 1, 2, 3, etc. I started with 15 supplemental tables in separate excel files and after copying and pasting 2 tables manually into one excel sheet I lost patience and thought surely there was SOME WAY to do this automatically. 
+I recently had to prepare some supplemental material for a publication where I had to combine numerous supplemental tables in different excel workbooks into one master excel workbook. The idea was that each supplemental table would be in its own tab and labelled 1, 2, 3, etc. I started doing it manually and thought surely there was SOME WAY to do this automatically. 
 
-After scouring the internet, turns out there wasn't really any tutorial on how to do this. I ended up writing some microsoft visual basic code to do this:
+After scouring the internet, turns out there wasn't really any tutorial on how to do this. The solution I settled on was using visual basic code.
 
 ```
 Function toArray(col As Collection)

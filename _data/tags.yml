@@ -52,3 +52,6 @@ mathjax:
 EM: 
     slug: EM
     name: Expectation-Maximization
+topicmodels: 
+    slug: topicmodels
+    name: topicmodels
