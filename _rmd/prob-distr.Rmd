@@ -1,8 +1,82 @@
-Probability distributions is a way to represent all possible outcomes and their respective mutually exclusive probabilities. These probabilities need to satisfy 3 properties:
+---
+title: "What are Probability Distributions"
+layout: post
+output: 
+  html_document:
+    toc: true
+tags: []
+---
+
+```{r echo = FALSE}
+library("knitr")
+#knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
+```
+
+## What is a Random Variable?
+
+* It's not a traditional variable that we are introduced into in algebra.
+* Map outcomes of "random processes" to numbers (Outcomes -> Numbers)
+
+For example:
+
+X = {1 if heads}
+X = {0 if tails}
+
+Random process is flipping coins here. We've mapped the outcomes of it to a random variable. We are qualifying the outcomes of a random variable.
+
+What is so useful about this?
+
+* Easier notation
+
+Probability distributions might be something you've heard of it, sort of understood, but **never** really understood what it was. I will admit that in my work I often used the term, wrote about it, but when it came down to describing it I can honestly say I didn't fully understand it. In this blog post, I hope to be able to fully explain what a probability distribution is.
+
+## So What is a Probability Distribution?
+
+A probability distribution (aka. probability distribution table) is a way to represent all possible outcomes and their respective mutually exclusive probabilities. For instance, imagine you had a coin that had two sides (heads and tails) with equal chance of getting a head or tail on a given flip. Well then the probability distribution is then:
+
+| Outcomes | Probability |
+|:--------:|:-----------:|
+| H        | 1/2         |
+| T        | 1/2         |
+
+We have all possible mutually exclusive outcomes in the "Outcomes" column and their associated probabilities in the "Probability" column. Additionally, the probabilites satisfy 3 fundamental properties of probabilty:
 
 1. Value has to be non-negative (can't have negative probability).
 1. Sum of probabilites across all possible outcomes must equal 1.
 1. For two mutually exclusive events, the probability of one or the other is the sum of their individual properties.
+
+Let's use a more interesting experiment where instead of flipping a coin once, we flip the coin 3 times. In our case, we let X represent the number of heads we get from 3 coin flips. 
+
+| Outcomes | Probability |
+|:--------:|:-----------:|
+| HHH      | 1/8         |
+| HHT      | 1/8         |
+| HHT      | 1/8         |
+| HTT      | 1/8         |
+| THH      | 1/8         |
+| THT      | 1/8         |
+| TTH      | 1/8         |
+| TTT      | 1/8         |
+
+Note: [I suggest watching this video](Probability Distribution Table) if you are unclear of how these outcome and associated probabilites were calculated.
+
+Before we go any further, let's introduce some notation that will come handy later on. 
+
+* X = Random variable
+* P(X) = Probability of X
+* P(X = x) = Probability that the random variable X is equivalent to the value of x. 
+
+# Coin Flipping Example
+
+Let's use a coin flipping example to illustrate this in more detail. First we need to define some notation:
+
+Let's say we perform a simple 1
+In this coin flipping example, a flip of the coin can give either a head or a tail which represents our sample space. If we let our random variable X represent the number of heads 
+
+our sample space 
+
+we will measure the number of heads 
+
 
 # Discrete Distributions: Probability Mass
 
@@ -30,4 +104,7 @@ The probability of a discrete outcome, such as the probabiluty of falling into a
 
 # References
 
+* [Random variables | Probability and Statistics | Khan Academy](https://youtu.be/3v9w79NhsfI)
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
+* [Probability Distribution Table - Intro with tossing a coin 3 times](https://www.youtube.com/watch?v=5lpqiGixDd0)
+* [What is a Probability Distribution?](http://stattrek.com/probability-distributions/probability-distribution.aspx)
