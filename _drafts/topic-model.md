@@ -77,3 +77,4 @@ tags: [LDA]
 * [Latent Dirichlet Allocation in R - Martin Ponweiser's Diploma Thesis](http://epub.wu.ac.at/3558/1/main.pdf)
 * [LDA Topic Models](https://www.youtube.com/watch?v=ePUAZ8RG-3w)
 * [Topic modeling and LDA.mpeg](https://www.youtube.com/watch?v=Acs_esny-qQ&list=PLgsYMpI8sy8GIESzbn6XLfQWVfyBj3Gqe)
+* [Topic Modeling in R](http://www.bigdatanews.com/profiles/blogs/topic-modeling-in-r)
