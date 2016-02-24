@@ -1,0 +1,13 @@
+---
+title: "Binomial Distribution"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document
+---
+
+## What is the Binomial Distribution?
+
+## References
+
+* [Binomial Distribution | Khan Academy](https://www.khanacademy.org/math/probability/random-variables-topic/binomial_distribution/v/binomial-distribution)
