@@ -14,7 +14,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
 ## Statistics
 
 1. Probabilities
-    * Probability Distribution
+    * Random Variables
+    * Probability Distributions
     * Joint Probability
     * Marginal Probability
     * Conditional Probability
