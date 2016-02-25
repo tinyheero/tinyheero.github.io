@@ -64,4 +64,12 @@ For i = LBound(workbookArray) To UBound(workbookArray)
 End Sub
 ```
 
-To use this code, one needs to create a macro. For this to work, it requires one to create a new spreadsheet that holds all the merged spreadsheets.
+To use this code:
+
+1. Create a new spreadsheet that will hold all the merged spreadsheets.
+1. In the new spreadsheet, go to the "Developer"  tab and choose Editor. Then right click and choose "Insert -> Module".
+1. This should open a window where you can copy and paste the above code.
+1. In the same folder, create a list-of-tables.txt file. This file should contain the path to each individual supplemental table you want to merge in
+
+## How it Works
+

@@ -50,11 +50,12 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Random Forest
 1. Unsupervised Learning
     * Principle Component Analysis (PCA)
+    * Hierarchical clustering
     * DBSCAN
     * Cluster Analysis
         + K-means
         + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
-        + Latent Dirichlet Allocation (LDA)
+        + Latent Dirichlet Allocation (LDA) - Topic Modeling
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
 
@@ -63,3 +64,4 @@ Being a somewhat structured person, it's important for me to see how topics rela
 * [Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
     + [Standard Online - This is the corresponding free online course based on this material](https://statlearning.class.stanford.edu)
 * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
+* [PCA vs. Hierarchical clustering](http://www.rna-seqblog.com/a-comparison-between-pca-and-hierarchical-clustering/)

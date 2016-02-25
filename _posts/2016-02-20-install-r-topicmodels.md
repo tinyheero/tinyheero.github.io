@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Installing topicmodels on Mac OSX - \"fatal error: 'gsl/gsl_rng.h'\""
+title: "Installing topicmodels - \"fatal error: 'gsl/gsl_rng.h'\""
 date: 2016-02-20
 tags: [R, topicmodels]
 ---
@@ -52,3 +52,13 @@ More details on what a Makevars file is can be found [here](http://r-pkgs.had.co
 </blockquote>
 
 How this helps you if you run into the same problem!
+
+## For Centos Users
+
+For those on Centos, you install gsl (if you have admin):
+
+~~~bash
+yum install gsl-devel
+~~~
+
+This will install the headers, by default into `/usr/include/gsl`.
