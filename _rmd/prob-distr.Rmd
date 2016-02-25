@@ -14,17 +14,26 @@ library("knitr")
 
 ## What is a Random Variable?
 
-* It's not a traditional variable that we are introduced into in algebra.
-* Map outcomes of "random processes" to numbers (Outcomes -> Numbers)
+A random variable can be a confusing concept because it is not like a traditional variable that you may have been exposed to before. A random variable are actually functions that map the outcomes of a random process to a numeric value. For instance, let's say we have the random process of flipping a coin and we use the random variable X (random variables are typically denoted with capital letters) to represent the outcomes of the coin flip. For example, here is one possible random variable:
 
-For example:
+* X = 1 if the flip of the coin is a head
+* X = 0 if the flip of the coin is a tail
 
-X = {1 if heads}
-X = {0 if tails}
+There isn't anything special about the numeric values I chose here. I could have done the following:
 
-Random process is flipping coins here. We've mapped the outcomes of it to a random variable. We are qualifying the outcomes of a random variable.
+* X = 500 if the flip of the coin is a head
+* X = 25 if the flip of the coin is a tail
 
-What is so useful about this?
+And this would still be e a random variable. Note how the flipping of a coin is a random process. This is because each flip of the coin can produce either a heads or a tail and is essentially a random event. If we had some weird coin that had both sides being head, then the flipping of this coin would be a deterministic process since we would always get a head every flip.
+
+Random variables allows for easier mathematical notation. 
+
+### Traditional vs. Random Variable
+
+* traditional variables are typically represented by lowercase letters (e.g. x, y)
+* traditional variables can be solved for (e.g. x + 10 = 15); we don't solve for random variables
+* traditional variables can be used to observed how a value changes as function of the variable (e.g. y = x + 2)
+* random variables can take on many different values, and we are often interested in knowing what the probability of a random variable taking on a specific value.
 
 * Easier notation
 
