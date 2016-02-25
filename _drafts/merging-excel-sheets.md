@@ -6,7 +6,9 @@ tags: [excel]
 
 I recently had to prepare some supplemental material for a publication where I had to combine numerous supplemental tables in different excel workbooks into one master excel workbook. The idea was that each supplemental table would be in its own tab and labelled 1, 2, 3, etc. I started doing it manually and thought surely there was SOME WAY to do this automatically. 
 
-After scouring the internet, turns out there wasn't really any tutorial on how to do this. The solution I settled on was using visual basic code.
+After scouring the internet, turns out there wasn't really any tutorial on how to do this. The solution I settled on was using visual basic code. I have created a github repository that demonstrates how to do this
+
+
 
 ```
 Function toArray(col As Collection)
