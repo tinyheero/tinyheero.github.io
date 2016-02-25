@@ -1,5 +1,5 @@
 ---
-title: "What are Probability Distributions"
+title: ""
 layout: post
 output: 
   html_document:
@@ -11,31 +11,6 @@ tags: []
 library("knitr")
 #knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
 ```
-
-## What is a Random Variable?
-
-A random variable can be a confusing concept because it is not like a traditional variable that you may have been exposed to before. A random variable are actually functions that map the outcomes of a random process to a numeric value. For instance, let's say we have the random process of flipping a coin and we use the random variable X (random variables are typically denoted with capital letters) to represent the outcomes of the coin flip. For example, here is one possible random variable:
-
-* X = 1 if the flip of the coin is a head
-* X = 0 if the flip of the coin is a tail
-
-There isn't anything special about the numeric values I chose here. I could have done the following:
-
-* X = 500 if the flip of the coin is a head
-* X = 25 if the flip of the coin is a tail
-
-And this would still be e a random variable. Note how the flipping of a coin is a random process. This is because each flip of the coin can produce either a heads or a tail and is essentially a random event. If we had some weird coin that had both sides being head, then the flipping of this coin would be a deterministic process since we would always get a head every flip.
-
-Random variables allows for easier mathematical notation. 
-
-### Traditional vs. Random Variable
-
-* traditional variables are typically represented by lowercase letters (e.g. x, y)
-* traditional variables can be solved for (e.g. x + 10 = 15); we don't solve for random variables
-* traditional variables can be used to observed how a value changes as function of the variable (e.g. y = x + 2)
-* random variables can take on many different values, and we are often interested in knowing what the probability of a random variable taking on a specific value.
-
-* Easier notation
 
 Probability distributions might be something you've heard of it, sort of understood, but **never** really understood what it was. I will admit that in my work I often used the term, wrote about it, but when it came down to describing it I can honestly say I didn't fully understand it. In this blog post, I hope to be able to fully explain what a probability distribution is.
 
@@ -113,7 +88,6 @@ The probability of a discrete outcome, such as the probabiluty of falling into a
 
 # References
 
-* [Random variables | Probability and Statistics | Khan Academy](https://youtu.be/3v9w79NhsfI)
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 * [Probability Distribution Table - Intro with tossing a coin 3 times](https://www.youtube.com/watch?v=5lpqiGixDd0)
 * [What is a Probability Distribution?](http://stattrek.com/probability-distributions/probability-distribution.aspx)

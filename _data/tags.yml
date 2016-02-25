@@ -55,3 +55,6 @@ EM:
 topicmodels: 
     slug: topicmodels
     name: topicmodels
+randvar: 
+    slug: randvar
+    name: Random Variables
