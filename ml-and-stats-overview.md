@@ -7,14 +7,14 @@ permalink: /ml-and-stats-overview/
 Being a somewhat structured person, it's important for me to see how topics relate to each other. With machine learning and statistics being such expansive topics, I struggled (and still do) to understand how all the different methods related to each other. This page is my attempt to structure the various topics/methods of machine learning and statistics. My ultimate goal will be to have a post on each of these topics.
 
 <div class="alert alert-dismissible alert-warning">
-  <h4>Warning!</h4>
-  <p>This page is very much a work-in-progress</p>
+<h4>Warning!</h4>
+<p>This page is very much a work-in-progress</p>
 </div>
 
 ## Statistics
 
 1. Probabilities
-    * Random Variables
+    * [Random Variables]({% post_url 2016-02-26-random-variables %})
     * Probability Distributions
     * Joint Probability
     * Marginal Probability
