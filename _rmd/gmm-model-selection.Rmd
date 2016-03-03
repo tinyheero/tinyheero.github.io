@@ -1,0 +1,43 @@
+---
+title: "Fitting a Mixture Model Using the Expectation-Maximization Algorithm in R"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document:
+    toc: true
+tags: [R, mixmodels, EM]
+---
+
+```{r echo = FALSE}
+library("knitr")
+knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
+```
+
+```{r}
+library("mixtools")
+library("mclust")
+
+set.seed(1)
+
+# wait <- faithful$waiting
+# mixmdl <- normalmixEM(wait, k = 2)
+
+mixmdl.mclust <- Mclust(wait, G = 2)
+
+# Formal definition of BIC
+(2 * mixmdl.mclust$loglik) + 6*log(length(wait))
+
+
+# Approximiation of BIC?
+2*mixmdl.mclust$loglik - 6*(log(length(wait)) - log(2*pi))
+
+mixmdl.mclust$bic
+Mclust
+
+
+```
+
+## References
+
+* [Wikipedia - Bayesian Information Criterion](https://en.wikipedia.org/wiki/Bayesian_information_criterion)
+* [A.3 - Model Selection via BIC](http://www.stat.washington.edu/research/reports/2012/tr597.pdf)
