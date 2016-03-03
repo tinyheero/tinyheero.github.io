@@ -81,10 +81,10 @@ library("mixtools")
 
 #' Plot a Mixture Component
 #' 
-#' @param x Input Data
-#' @param mu Mean of Component
-#' @param sigma Standard of Component
-#' @param lam Mixture Weight of Component
+#' @param x Input data
+#' @param mu Mean of component
+#' @param sigma Standard deviation of component
+#' @param lam Mixture weight of component
 plot_mix_comps <- function(x, mu, sigma, lam) {
   lam * dnorm(x, mu, sigma)
 }
