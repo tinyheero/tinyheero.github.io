@@ -30,3 +30,7 @@ Since the CI can't be applied to a population parameter, this means:
 As we use the sample data to estimate some population parameter, we can also generate and use a CI to show the uncertainity of this estimate. **Importantly, CIs are an observed interval. This means that it is calculated based on the observed sample data and can change between different samples.** Therefore if we were to perform another sampling, the generated CI for this sample will be different than the previous one. Moreover, if we were to perform 100 different samplings, then some of these CIs will contain the population mean and some won't. In fact if we collect all the 90% CI that we generate, it turns out 90% of them will contain the population mean.
 
 Ultimately, you want your CI to be a small range which indicates that you are confident that your sampling data contains the population mean and likely reflects the population. 
+
+# References
+
+* [Interpreting Confidence Intervals an interactive visualization](http://rpsychologist.com/d3/CI/)
