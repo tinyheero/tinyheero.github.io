@@ -96,10 +96,10 @@ library("mixtools")
 
 #' Plot a Mixture Component
 #' 
-#' @param x Input Data
-#' @param mu Mean of Component
-#' @param sigma Standard of Component
-#' @param lam Mixture Weight of Component
+#' @param x Input data
+#' @param mu Mean of component
+#' @param sigma Standard deviation of component
+#' @param lam Mixture weight of component
 plot_mix_comps <- function(x, mu, sigma, lam) {
   lam * dnorm(x, mu, sigma)
 }
@@ -229,7 +229,7 @@ post.df %>%
 
 As you'll seen from the above example, the usage of mixture model clustering can be very powerful in providing an objective way to clustering data. Some benefits to using mixture model clustering are:
 
-* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have.
+* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have. We can even mix together different types of distributions. For example, it is common to have a GMM with an additional uniform distribution to capture any outlier data points.
 * **"Soft Labels"**: There are no "hard" labels in mixture model clustering. Instead what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
 * **Density Estimation**: We get a measure how much data each component represents through the mixing weights.
 
