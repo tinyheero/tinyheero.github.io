@@ -56,6 +56,10 @@ If we didn't do it this way, the alternative to represent these questions could 
 * P(Probability of getting < 4 heads when we flip a coin 5 times)
 * P(Probability of getting > 1 head when we flip a coin 5 times)
 
+## Discrete vs. Continuous Random Variables
+
+The other important thing that is worth mentioning is distinguishing between a discrete and a continuous random variable. In the examples mentioned above, the numeric values that the random variable mapped to were all discrete values (0, 1, 2, 3, 4, 5). This makes all the above random variables discrete random variables. This is contrasted to a continuous random variable that maps outcomes to continuous numeric values.
+
 ## Summary
 
 Hopefully this post sheds a bit of light on what random variables are and why we use them. In some follow-up posts (e.g. probability distributions), the utility of random variables will hopefully become even more clear. So stay tuned!
@@ -63,3 +67,4 @@ Hopefully this post sheds a bit of light on what random variables are and why we
 ## References
 
 * [Random variables - Probability and Statistics - Khan Academy](https://youtu.be/3v9w79NhsfI)
+* [What is the difference between discrete data and continuous data?](http://stats.stackexchange.com/questions/206/what-is-the-difference-between-discrete-data-and-continuous-data)
