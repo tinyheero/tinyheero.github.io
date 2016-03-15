@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "What is a Probability Distribution?"
 layout: post
 output: 
   html_document:
@@ -10,14 +10,19 @@ tags: []
 library("knitr")
 library("captioner")
 library("magrittr")
+library("captioner")
 #knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
+
+fig_nums <- captioner(prefix = "<u>Figure</u>", css_class = "figcaption")
 ```
 
-## What is a Probability Distribution?
+A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. There are two types of probability distributions: discrete and continuous probability distribution. As you might guess, a discrete probability distribution is used when we have a discrete random variable. A continuous probability distribution is used when we have a continuous random variable. 
 
-A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. 
+**Table of Contents**
 
-## An Example
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## Example of a Discrete Probability Distribution
 
 In a previous post on [random variables]({% post_url 2016-02-26-random-variables %}), I had used the example of a random process of flipping a coin x number of times and measuring the total of heads using a discrete random variable Y. As an example, let us try to build a probability distribution from a random process like this where we are flipping a coin 3 times. This random process can have a total of 8 possible outcomes:
 
@@ -66,40 +71,44 @@ prob.distr.df %>%
   ylab("Probability")
 ```
 
-Here the x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes. 
+`r fig_nums("prob_distr_example.fig.cap", "Probability Distribution of Random Variable Y. The x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes.")`
 
-# Discrete vs. Continuous Probability Distributions
+## Example of a Continuous Probability Distribution
 
-In the example above, Y was a discrete random variable. When the outcomes are discrete we have the ability to directly measure the probability of each outcome. Any probability distributions based on a discrete random variable is classified as a "discrete probability distribution" (which is what Figure 1 is).
+In the example above, Y was a discrete random variable. When the outcomes are discrete we have the ability to directly measure the probability of each outcome. Any probability distributions based on a discrete random variable is classified as a "discrete probability distribution" (which is what `r fig_nums("prob_distr_example.fig.cap", display = "cite")` is).
 
-When the random variable is continuous, then things get a little more complicated. **We are not able to directly measure the probability of a specific continuous value**. This may seem a big confusing at first, but imagine you had a random variable X that measured the depth of a diamond. 
+When the random variable is continuous, then things get a little more complicated. **We are not able to directly measure the probability of a specific continuous value**. This may seem a big confusing at first, but imagine you had a random variable X that measured the price of a diamond. 
 
-To make this more concrete, we will use the diamond dataset from ggplot2 to illustrate this example. First let's plot the histogram of diamond depths of 53940 diamonds:
+To make this more concrete, we will use the diamond dataset from ggplot2 to illustrate this example. First let's plot the histogram of diamond prices of 53940 diamonds:
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 library("dplyr")
 library("ggplot2")
+
 diamonds %>%
   ggplot(aes(x = price)) +
   geom_histogram() +
-  xlab("X (Diamond Depth)")
+  xlab("X (Diamond Price)")
 ```
 
-These diamonds depths are on a continuous scale. Imagine asked you the question what is the probability that a sample diamond would have the **exact** depth of 63.3234? Not 63.3233 or 63.3235, but exactly 63.3224? If you think of it that way, then the probability of getting a diamond with that exact depth is probably really low (in fact we probably don't even have the ability to measure a diamond of that size). This is why the concept of probability in the continous scale doesn't make sense. Instead, what we do is "discretize" the sample space. For instance, we can "discretize" the prices into bins of size 1:
+Imagine you were asked you the following question: If you sampled a single diamond, what is the probability that its **exact** price is \$326.57? Not \$326.58 or \$326.56, but exactly \$326.57? 
 
-```{r}
+If you think of it that way, then the probability of getting a diamond with that exact price is probably really low. In fact, the probability of any exact price is really low. **This is why the concept of probability in the continous scale doesn't make sense**. Instead, what we do is "discretize" the sample space. For instance, we can "discretize" the prices into bins of size \$100:
+
+```{r, warning = FALSE, message = FALSE}
 diamonds %>%
   ggplot(aes(x = price)) +
   geom_histogram(binwidth = 100) +
-  xlab("X (Diamond Depth)")
+  xlab("X (Diamond Price)") +
+  ylab("Number of Diamonds")
 ```
 
-Once we have these bins of data, we can start talking about sample falling into the bins. For instance, we can ask the question what is the probability of a diamond having a depth between 60 and 62:
+Once we have these bins of data, we can start talking about proportion of samples falling into bins. For instance, we can ask the question what is the probability of a diamond having a price between 1000 and 1100:
 
 ```{r}
 num.diamonds.in.bin <- 
   diamonds %>%
-  filter(price > 1000, depth < 2000) %>%
+  filter(price > 1000, price < 1100) %>%
   nrow()
 ```
 
@@ -110,35 +119,33 @@ prob.mass <- num.diamonds.in.bin / nrow(diamonds)
 prob.mass
 ```
 
-When we talk about the probability of a discrete outcome falling into an interval like this, then this type of probability is called a "probability mass". By extension, the "probability density" is then the "probability mass" divided by the interval length:
+When we talk about the probability of a discrete outcome falling into a bin like this, then this type of probability is called a "probability mass". As the probability mass is dependent on the bin width, the "probability density" is used to represent the ratio of the probability mass to bin width (interval):
 
 ```{r}
 prob.dens <- prob.mass / (62 - 60)
 prob.dens
 ```
 
+To get more precision, we would want our intervals to be small since wide intervals are not very informative. Ideally, our intervals should be infinitesimally small. Thankfully we have computers that can perform this calculation for us:
+
 ```{r}
 diamonds %>%
-  ggplot(aes(x = depth)) +
-  geom_density()
-
-#   xlab("X (Diamond Depth)")
-
+  ggplot(aes(x = price)) +
+  geom_density() +
+  xlab("X (Diamond Price)") +
+  ylab("Density")
 ```
 
-```{r chung_tag}
-num.diamonds <- nrow(diamonds)
+This is what is called a "probability density function" (pdf) which is used to describe a continuous probability distribution. Formally, this function takes the form of:
 
-prob.dens <- 
-  diamonds %>%
-  filter(depth > 60, depth < 60.2) %>%
-  nrow() %>%
-  divide_by(num.diamonds) %>%
-  divide_by(0.2)
 
-prob.dens
-  
-```
+<div>
+$$P(a \leq X \leq b) = \int_{a}^{b} f_X(x) dx$$
+</div>
+
+
+
+The benefit of working with probability density is that we are no longer tied to a bin width. So if we are interested in knowing the probability of getting a diamond between some interval \[A-B]\, then this simply becomes:
 
 
 # References
@@ -146,3 +153,5 @@ prob.dens
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 * [Probability Distribution Table - Intro with tossing a coin 3 times](https://www.youtube.com/watch?v=5lpqiGixDd0)
 * [What is a Probability Distribution?](http://stattrek.com/probability-distributions/probability-distribution.aspx)
+* [Continuous Probability Distribution](http://stattrek.com/statistics/dictionary.aspx?definition=Continuous%20probability%20distribution)
+* [Khan Academy - Probability density function](https://www.youtube.com/watch?v=Fvi9A_tEmXQ)
