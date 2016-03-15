@@ -3,87 +3,142 @@ title: ""
 layout: post
 output: 
   html_document:
-    toc: true
 tags: []
 ---
 
 ```{r echo = FALSE}
 library("knitr")
+library("captioner")
+library("magrittr")
 #knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
 ```
 
-Probability distributions might be something you've heard of it, sort of understood, but **never** really understood what it was. I will admit that in my work I often used the term, wrote about it, but when it came down to describing it I can honestly say I didn't fully understand it. In this blog post, I hope to be able to fully explain what a probability distribution is.
+## What is a Probability Distribution?
 
-## So What is a Probability Distribution?
+A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. 
 
-A probability distribution (aka. probability distribution table) is a way to represent all possible outcomes and their respective mutually exclusive probabilities. For instance, imagine you had a coin that had two sides (heads and tails) with equal chance of getting a head or tail on a given flip. Well then the probability distribution is then:
+## An Example
 
-| Outcomes | Probability |
-|:--------:|:-----------:|
-| H        | 1/2         |
-| T        | 1/2         |
+In a previous post on [random variables]({% post_url 2016-02-26-random-variables %}), I had used the example of a random process of flipping a coin x number of times and measuring the total of heads using a discrete random variable Y. As an example, let us try to build a probability distribution from a random process like this where we are flipping a coin 3 times. This random process can have a total of 8 possible outcomes:
 
-We have all possible mutually exclusive outcomes in the "Outcomes" column and their associated probabilities in the "Probability" column. Additionally, the probabilites satisfy 3 fundamental properties of probabilty:
+<div class="alert alert-dismissible alert-warning">
+<h4>Heads Up!</h4>
+[I suggest watching this video](https://www.youtube.com/watch?v=5lpqiGixDd0) if you are unclear on how these outcomes were generated.
+</div>
 
-1. Value has to be non-negative (can't have negative probability).
-1. Sum of probabilites across all possible outcomes must equal 1.
-1. For two mutually exclusive events, the probability of one or the other is the sum of their individual properties.
+1. HHH
+1. HHT
+1. HTH
+1. HTT
+1. THH
+1. THT
+1. TTH
+1. TTT
 
-Let's use a more interesting experiment where instead of flipping a coin once, we flip the coin 3 times. In our case, we let X represent the number of heads we get from 3 coin flips. 
+We let our random variable Y serve as a way to map the number of heads we get to a numeric value. So the most initutive way would be:
 
-| Outcomes | Probability |
-|:--------:|:-----------:|
-| HHH      | 1/8         |
-| HHT      | 1/8         |
-| HHT      | 1/8         |
-| HTT      | 1/8         |
-| THH      | 1/8         |
-| THT      | 1/8         |
-| TTH      | 1/8         |
-| TTT      | 1/8         |
+1. Y = 0 if we get no heads.
+1. Y = 1 if we get 1 head.
+1. Y = 2 if we get 2 heads.
+1. Y = 3 if we get 3 heads.
 
-Note: [I suggest watching this video](Probability Distribution Table) if you are unclear of how these outcome and associated probabilites were calculated.
+So now that we have this random variable and the possible values this variable can take, let's try to figure out the associated probabilities of each outcome. 
 
-Before we go any further, let's introduce some notation that will come handy later on. 
+1. <span class="inlinecode">$P(Y = 0)$</span>: The only way we can get 0 heads is if all 3 coin flips gives a tail. The only outcome that satisfies this is the TTT outcome. This means the probability P(Y = 0) = 1/8.
+1. <span class="inlinecode">$P(Y = 1)$</span>: To get 1 head, the outcomes HTT, THT, and TTH satisfy this. So this means 3/8.
+1. <span class="inlinecode">$P(Y = 2)$</span>: To get 2 heads, the outcomes HHT, HTH, and THH satisfy this. So this means 3/8.
+1. <span class="inlinecode">$P(Y = 3)$</span>: The only way we can get 3 heads is if all 3 coin flips gives a head The only outcome that satisfies this is the TTT outcome. This means the probability P(Y = 3) = 1/8.
+   
+With these values and probabilites, we can visualize our probability distribution like this:
 
-* X = Random variable
-* P(X) = Probability of X
-* P(X = x) = Probability that the random variable X is equivalent to the value of x. 
-
-# Coin Flipping Example
-
-Let's use a coin flipping example to illustrate this in more detail. First we need to define some notation:
-
-Let's say we perform a simple 1
-In this coin flipping example, a flip of the coin can give either a head or a tail which represents our sample space. If we let our random variable X represent the number of heads 
-
-our sample space 
-
-we will measure the number of heads 
-
-
-# Discrete Distributions: Probability Mass
-
-* When our sample space consists of discrete outcomes (e.g. outcomes of a coin flip), then each distinct outcome has a probability associated with it. 
-* When our sample space consists of continuous outcomes (e.g. diamond prices), then things get a bit more complicated. We can ask the question "what is the probability that a diamond's price is equal to \$326.52?" The answer to this question is actually quite small which might seem counter-initutive. But think about the scenario where you had 1000 diamonds and the chances of finding a diamond that was priced at exactly \$326.52 Not \$326.51 or \$326.53, but exactly \$326.52 If you think of that that way, then yeah the probability is actually really really low. But if we rephrase the question as 'what is the probability of finding diamond worth at between \$320 and \$420, then this probability starts taking on meaningful values. 
-
-```{r}
+```{r prob_distr_example, warning = FALSE, message = FALSE}
 library("ggplot2")
 library("dplyr")
-library("cowplot")
 
-p1 <- diamonds %>%
-  ggplot(aes(x = price)) +
-  geom_histogram(binwidth = 100)
+prob.distr.df <- data_frame(value = c(0, 1, 2, 3),
+                            prob = c(1/8, 3/8, 3/8, 1/8))
 
-p2 <- diamonds %>%
-  ggplot(aes(x = price)) +
-  geom_density()
-
-plot_grid(p1, p2, nrow = 2, align = "v")
+prob.distr.df %>%
+  ggplot(aes(x = value, y = prob)) +
+  geom_bar(stat = "identity") +
+  ylim(c(0, 1)) +
+  xlab("Y (Number of Heads)") + 
+  ylab("Probability")
 ```
 
-The probability of a discrete outcome, such as the probabiluty of falling into an interval on a continuous scale, is referred as as a probability mass. Where mass refers to the amount of "stuff"
+Here the x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes. 
+
+# Discrete vs. Continuous Probability Distributions
+
+In the example above, Y was a discrete random variable. When the outcomes are discrete we have the ability to directly measure the probability of each outcome. Any probability distributions based on a discrete random variable is classified as a "discrete probability distribution" (which is what Figure 1 is).
+
+When the random variable is continuous, then things get a little more complicated. **We are not able to directly measure the probability of a specific continuous value**. This may seem a big confusing at first, but imagine you had a random variable X that measured the depth of a diamond. 
+
+To make this more concrete, we will use the diamond dataset from ggplot2 to illustrate this example. First let's plot the histogram of diamond depths of 53940 diamonds:
+
+```{r}
+library("dplyr")
+library("ggplot2")
+diamonds %>%
+  ggplot(aes(x = price)) +
+  geom_histogram() +
+  xlab("X (Diamond Depth)")
+```
+
+These diamonds depths are on a continuous scale. Imagine asked you the question what is the probability that a sample diamond would have the **exact** depth of 63.3234? Not 63.3233 or 63.3235, but exactly 63.3224? If you think of it that way, then the probability of getting a diamond with that exact depth is probably really low (in fact we probably don't even have the ability to measure a diamond of that size). This is why the concept of probability in the continous scale doesn't make sense. Instead, what we do is "discretize" the sample space. For instance, we can "discretize" the prices into bins of size 1:
+
+```{r}
+diamonds %>%
+  ggplot(aes(x = price)) +
+  geom_histogram(binwidth = 100) +
+  xlab("X (Diamond Depth)")
+```
+
+Once we have these bins of data, we can start talking about sample falling into the bins. For instance, we can ask the question what is the probability of a diamond having a depth between 60 and 62:
+
+```{r}
+num.diamonds.in.bin <- 
+  diamonds %>%
+  filter(price > 1000, depth < 2000) %>%
+  nrow()
+```
+
+A total of `r num.diamonds.in.bin` diamonds fall in this bin which equates to a probability of:
+
+```{r}
+prob.mass <- num.diamonds.in.bin / nrow(diamonds)
+prob.mass
+```
+
+When we talk about the probability of a discrete outcome falling into an interval like this, then this type of probability is called a "probability mass". By extension, the "probability density" is then the "probability mass" divided by the interval length:
+
+```{r}
+prob.dens <- prob.mass / (62 - 60)
+prob.dens
+```
+
+```{r}
+diamonds %>%
+  ggplot(aes(x = depth)) +
+  geom_density()
+
+#   xlab("X (Diamond Depth)")
+
+```
+
+```{r chung_tag}
+num.diamonds <- nrow(diamonds)
+
+prob.dens <- 
+  diamonds %>%
+  filter(depth > 60, depth < 60.2) %>%
+  nrow() %>%
+  divide_by(num.diamonds) %>%
+  divide_by(0.2)
+
+prob.dens
+  
+```
 
 
 # References
