@@ -18,11 +18,13 @@ fig_nums <- captioner(prefix = "<u>Figure</u>", css_class = "figcaption")
 
 A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. There are two types of probability distributions: discrete and continuous probability distribution. As you might guess, a discrete probability distribution is used when we have a discrete random variable. A continuous probability distribution is used when we have a continuous random variable. 
 
+In this post, we will explore what discrete and continuous probability distributions are. Additionally, we will describe that a probability mass and density function, their key properties and how they relate to probability distributions. Here is an overview of what will be discussed in this post.
+
 **Table of Contents**
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
 
-## Example of a Discrete Probability Distribution
+## Discrete Probability Distribution
 
 In a previous post on [random variables]({% post_url 2016-02-26-random-variables %}), I had used the example of a random process of flipping a coin x number of times and measuring the total of heads using a discrete random variable Y. As an example, let us try to build a probability distribution from a random process like this where we are flipping a coin 3 times. This random process can have a total of 8 possible outcomes:
 
@@ -73,9 +75,9 @@ prob.distr.df %>%
 
 `r fig_nums("prob_distr_example.fig.cap", "Discrete Probability Distribution of Random Variable Y. The x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes.")`
 
-You might sometimes see the term a probability distribution table. This is just the same thing as a pmf. The name likely stems from the fact that there are a finite number of outcomes and and so we can represent these outcomes and their associated probabilities in a finite table. As we will see below, we can't do this for a continuous random variable hence why a probabilty distribution table only has meaning in the context of a discrete random variable.
+You might sometimes see the term probability distribution table. This is just the same thing as a pmf. The name stems from the fact that there are a finite number of outcomes and and so we can represent these outcomes and their associated probabilities in a finite table. As we will see below, we can't do this for a continuous random variable hence why a probabilty distribution table only has meaning in the context of a discrete random variable.
 
-## Example of a Continuous Probability Distribution
+## Continuous Probability Distribution
 
 In the example above, Y was a discrete random variable. When the outcomes are discrete we have the ability to directly measure the probability of each outcome. Any probability distributions based on a discrete random variable is classified as a "discrete probability distribution" (which is what `r fig_nums("prob_distr_example.fig.cap", display = "cite")` is).
 
@@ -121,22 +123,59 @@ diamonds %>%
   ggplot(aes(x = price)) +
   geom_density() +
   xlab("X (Diamond Price)") +
-  ylab("Density f(X)")
+  ylab("f(X)")
 ```
 
-This "curve" is what is called a probability density function (pdf) which is used to describe the probability distribution of a continuous random variable. Formally, this function takes the form of:
+This "curve" is what is called a probability density function (pdf) which is used to describe the probability distribution of a continuous random variable. 
 
+### Properties of Probability Mass/Density Functions
 
-<div>
-$$P(a \leq X \leq b) = \int_{a}^{b} f_X(x) dx$$
-</div>
+There are a few key properites of a pmf, <span class="inlinecode">$f(X)$</span>:
 
+1. <span class="inlinecode">$f(X = x) > 0$ where <span class="inlinecode">$x \in S_{X}$</span> (<span class="inlinecode">$S_{X}$</span> = sample space of X).
 
+1. Since we can directly measure the probability of an event for discrete random variables, then 
 
-The benefit of working with probability density is that we are no longer tied to a bin width. So if we are interested in knowing the probability of getting a diamond between some interval \[A-B]\, then this simply becomes:
+    <div>
+    $$P(X = x) = f(X = x)$$
+    </div>
 
+1. The probability of all possible events must sum to 1:
 
-# References
+    <div>
+    $$\sum_{x \in S_{X}} f(X) = 1$$
+    </div>
+
+The key properites of a pdf, <span class="inlinecode">f(Y)</span>, are very similar to a pmf. The big difference is that **we need to think in terms of intervals instead of individual outcomes**. This means we have to work with integrals and not summations:
+
+1. <span class="inlinecode">$f(Y = y) > 0$ where <span class="inlinecode">$y \in S_{Y}$</span> (<span class="inlinecode">$S_{Y}$</span> = sample space of Y). This property is the same as for a pmf.
+
+1. The probability of a value y belonging to an interval [a, b] is:
+
+    <div>
+    $$P(a \leq y \leq b) = \int_{a}^{b} f(Y) \,dy$$
+    </div>
+
+    In other words, the probability of <span class="inlinecode">$x \in [a, b]$</span> is equivalent to taking the integral of the pdf between a and b.
+
+1. The entire area under the pdf must sum to 1.
+
+    <div>
+    $$\int_{-\infty}^{\infty} f(Y) \,dy = 1$$
+    </div>
+
+## Summary
+
+The big take home messages are as follows:
+
+* A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. There are two types of probability distributions:
+    + Discrete probability distribution for discrete random variables.
+    + Continuous probability distribution for continuous random variables.
+* We can directly calculate probabilites of a discrete random variable, X = x, as the proportion of times the x value occurs in the random process.
+* Probabilites of a continuous random variable, Y = y, are **not** directly measureable. Instead, we calculate the probability as the proportion of times y occurs in an interval [a, b].
+* Probability mass functions (pmf) is used to describe a discrete probability distribution. While a probability density functions (pdf) is used to describe a continuous probability distribution.
+  
+## References
 
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 * [Probability Distribution Table - Intro with tossing a coin 3 times](https://www.youtube.com/watch?v=5lpqiGixDd0)
@@ -144,8 +183,9 @@ The benefit of working with probability density is that we are no longer tied to
 * [Continuous Probability Distribution](http://stattrek.com/statistics/dictionary.aspx?definition=Continuous%20probability%20distribution)
 * [Khan Academy - Probability density function](https://www.youtube.com/watch?v=Fvi9A_tEmXQ)
 * [PennState STAT 414/415 - Probability Density Functions](https://onlinecourses.science.psu.edu/stat414/node/97)
+* [What is the relationship between the probability mass, density, and cumulative distribution functions?](https://www.quora.com/What-is-the-relationship-between-the-probability-mass-density-and-cumulative-distribution-functions)
 
-# R Session
+## R Session
 
 ```{r session}
 devtools::session_info()
