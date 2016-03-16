@@ -49,12 +49,12 @@ We let our random variable Y serve as a way to map the number of heads we get to
 
 So now that we have this random variable and the possible values this variable can take, let's try to figure out the associated probabilities of each outcome. 
 
-1. <span class="inlinecode">$P(Y = 0)$</span>: The only way we can get 0 heads is if all 3 coin flips gives a tail. The only outcome that satisfies this is the TTT outcome. This means the probability P(Y = 0) = 1/8.
-1. <span class="inlinecode">$P(Y = 1)$</span>: To get 1 head, the outcomes HTT, THT, and TTH satisfy this. So this means 3/8.
-1. <span class="inlinecode">$P(Y = 2)$</span>: To get 2 heads, the outcomes HHT, HTH, and THH satisfy this. So this means 3/8.
-1. <span class="inlinecode">$P(Y = 3)$</span>: The only way we can get 3 heads is if all 3 coin flips gives a head The only outcome that satisfies this is the TTT outcome. This means the probability P(Y = 3) = 1/8.
-   
-With these values and probabilites, we can visualize our probability distribution like this:
+1. <span class="inlinecode">$P(Y = 0)$</span>: The only way we can get 0 heads is if all 3 coin flips gives a tail. The only outcome that satisfies this is the TTT outcome. This means the probability <span class="inlinecode">$P(Y = 0) = \frac{1}{8}$</span>.
+1. <span class="inlinecode">$P(Y = 1)$</span>: To get 1 head, the outcomes HTT, THT, and TTH satisfy this. So this means <span class="inlinecode">$P(Y = 1) = \frac{3}{8}$</span>.
+1. <span class="inlinecode">$P(Y = 2)$</span>: To get 2 heads, the outcomes HHT, HTH, and THH satisfy this. So this means <span class="inlinecode">$P(Y = 2) = \frac{3}{8}$</span>.
+1. <span class="inlinecode">$P(Y = 3)$</span>: The only way we can get 3 heads is if all 3 coin flips gives a head The only outcome that satisfies this is the TTT outcome. This means the probability <span class="inlinecode">$P(Y = 3) = \frac{1}{8}$</span>.
+
+What we have just described is called a "**probability mass function (pmf)**" which is a function that defines the probability of a discrete random variables taking on a given value. When we take all the possible values and associated probabilities into consideration, this is called a discrete probability distribution (as defined by a pmf). We can visualize this particular pmf as follows:
 
 ```{r prob_distr_example, warning = FALSE, message = FALSE}
 library("ggplot2")
@@ -71,29 +71,17 @@ prob.distr.df %>%
   ylab("Probability")
 ```
 
-`r fig_nums("prob_distr_example.fig.cap", "Probability Distribution of Random Variable Y. The x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes.")`
+`r fig_nums("prob_distr_example.fig.cap", "Discrete Probability Distribution of Random Variable Y. The x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes.")`
+
+You might sometimes see the term a probability distribution table. This is just the same thing as a pmf. The name likely stems from the fact that there are a finite number of outcomes and and so we can represent these outcomes and their associated probabilities in a finite table. As we will see below, we can't do this for a continuous random variable hence why a probabilty distribution table only has meaning in the context of a discrete random variable.
 
 ## Example of a Continuous Probability Distribution
 
 In the example above, Y was a discrete random variable. When the outcomes are discrete we have the ability to directly measure the probability of each outcome. Any probability distributions based on a discrete random variable is classified as a "discrete probability distribution" (which is what `r fig_nums("prob_distr_example.fig.cap", display = "cite")` is).
 
-When the random variable is continuous, then things get a little more complicated. **We are not able to directly measure the probability of a specific continuous value**. This may seem a big confusing at first, but imagine you had a random variable X that measured the price of a diamond. 
+When the random variable is continuous, then things get a little more complicated. **We are not able to directly measure the probability of a specific continuous value**. This may seem a big confusing at first, but imagine you had a random variable X that measured the price of a diamond. Now what if someone asked you the following question: If you sampled a single diamond, what is the probability that its **exact** price is \$326.57? Not \$326.58 or \$326.56, but exactly \$326.57? 
 
-To make this more concrete, we will use the diamond dataset from ggplot2 to illustrate this example. First let's plot the histogram of diamond prices of 53940 diamonds:
-
-```{r, warning = FALSE, message = FALSE}
-library("dplyr")
-library("ggplot2")
-
-diamonds %>%
-  ggplot(aes(x = price)) +
-  geom_histogram() +
-  xlab("X (Diamond Price)")
-```
-
-Imagine you were asked you the following question: If you sampled a single diamond, what is the probability that its **exact** price is \$326.57? Not \$326.58 or \$326.56, but exactly \$326.57? 
-
-If you think of it that way, then the probability of getting a diamond with that exact price is probably really low. In fact, the probability of any exact price is really low. **This is why the concept of probability in the continous scale doesn't make sense**. Instead, what we do is "discretize" the sample space. For instance, we can "discretize" the prices into bins of size \$100:
+If you think of it that way, then the probability of getting a diamond with that exact price is probably really low. In fact, the probability of any exact price is really low. **This is why the concept of probability in the continous scale doesn't make sense**. Instead, what we do is "discretize" the sample space so that we can work in intervals instead of individual outcome values. To make this more concrete, we will use the diamond dataset from ggplot2 to illustrate this example. First, let's plot a summary histogram of the diamond prices for 53940 diamonds and use interval sizes of 100 (to represent \$100 intervals).
 
 ```{r, warning = FALSE, message = FALSE}
 diamonds %>%
@@ -122,21 +110,21 @@ prob.mass
 When we talk about the probability of a discrete outcome falling into a bin like this, then this type of probability is called a "probability mass". As the probability mass is dependent on the bin width, the "probability density" is used to represent the ratio of the probability mass to bin width (interval):
 
 ```{r}
-prob.dens <- prob.mass / (62 - 60)
+prob.dens <- prob.mass / 100
 prob.dens
 ```
 
-To get more precision, we would want our intervals to be small since wide intervals are not very informative. Ideally, our intervals should be infinitesimally small. Thankfully we have computers that can perform this calculation for us:
+To get more precision, we would want our intervals to be small since wide intervals are not very informative. Ideally, our intervals should be infinitesimally small. When we do this, we produce something that starts to resemble a "curve" (here we use [kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation) to estimate the curve).
 
 ```{r}
 diamonds %>%
   ggplot(aes(x = price)) +
   geom_density() +
   xlab("X (Diamond Price)") +
-  ylab("Density")
+  ylab("Density f(X)")
 ```
 
-This is what is called a "probability density function" (pdf) which is used to describe a continuous probability distribution. Formally, this function takes the form of:
+This "curve" is what is called a probability density function (pdf) which is used to describe the probability distribution of a continuous random variable. Formally, this function takes the form of:
 
 
 <div>
@@ -155,3 +143,10 @@ The benefit of working with probability density is that we are no longer tied to
 * [What is a Probability Distribution?](http://stattrek.com/probability-distributions/probability-distribution.aspx)
 * [Continuous Probability Distribution](http://stattrek.com/statistics/dictionary.aspx?definition=Continuous%20probability%20distribution)
 * [Khan Academy - Probability density function](https://www.youtube.com/watch?v=Fvi9A_tEmXQ)
+* [PennState STAT 414/415 - Probability Density Functions](https://onlinecourses.science.psu.edu/stat414/node/97)
+
+# R Session
+
+```{r session}
+devtools::session_info()
+```
