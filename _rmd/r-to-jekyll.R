@@ -43,6 +43,11 @@ if (!is.null(arguments$imgdir)) {
   todir <- paste0("../assets/", arguments$imgdir)
 }
 
+# Create asset folder if doesn't exist
+if (!file.exists(todir)) {
+	dir.create(todir)
+}
+
 pics <- list.files(fromdir)
 pics <- sapply(pics, function(x) paste(fromdir, x, sep="/"))
 file.copy(pics, todir, overwrite = TRUE)

@@ -7,14 +7,7 @@ output:
 tags: [R, stats]
 ---
 
-```{r echo = FALSE}
-library("knitr")
-library("captioner")
-library("magrittr")
-library("captioner")
-knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/prob-distr/",
-                      dev = "svg")
-```
+
 
 A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. There are two types of probability distributions: discrete and continuous probability distribution. As you might have guessed, a discrete probability distribution is used when we have a discrete random variable. A continuous probability distribution is used when we have a continuous random variable. 
 
@@ -58,7 +51,8 @@ So now that we have this random variable and the possible values this variable c
 
 What we have just described is called a "**probability mass function (pmf)**" which is a function,  <span class="inlinecode">$f(X)$</span>, that defines the probability of the discrete random variable X taking on a particular value x. When we take all the possible values (sample space) and associated probabilities into consideration, it is called a discrete probability distribution (as defined by a pmf). We can visualize this particular pmf as follows:
 
-```{r discrete_prob_distr_example, fig.height = 5, warning = FALSE, message = FALSE}
+
+~~~r
 library("ggplot2")
 library("dplyr")
 
@@ -71,7 +65,9 @@ prob.distr.df %>%
   ylim(c(0, 1)) +
   xlab("X (Number of Heads)") + 
   ylab("f(X) Probability")
-```
+~~~
+
+![plot of chunk discrete_prob_distr_example]({{ site.url }}/assets/prob-distr/discrete_prob_distr_example-1.svg)
 
 Here we have a discrete probability distribution of the random variable Y. The x-axes shows the different outcomes of the random variable while the y-axes shows the corresponding probabilities of these outcomes
 
@@ -83,46 +79,63 @@ In the example above, X was a discrete random variable. When the outcomes are di
 
 If you think of it that way, then the probability of getting a diamond with that exact price is probably really low. In fact, the probability of any exact price is really low. **This is why the concept of probability for a given value when the value is on a continous scale doesn't make sense**. Instead, what we do is "discretize" the sample space so that we can work in intervals instead of individual values. To make this more concrete, we will use the diamond dataset from ggplot2 to illustrate this example. First, let's plot a summary histogram of the diamond prices for 53940 diamonds and use an interval size of 100 (to represent \$100 intervals):
 
-```{r diamond_hist, fig.height = 5, warning = FALSE, message = FALSE}
+
+~~~r
 diamonds %>%
   ggplot(aes(x = price)) +
   geom_histogram(binwidth = 100) +
   xlab("Y (Diamond Price)") +
   ylab("Number of Diamonds")
-```
+~~~
+
+![plot of chunk diamond_hist]({{ site.url }}/assets/prob-distr/diamond_hist-1.svg)
 
 Once we have these intervals of data, we can start talking about proportion of samples falling into intervals For instance, we can ask the question what is the probability of a diamond having a price between \$1000 and \$1100:
 
-```{r}
+
+~~~r
 num.diamonds.in.bin <- 
   diamonds %>%
   filter(price > 1000, price < 1100) %>%
   nrow()
-```
+~~~
 
-A total of `r num.diamonds.in.bin` diamonds fall in this interval which equates to the following proportion of all diamonds in the dataset:
+A total of 1832 diamonds fall in this interval which equates to the following proportion of all diamonds in the dataset:
 
-```{r}
+
+~~~r
 prob.mass <- num.diamonds.in.bin / nrow(diamonds)
 prob.mass
-```
+~~~
+
+~~~
+## [1] 0.03396366
+~~~
 
 When we talk about the proportion of outcomes falling into an interval like this, then this is called a "probability mass". As the probability mass is dependent on the interval size, the "probability density" is used to represent the ratio of the probability mass to interval size:
 
-```{r}
+
+~~~r
 prob.dens <- prob.mass / 100
 prob.dens
-```
+~~~
+
+~~~
+## [1] 0.0003396366
+~~~
 
 To get more precision, we would want our intervals to be small since wide intervals are not very informative. Ideally, our intervals should be infinitesimally small. When we do this, we produce something that starts to resemble a "curve" (here we use [kernel density estimation](https://en.wikipedia.org/wiki/Kernel_density_estimation) to estimate the curve).
 
-```{r diamond_pdf, fig.height = 5}
+
+~~~r
 diamonds %>%
   ggplot(aes(x = price)) +
   geom_density() +
   xlab("Y (Diamond Price)") +
   ylab("f(Y) Density")
-```
+~~~
+
+![plot of chunk diamond_pdf]({{ site.url }}/assets/prob-distr/diamond_pdf-1.svg)
 
 This "curve", <span class="inlinecode">$f(Y)$</span>, is called a probability density function (pdf) which is used to describe the probability distribution of a continuous random variable. 
 
@@ -185,6 +198,58 @@ Hopefully this post shed a bit of light on what a probability distribution and h
 
 ## R Session
 
-```{r session}
+
+~~~r
 devtools::session_info()
-```
+~~~
+
+~~~
+## Session info --------------------------------------------------------------
+~~~
+
+~~~
+##  setting  value                       
+##  version  R version 3.2.2 (2015-08-14)
+##  system   x86_64, darwin14.5.0        
+##  ui       X11                         
+##  language (EN)                        
+##  collate  en_CA.UTF-8                 
+##  tz       America/Vancouver           
+##  date     2016-03-17
+~~~
+
+~~~
+## Packages ------------------------------------------------------------------
+~~~
+
+~~~
+##  package    * version    date       source                      
+##  argparse   * 1.0.1      2014-04-05 CRAN (R 3.2.2)              
+##  assertthat   0.1        2013-12-06 CRAN (R 3.2.2)              
+##  captioner  * 2.2.3.9000 2015-09-04 local                       
+##  colorspace   1.2-6      2015-03-11 CRAN (R 3.2.2)              
+##  DBI          0.3.1      2014-09-24 CRAN (R 3.2.2)              
+##  devtools     1.10.0     2016-01-23 CRAN (R 3.2.2)              
+##  digest       0.6.9      2016-01-08 CRAN (R 3.2.2)              
+##  dplyr      * 0.4.3      2015-09-01 CRAN (R 3.2.2)              
+##  evaluate     0.8.3      2016-03-05 CRAN (R 3.2.2)              
+##  findpython   1.0.1      2014-04-03 CRAN (R 3.2.2)              
+##  formatR      1.3        2016-03-05 CRAN (R 3.2.2)              
+##  getopt       1.20.0     2013-08-30 CRAN (R 3.2.2)              
+##  ggplot2    * 2.1.0      2016-03-01 CRAN (R 3.2.2)              
+##  gtable       0.2.0      2016-02-26 CRAN (R 3.2.2)              
+##  knitr      * 1.12.19    2016-03-08 Github (yihui/knitr@6f19de3)
+##  labeling     0.3        2014-08-23 CRAN (R 3.2.2)              
+##  lazyeval     0.1.10     2015-01-02 CRAN (R 3.2.2)              
+##  magrittr   * 1.5        2014-11-22 CRAN (R 3.2.2)              
+##  memoise      0.2.1      2014-04-22 CRAN (R 3.2.2)              
+##  munsell      0.4.3      2016-02-13 CRAN (R 3.2.2)              
+##  plyr         1.8.3      2015-06-12 CRAN (R 3.2.2)              
+##  proto      * 0.3-10     2012-12-22 CRAN (R 3.2.2)              
+##  R6           2.1.2      2016-01-26 CRAN (R 3.2.2)              
+##  Rcpp         0.12.3     2016-01-10 CRAN (R 3.2.2)              
+##  rjson        0.2.15     2014-11-03 CRAN (R 3.2.2)              
+##  scales       0.4.0      2016-02-26 CRAN (R 3.2.2)              
+##  stringi      1.0-1      2015-10-22 CRAN (R 3.2.2)              
+##  stringr      1.0.0      2015-04-30 CRAN (R 3.2.2)
+~~~
