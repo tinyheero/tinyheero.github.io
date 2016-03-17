@@ -22,14 +22,14 @@ There isn't anything special about the numeric values I chose here. I could have
 * X = 500 if the flip of the coin is a head
 * X = 25 if the flip of the coin is a tail
 
-And this would still be a random variable. But the numeric values in the first random variable are more intuitive of course. As another example, let's say we have a random process of flipping a coin 5 times. We can assign a random variable Y (just to show there is nothing special about using X) that maps the number of heads we get from the 5 coin flips to numeric values:
+And this would still be a random variable. But the numeric values in the first random variable are more intuitive of course. As another example, let's say we have a random process of flipping a coin 5 times. We can assign a random variable X that maps the number of heads we get from the 5 coin flips to numeric values:
 
-* Y = 0 if no heads
-* Y = 1 if 1 head
-* Y = 2 if 2 heads
-* Y = 3 if 3 heads
-* Y = 4 if 4 heads
-* Y = 5 if 5 heads
+* X = 0 if no heads
+* X = 1 if 1 head
+* X = 2 if 2 heads
+* X = 3 if 3 heads
+* X = 4 if 4 heads
+* X = 5 if 5 heads
 
 <div class="alert alert-dismissible alert-info">
 <h4>Why is it a Random Process?</h4>
@@ -38,11 +38,11 @@ The flipping of a coin is a random process because each flip of the coin can pro
 
 ## Why Random Variables?
 
-Now that we have defined what a random variable is, the next logical question is why are we even doing this? The major reason for declaring random variables is because it provides us a way to ask questions about the random process in a concise mathematical way. If we go back to the random process of flipping 5 coins and use the random variable Y to map the number of heads we get, then we can easily represent questions about the process like this:
+Now that we have defined what a random variable is, the next logical question is why are we even doing this? The major reason for declaring random variables is because it provides us a way to ask questions about the random process in a concise mathematical way. If we go back to the random process of flipping 5 coins and use the random variable X to map the number of heads we get, then we can easily represent questions about the process like this:
 
-1. <span class="inlinecode">$P(Y = 2)$</span>
-1. <span class="inlinecode">$P(Y < 4)$</span>
-1. <span class="inlinecode">$P(Y > 1)$</span>
+1. <span class="inlinecode">$P(X = 2)$</span>
+1. <span class="inlinecode">$P(X < 4)$</span>
+1. <span class="inlinecode">$P(X > 1)$</span>
 
 These 3 questions equate to:
 
