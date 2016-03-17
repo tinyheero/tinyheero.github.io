@@ -15,7 +15,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 1. Probabilities
     * [Random Variables]({% post_url 2016-02-26-random-variables %})
-    * Probability Distributions
+    * [Probability Distributions]({% post_url 2016-03-17-prob-distr %})
     * Joint Probability
     * Marginal Probability
     * Conditional Probability
