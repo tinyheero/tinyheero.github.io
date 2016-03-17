@@ -162,6 +162,67 @@ The key properites of a pdf, <span class="inlinecode">$f(Y)$</span>, are very si
     $$\int_{-\infty}^{\infty} f(Y) \,dy = 1$$
     </div>
 
+## Types of Probability Mass/Density Functions
+
+So how do we actually figure out what the pmf/pdf is of a random variable? Thankfully, we don't actually need to figure this out. A lot of brillant statisticians have done the leg work for us in deriving pmf/pdf that we can readily use (e.g. binomial/gaussian). You may have heard the phrase that random variable "Y follows a gaussian distribution". What this means is that they are assuming the data being generated comes from a normal distributions. Making these assumptions allows us to leverage off the known properties of well-established probability distributions. For instance, we know that the pdf of a gaussian is:
+
+<div>
+$$f(Y \,|\, \mu, \sigma^{2}) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x - \mu)^{2}}{2\sigma^{2}}}$$
+</div>
+
+This is parameterized by a mean <span class="inlinecode">$\mu$</span> and a standard deviation <span class="inlinecode">$\sigma$</span>. A standard gaussian (<span class="inlinecode">$\mu = 0, \sigma = 1$</span>) would look like this. 
+
+```{r std_normal_distr, fig.height = 5}
+set.seed(1)
+
+vals <- rnorm(200)
+
+# dnorm provides the probability density
+data.frame(x = vals) %>%
+  ggplot(aes(x = vals)) +
+  stat_function(fun = dnorm) +
+  ylab("Density")
+```
+
+Just like before, we can ask questions like <span class="inlinecode">$P(-2 \leq y \leq 2)$</span> and use the gaussian pdf to answer this question:
+
+```{r}
+# pnorm provides the probability 
+pnorm(2) - pnorm(-2)
+```
+
+`pnorm(y)` function is essentially taking the integral from <span class="inlinecode">$-\infty$</span> to <span class="inlinecode">$y$</span>:
+
+<div>
+$$\int_{-\infty}^{y} f(Y) \,dy$$
+</div>
+
+So what we are doing here is:
+
+<div>
+$$\int_{-2}^{2} f(Y) \,dy = \int_{-\infty}^{2} f(Y) \,dy - \int_{-\infty}^{-2} f(Y) \,dy$$
+</div>
+
+This effectively calculates the area between -2 and 2:
+
+```{r std_normal_distr_integral, fig.height = 5}
+# dnorm provides the probability density
+data.frame(x = vals) %>%
+  ggplot(aes(x = vals)) +
+  stat_function(fun = dnorm) +
+  ylab("Density") +
+  geom_vline(xintercept = -2, linetype = "dotted", color = "red") +
+  geom_vline(xintercept = 2, linetype = "dotted", color = "red")
+```
+
+So basically by making assumptions that our random variables follow an established probability distribution, we can make use of already known pmf/pdf and apply the same principles that we learned above to ask questions we have about the data. One caveat of this approach is that our assumption could be wrong. **This means that one needs to be careful when deciding on a particular probability distribution**.
+
+Thankfully there are some well established principles already to help us. The figure below provides a decision tree that gives you an idea of what are some common probability distributions that one can use given the data they have in hand:
+
+![Overview of Common Probability Distributions]({{ site.url }}/assets/prob-distr/overview-prob-distr.png)
+
+This is Figure 6A.15 (Pg 61) from [Probabilistic approaches to risk by Aswath Damodaran](http://people.stern.nyu.edu/adamodar/pdfiles/papers/probabilistic.pdf).
+
 ## Summary
 
 Hopefully this post shed a bit of light on what a probability distribution and how we can describe them using probability mass/density functions. The big take home messages are as follows:
@@ -172,6 +233,7 @@ Hopefully this post shed a bit of light on what a probability distribution and h
 * We can directly calculate probabilites of a discrete random variable, X = x, as the proportion of times the x value occurs in the random process.
 * Probabilites of a continuous random variable taking on a specific value (e.g. Y = y) are **not directly measureable**. Instead, we calculate the probability as the proportion of times <span class="inlinecode">$y \in [a, b]$</span>.
 * Probability mass functions (pmf) are used to describe discrete probability distributions. While probability density functions (pdf) are used to describe continuous probability distributions.
+* There are already established probability distributions with pmf/pdf (e.g. binomial/gaussian) that we can use in our work.
   
 ## References
 
