@@ -175,9 +175,81 @@ The key properites of a pdf, <span class="inlinecode">$f(Y)$</span>, are very si
     $$\int_{-\infty}^{\infty} f(Y) \,dy = 1$$
     </div>
 
+## Types of Probability Mass/Density Functions
+
+You may have heard the phrase that random variable "Y follows a [insert name of] distribution". What this means is that they are assuming the data being generated comes from a particular well studied distribution. In statistics, there exists many discrete (e.g. binomial, negative binomial) and continuous (e.g. gaussian, student-t) distributions that have been well studied. So by making the assumption that a random variable follows a particular distribution, we can use the distribution's derived pmf/pdf and established properties to help us answer questions about the data. For instance, we know that the pdf of a gaussian is:
+
+<div>
+$$f(Y \,|\, \mu, \sigma^{2}) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x - \mu)^{2}}{2\sigma^{2}}}$$
+</div>
+
+It is parameterized by a mean <span class="inlinecode">$\mu$</span> and a standard deviation <span class="inlinecode">$\sigma$</span> while being symmetrical around the mean. A standard gaussian (<span class="inlinecode">$\mu = 0, \sigma = 1$</span>) would look like this. 
+
+
+~~~r
+set.seed(1)
+
+vals <- rnorm(200)
+
+# dnorm provides the probability density
+data.frame(x = vals) %>%
+  ggplot(aes(x = vals)) +
+  stat_function(fun = dnorm) +
+  ylab("Density")
+~~~
+
+![plot of chunk std_normal_distr]({{ site.url }}/assets/prob-distr/std_normal_distr-1.svg)
+
+Just like before, we can ask questions like <span class="inlinecode">$P(-2 \leq y \leq 2)$</span> and use the gaussian pdf to answer this question:
+
+
+~~~r
+# pnorm provides the probability 
+pnorm(2) - pnorm(-2)
+~~~
+
+~~~
+## [1] 0.9544997
+~~~
+
+`pnorm(y)` function is essentially taking the integral from <span class="inlinecode">$-\infty$</span> to <span class="inlinecode">$y$</span>:
+
+<div>
+$$\int_{-\infty}^{y} f(Y) \,dy$$
+</div>
+
+So what we are doing here is:
+
+<div>
+$$\int_{-2}^{2} f(Y) \,dy = \int_{-\infty}^{2} f(Y) \,dy - \int_{-\infty}^{-2} f(Y) \,dy$$
+</div>
+
+This effectively calculates the area between -2 and 2:
+
+
+~~~r
+# dnorm provides the probability density
+data.frame(x = vals) %>%
+  ggplot(aes(x = vals)) +
+  stat_function(fun = dnorm) +
+  ylab("Density") +
+  geom_vline(xintercept = -2, linetype = "dotted", color = "red") +
+  geom_vline(xintercept = 2, linetype = "dotted", color = "red")
+~~~
+
+![plot of chunk std_normal_distr_integral]({{ site.url }}/assets/prob-distr/std_normal_distr_integral-1.svg)
+
+One caveat of this approach is that our assumption could be wrong. **This means that one needs to be careful when deciding what type of probability distribution a random variable follows**.
+
+Thankfully there are some well established principles that can help us. The figure below provides a decision tree that gives you an idea of some common probability distributions that one can use given the data they have in hand:
+
+![Overview of Common Probability Distributions]({{ site.url }}/assets/prob-distr/overview-prob-distr.png)
+
+This is Figure 6A.15 (Pg 61) from [Probabilistic approaches to risk by Aswath Damodaran](http://people.stern.nyu.edu/adamodar/pdfiles/papers/probabilistic.pdf).
+
 ## Summary
 
-Hopefully this post shed a bit of light on what a probability distribution and how we can describe them using probability mass/density functions. The big take home messages are as follows:
+Hopefully this post sheds a bit of light on what a probability distribution and how we can describe them using probability mass/density functions. The big take home messages are as follows:
 
 * A probability distribution is a way to represent the possible values and the respective probabilities of a random variable. There are two types of probability distributions:
     + Discrete probability distribution for discrete random variables.
@@ -185,6 +257,7 @@ Hopefully this post shed a bit of light on what a probability distribution and h
 * We can directly calculate probabilites of a discrete random variable, X = x, as the proportion of times the x value occurs in the random process.
 * Probabilites of a continuous random variable taking on a specific value (e.g. Y = y) are **not directly measureable**. Instead, we calculate the probability as the proportion of times <span class="inlinecode">$y \in [a, b]$</span>.
 * Probability mass functions (pmf) are used to describe discrete probability distributions. While probability density functions (pdf) are used to describe continuous probability distributions.
+* By assuming a random variable follows an established probability distribution, we can use its derived pmf/pdf and established principles to answer questions we have about the data.
   
 ## References
 
@@ -210,12 +283,12 @@ devtools::session_info()
 ~~~
 ##  setting  value                       
 ##  version  R version 3.2.2 (2015-08-14)
-##  system   x86_64, darwin14.5.0        
-##  ui       X11                         
+##  system   x86_64, darwin13.4.0        
+##  ui       unknown                     
 ##  language (EN)                        
 ##  collate  en_CA.UTF-8                 
 ##  tz       America/Vancouver           
-##  date     2016-03-17
+##  date     2016-03-18
 ~~~
 
 ~~~
@@ -223,33 +296,33 @@ devtools::session_info()
 ~~~
 
 ~~~
-##  package    * version    date       source                      
-##  argparse   * 1.0.1      2014-04-05 CRAN (R 3.2.2)              
-##  assertthat   0.1        2013-12-06 CRAN (R 3.2.2)              
-##  captioner  * 2.2.3.9000 2015-09-04 local                       
-##  colorspace   1.2-6      2015-03-11 CRAN (R 3.2.2)              
-##  DBI          0.3.1      2014-09-24 CRAN (R 3.2.2)              
-##  devtools     1.10.0     2016-01-23 CRAN (R 3.2.2)              
-##  digest       0.6.9      2016-01-08 CRAN (R 3.2.2)              
-##  dplyr      * 0.4.3      2015-09-01 CRAN (R 3.2.2)              
-##  evaluate     0.8.3      2016-03-05 CRAN (R 3.2.2)              
-##  findpython   1.0.1      2014-04-03 CRAN (R 3.2.2)              
-##  formatR      1.3        2016-03-05 CRAN (R 3.2.2)              
-##  getopt       1.20.0     2013-08-30 CRAN (R 3.2.2)              
-##  ggplot2    * 2.1.0      2016-03-01 CRAN (R 3.2.2)              
-##  gtable       0.2.0      2016-02-26 CRAN (R 3.2.2)              
-##  knitr      * 1.12.19    2016-03-08 Github (yihui/knitr@6f19de3)
-##  labeling     0.3        2014-08-23 CRAN (R 3.2.2)              
-##  lazyeval     0.1.10     2015-01-02 CRAN (R 3.2.2)              
-##  magrittr   * 1.5        2014-11-22 CRAN (R 3.2.2)              
-##  memoise      0.2.1      2014-04-22 CRAN (R 3.2.2)              
-##  munsell      0.4.3      2016-02-13 CRAN (R 3.2.2)              
-##  plyr         1.8.3      2015-06-12 CRAN (R 3.2.2)              
-##  proto      * 0.3-10     2012-12-22 CRAN (R 3.2.2)              
-##  R6           2.1.2      2016-01-26 CRAN (R 3.2.2)              
-##  Rcpp         0.12.3     2016-01-10 CRAN (R 3.2.2)              
-##  rjson        0.2.15     2014-11-03 CRAN (R 3.2.2)              
-##  scales       0.4.0      2016-02-26 CRAN (R 3.2.2)              
-##  stringi      1.0-1      2015-10-22 CRAN (R 3.2.2)              
+##  package    * version    date       source        
+##  argparse   * 1.0.1      2014-04-05 CRAN (R 3.2.2)
+##  assertthat   0.1        2013-12-06 CRAN (R 3.2.2)
+##  captioner  * 2.2.3.9000 2015-09-16 local         
+##  colorspace   1.2-6      2015-03-11 CRAN (R 3.2.2)
+##  DBI          0.3.1      2014-09-24 CRAN (R 3.2.2)
+##  devtools     1.9.1      2015-09-11 CRAN (R 3.2.2)
+##  digest       0.6.9      2016-01-08 CRAN (R 3.2.2)
+##  dplyr      * 0.4.3      2015-09-01 CRAN (R 3.2.2)
+##  evaluate     0.8        2015-09-18 CRAN (R 3.2.2)
+##  findpython   1.0.1      2014-04-03 CRAN (R 3.2.2)
+##  formatR      1.2.1      2015-09-18 CRAN (R 3.2.2)
+##  getopt       1.20.0     2013-08-30 CRAN (R 3.2.2)
+##  ggplot2    * 2.0.0      2015-12-18 CRAN (R 3.2.2)
+##  gtable       0.1.2      2012-12-05 CRAN (R 3.2.2)
+##  knitr      * 1.12.7     2016-02-09 local         
+##  labeling     0.3        2014-08-23 CRAN (R 3.2.2)
+##  lazyeval     0.1.10     2015-01-02 CRAN (R 3.2.2)
+##  magrittr   * 1.5        2014-11-22 CRAN (R 3.2.2)
+##  memoise      0.2.1      2014-04-22 CRAN (R 3.2.2)
+##  munsell      0.4.3      2016-02-13 CRAN (R 3.2.2)
+##  plyr         1.8.3      2015-06-12 CRAN (R 3.2.2)
+##  proto      * 0.3-10     2012-12-22 CRAN (R 3.2.2)
+##  R6           2.1.2      2016-01-26 CRAN (R 3.2.2)
+##  Rcpp         0.12.3     2016-01-10 CRAN (R 3.2.2)
+##  rjson        0.2.15     2014-11-03 CRAN (R 3.2.2)
+##  scales       0.3.0      2015-08-25 CRAN (R 3.2.2)
+##  stringi      1.0-1      2015-10-22 CRAN (R 3.2.2)
 ##  stringr      1.0.0      2015-04-30 CRAN (R 3.2.2)
 ~~~
