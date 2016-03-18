@@ -1,0 +1,71 @@
+---
+title: "Basic Probability"
+date: "March 17th, 2016"
+layout: post
+output: 
+  html_document:
+tags: [R, stats]
+---
+
+Probabilites represent the chances of an event occurring. Given a random process (e.g. flipping a coin), probabilities can be numerically quantified by measuring the number of desired outcomes divided by the total number of outcomes. For instance, if we flip a coin the two possible outcomes are head or tails. The probability of getting a head is then 1/2. 
+
+Probabilites may be either marginal, joint or conditional.
+
+```{r echo = FALSE}
+library("knitr")
+```
+
+## Joint Probabilities
+
+
+
+Joint probabilities are
+
+```{r, message = FALSE}
+library("ggplot2")
+library("dplyr")
+library("reshape2")
+library("knitr")
+
+diamonds.prop.df <- 
+  diamonds %>%
+  group_by(color, cut) %>%
+  summarize(n = n()) %>%
+  ungroup() %>%
+  mutate(prop = n / sum(n))
+
+diamonds.prop.df %>%
+  dcast(color ~ cut, value.nar = "prop") %>%
+  kable(align = "l")
+```
+
+## Marginal Probabilities
+
+This is simply the probability of some event a occuring. For instance, the probability of a coin flip giving heads is p(a) = 0.5.
+
+```{r}
+color.marginal.df <- 
+  diamonds.prop.df %>%
+  group_by(color) %>%
+  summarize(marginal = sum(prop))
+
+kable(color.marginal.df, align = "l")
+```
+
+```{r}
+cut.marginal.df <- 
+  diamonds.prop.df %>%
+  group_by(cut) %>%
+  summarize(marginal = sum(prop))
+
+kable(cut.marginal.df, align = "l")
+```
+
+## Conditional Probability
+
+
+
+## References
+
+* [Nicholas School Statistics Review - Joint, Marginal and Conditional Probabilities](http://sites.nicholas.duke.edu/statsreview/probability/jmc/)
+
