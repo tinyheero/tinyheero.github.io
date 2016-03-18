@@ -17,9 +17,7 @@ library("knitr")
 
 ## Joint Probabilities
 
-
-
-Joint probabilities are
+The first type of probability we will discuss is a joint probability which measures the probability of events A and B occurring at the same time. Let's use the diamonds dataset, from ggplot2, to measure the co-occurrence of diamond color and cut. We can represent these data using a "two-way table":
 
 ```{r, message = FALSE}
 library("ggplot2")
@@ -27,36 +25,70 @@ library("dplyr")
 library("reshape2")
 library("knitr")
 
-diamonds.prop.df <- 
+diamonds.color.cut.df <- 
   diamonds %>%
   group_by(color, cut) %>%
-  summarize(n = n()) %>%
+  summarize(n = n())
+
+diamonds.color.cut.df %>%
+  dcast(color ~ cut, value.nar = "n") %>%
+  kable(align = "l")
+```
+
+Joint probabilities can be calculated by taking proportion of times a specific color-cut combination occurs divided by total number of all color-cut combinations:
+
+```{r}
+diamonds.color.cut.prop.df <- 
+  diamonds.color.cut.df %>%
   ungroup() %>%
   mutate(prop = n / sum(n))
 
-diamonds.prop.df %>%
-  dcast(color ~ cut, value.nar = "prop") %>%
+diamonds.color.cut.prop.df %>%
+  dcast(color ~ cut, value.var = "prop") %>%
   kable(align = "l")
 ```
 
 ## Marginal Probabilities
 
-This is simply the probability of some event a occuring. For instance, the probability of a coin flip giving heads is p(a) = 0.5.
+The second type of probability is the marginal probability. The interesting thing about a marginal probability is that the term sounds complicated, but it's actually the probability that we are most familiar with. Basically anytime you are in interested in a single event irrespective of any other event (i.e. "marginalizing the other event"), then it is a marginal probability. For instance, the probability of a coin flip giving a head is considered a marginal probability. Typically, we just say probability and not the marginal part of it because this part only comes into play when we have to factor in a second event. 
+
+To illustrate this, we will go back to our diamond color-cut combination two-way table. We will use the random variable X to represent color and Y to represent cut. If we are interested in say the marginal probabilty P(X = "D"), then basically we are asking "what is the probability of getting a diamond that is color D irrespective its cut?" It should be initutive that we can calculate this information by simply summing up the joint probabilities of the row color D. Mathematically:
+
+<div>
+$$P(X = D) = \sum_{y \in S_{Y}}P(X = D, Y = y)$$
+<div>
+
+Where <span class="inlinecode">$S_{Y}$</span> represents all the possible values of the random variable Y. We can calculate the marginal probability of all the different colors. We can also calculate the marginal probability of cut by using the same logic and summing up the joint probabilities of the columns. For instance, to calculate <span class="inlinecode">P(Y = Fair)</span>,
+
+<div>
+$$P(Y = Fair) = \sum_{x \in S_{X}}P(X = x, Y = Fair)$$
+<div>
+
+Let's add the marginal probabilities to the two way table now:
 
 ```{r}
 color.marginal.df <- 
-  diamonds.prop.df %>%
+  diamonds.color.cut.prop.df %>%
   group_by(color) %>%
   summarize(marginal = sum(prop))
 
-kable(color.marginal.df, align = "l")
+cut.marginal.df <- 
+  diamonds.color.cut.prop.df %>%
+  group_by(cut) %>%
+  summarize(marginal = sum(prop))
+
+diamonds.color.cut.prop.df %>%
+  dcast(color ~ cut, value.var = "prop") %>%
+  left_join(color.marginal.df) %>%
+  bind_rows(
+    cut.marginal.df %>%
+    mutate(color = "marginal") %>%
+    dcast(color ~ cut, value.var = "marginal")
+  ) %>%
+  kable(align = "l")
 ```
 
 ```{r}
-cut.marginal.df <- 
-  diamonds.prop.df %>%
-  group_by(cut) %>%
-  summarize(marginal = sum(prop))
 
 kable(cut.marginal.df, align = "l")
 ```
