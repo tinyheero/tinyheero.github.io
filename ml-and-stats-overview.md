@@ -13,14 +13,11 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 ## Statistics
 
+1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
-    * [Random Variables]({% post_url 2016-02-26-random-variables %})
-    * [Probability Distributions]({% post_url 2016-03-17-prob-distr %})
-    * Joint Probability
-    * Marginal Probability
-    * Conditional Probability
-1. Probabiity Distributions
-    * Continuous
+    * Joint, Marginal, and Conditional Probabilites
+1. [Probability Distributions]({% post_url 2016-03-17-prob-distr %})
+   * Continuous
         + Gaussian (Normal) Distribution
         + Dirichlet Distribution
     * Discrete
@@ -30,8 +27,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Multivariate Hypergeometric Distribution
             - If sampling is done without replacement.
 1. Bayesian Statistics
-    * Classical Frequentist vs. Bayesian 
-    * Bayes' Rule
+   * Classical Frequentist vs. Bayesian 
+   * Bayes' Rule
 
 ### References
 
