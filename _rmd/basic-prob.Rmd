@@ -2,22 +2,25 @@
 title: "Basic Probability"
 date: "March 17th, 2016"
 layout: post
-output: 
+output:
   html_document:
 tags: [R, stats]
 ---
 
-Probabilites represent the chances of an event occurring. Given a random process (e.g. flipping a coin), probabilities can be numerically quantified by measuring the number of desired outcomes divided by the total number of outcomes. For instance, if we flip a coin the two possible outcomes are head or tails. The probability of getting a head is then 1/2. 
+Probabilites represent the chances of an event occurring. Given a random process (e.g. flipping a coin), probabilities can be numerically quantified by measuring the number of desired outcomes divided by the total number of outcomes. For instance, if we flip a coin the two possible outcomes are head or tails. The probability of getting a head is then 1/2.
 
-Probabilites may be either marginal, joint or conditional.
+Probabilites may be either joint, marginal or conditional.
 
 ```{r echo = FALSE}
 library("knitr")
+library("captioner")
+
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
 ## Joint Probabilities
 
-The first type of probability we will discuss is a joint probability which measures the probability of events A and B occurring at the same time. Let's use the diamonds dataset, from ggplot2, to measure the co-occurrence of diamond color and cut. We can represent these data using a "two-way table":
+The first type of probability we will discuss is the joint probability which measures the probability of two different events occurring at the same time. Let's use the diamonds dataset, from ggplot2, to measure the co-occurrence of diamond color and cut. We can represent these data using a "two-way table":
 
 ```{r, message = FALSE}
 library("ggplot2")
@@ -25,17 +28,18 @@ library("dplyr")
 library("reshape2")
 library("knitr")
 
-diamonds.color.cut.df <- 
+diamonds.color.cut.df <-
   diamonds %>%
   group_by(color, cut) %>%
   summarize(n = n())
 
 diamonds.color.cut.df %>%
   dcast(color ~ cut, value.nar = "n") %>%
-  kable(align = "l")
+  kable(align = "l", format = "html",
+        table.attr='class="table table-striped table-hover"')
 ```
 
-Joint probabilities can be calculated by taking proportion of times a specific color-cut combination occurs divided by total number of all color-cut combinations:
+Joint probabilities can be calculated by taking the proportion of times a specific color-cut combination occurs divided by total number of all color-cut combinations:
 
 ```{r}
 diamonds.color.cut.prop.df <- 
@@ -45,8 +49,20 @@ diamonds.color.cut.prop.df <-
 
 diamonds.color.cut.prop.df %>%
   dcast(color ~ cut, value.var = "prop") %>%
-  kable(align = "l")
+  kable(align = "l", format = "html", 
+        table.attr = 'class="table table-striped table-hover"')
 ```
+
+`r tbl.nums("two_way.tbl.cap.lbl","Color-Cut Two Way Probability Table.")`
+
+We can see that certain combinations are more probable than others. 
+
+<div class="alert alert-dismissible alert-info">
+<h4>Heads Up!</h4>
+For brevity and simpler mathematical notions, for the rest of this post we will use the random variable X to represent color and Y to represent cut.
+</div>
+
+For instance, a diamond with the X = G and Y = cut , <span class="inlinecode">$P(X = G, Y= ideal) = 0.09$</span>, is much more probable than a diamond with X = D and Y = fair, <span class="inlinecode">$P(X = D, Y = fair) = 0.003$</span>.
 
 ## Marginal Probabilities
 
@@ -79,25 +95,75 @@ cut.marginal.df <-
 
 diamonds.color.cut.prop.df %>%
   dcast(color ~ cut, value.var = "prop") %>%
-  left_join(color.marginal.df) %>%
+  left_join(color.marginal.df, by = "color") %>%
   bind_rows(
     cut.marginal.df %>%
     mutate(color = "marginal") %>%
     dcast(color ~ cut, value.var = "marginal")
   ) %>%
-  kable(align = "l")
+  kable(align = "l", format = "html",
+        table.attr = 'class="table table-striped table-hover"')
 ```
 
-```{r}
-
-kable(cut.marginal.df, align = "l")
-```
+`r tbl.nums("two_way_marginal.tbl.cap.lbl", "Color-Cut Two Way Probability Table with Marginal Probabilites.")`
 
 ## Conditional Probability
 
+The final type of probability is the conditional probability. A conditional probability is the probability of an event X occurring when a secondary event Y is true. Mathematically, it is represented as <span class="inlinecode">$P(X | Y)$</span>. This is read as "probability of X given/conditioned on Y".
 
+For example, if someone asked you the probability of getting a diamond with the G color - P(X = G)? you could use the `r tbl.nums("two_way_marginal.tbl.cap.lbl", display = "cite")` to find the marginal probability of this event. But what if you had an additional layer of information where you knew that the diamond was also of ideal cut? This slightly changes things as you have a bit more information to work it. 
+
+To work this out, we essential need pieces of information:
+
+1. <span class="inlinecode">$P(Y = ideal)$</span>: Marginal probability of Y = ideal.
+1. <span class="inlinecode">$P(X = G, Y = ideal)$</span>: Joint probability of X = G and Y = ideal.
+
+P(X = G) acts as our baseline (denominator) here so we can calculate the conditional probability as follows:
+
+<div>
+$$P(X = G | Y = ideal) = \frac{P(X = G, Y = ideal)}{P(Y = ideal)}$$
+<div>
+
+So the conditional probability would be in this case:
+
+```{r}
+joint.prob <- 
+  diamonds.color.cut.prop.df %>%
+  filter(color == "G", cut == "Ideal") %>%
+  .$prop
+
+marg.prob <- 
+  cut.marginal.df %>%
+  filter(cut == "Ideal") %>%
+  .$marginal
+
+cond.prob <- joint.prob / marg.prob
+cond.prob
+```
+
+So basically if we didn't factor it any other information, our P(X = G) was
+`r color.marginal.df %>% 
+     filter(color == "G") %>%
+     .$marginal
+`.
+But once we factored in an additional level of information which was Y = ideal, our probability changed to `r cond.prob` as we had more information.
+
+Put another way, we had a "reallocation of our belief" in an event once we factored in additional information. This is actually where we start to venture into a bit of "bayesian" statistics thinking. But we will save that for a subsequent post.
+
+## What about Continuous Random Variables?
+
+In this post's example dataset of diamonds, we used the random variables X and Y to represent diamond colors and cuts respectively. Both of which are discrete random variables. If dealing with continuous random variables, these probabilites still exist with the exception that we are dealing with integrals instead of summation. This means for the mathematical represents of marginal probabilities:
+
+<div>
+$$P(X = D) = \int_{}P(X = D, Y = y)$$
+<div>
+
+## 
+
+## 
 
 ## References
 
 * [Nicholas School Statistics Review - Joint, Marginal and Conditional Probabilities](http://sites.nicholas.duke.edu/statsreview/probability/jmc/)
+* [Chapter 4 - Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 
