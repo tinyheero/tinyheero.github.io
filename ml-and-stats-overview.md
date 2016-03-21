@@ -29,6 +29,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
 1. Bayesian Statistics
    * Classical Frequentist vs. Bayesian 
    * Bayes' Rule
+1. Other
+    * [Confidence Intervals]({% post_url 2015-08-25-how-to-interpret-a-CI %})
 
 ### References
 
