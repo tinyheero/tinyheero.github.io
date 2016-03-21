@@ -1,0 +1,93 @@
+---
+title: "Bayes' Rule"
+date: "March 17th, 2016"
+layout: post
+output:
+  html_document:
+tags: [R, stats]
+---
+
+  
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+```{r echo = FALSE}
+library("knitr")
+library("captioner")
+
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
+```
+
+In my previous post,
+
+Bayes rules can be derived by starting with the conditional probability of <span class="inlinecode">$P(X\ |\ Y)$</span> which is represented as:
+
+<div>
+$$P(X\ |\ Y) = \frac{P(X, Y)}{P(Y)}$$
+</div>
+
+First, let's start by multiplying this with P(Y():
+
+<div>
+$$P(X\ |\ Y)\ P(Y) = P(X, Y)$$
+</div>
+
+We can also perform the algebraic manipulation for <span class="inlinecode">$P(Y\ |\ X)$</span>:
+
+<div>
+$$\begin{align}
+P(Y\ |\ X) &= \frac{P(X, Y)}{P(X)} \\
+P(Y\ |\ X)\ P(X) &= P(X, Y)
+\end{align}$$
+</div>
+
+Notice how we now have two alternative representations of the joint probability <span class="inlinecode">$P(X, Y)$</span>:
+
+<div>
+$$P(X\ |\ Y)\ P(Y) = P(X, Y) = P(Y\ |\ X)\ P(X)$$
+</div>
+
+If we now have divide by P(Y):
+
+<div>
+$$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)}$$
+</div>
+
+This is defined as the Bayes' rule.
+
+## Bayes' Rule and the Two-Way Table
+
+In my [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), we produced a two-way joiny probability table on diamond color-cut:
+
+```{r, message = FALSE}
+library("ggplot2")
+library("dplyr")
+library("reshape2")
+library("knitr")
+
+diamonds.color.cut.df <-
+  diamonds %>%
+  group_by(color, cut) %>%
+  summarize(n = n())
+
+diamonds.color.cut.prop.df <- 
+  diamonds.color.cut.df %>%
+  ungroup() %>%
+  mutate(prop = n / sum(n))
+
+diamonds.color.cut.prop.df %>%
+  dcast(color ~ cut, value.var = "prop") %>%
+  kable(align = "l", format = "html", 
+        table.attr = 'class="table table-striped table-hover"')
+```
+
+## References
+
+## R Session
+
+```{r session, echo = FALSE}
+devtools::session_info()
+```
