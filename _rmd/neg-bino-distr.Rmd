@@ -1,0 +1,11 @@
+---
+title: "Multinomial Distribution"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document
+---
+
+## References
+
+* [Three views of the negative binomial distribution](http://www.johndcook.com/blog/2009/09/22/negative-binomial-distribution/)
