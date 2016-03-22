@@ -1,6 +1,6 @@
 ---
 title: "Joint, Marginal, and Conditional Probabilities"
-date: "March 20th, 2016"
+date: "March 17th, 2016"
 layout: post
 output:
   html_document:
@@ -223,7 +223,9 @@ To illustrate this, we will go back to our diamond color-cut combination two-way
 $$P(X = D) = \sum_{y \in S_{Y}}P(X = D, Y = y)$$
 </div>
 
-Where <span class="inlinecode">$S_{Y}$</span> represents all the possible values of the random variable Y. We can calculate the marginal probability of all the different colors. We can also calculate the marginal probability of cut by using the same logic and summing up the joint probabilities of the columns. For instance, to calculate <span class="inlinecode">$P(Y = Fair)$</span>,
+Where <span class="inlinecode">$S_{Y}$</span> represents all the possible values of the random variable Y. In other words, we are holding X constant (<span class="inlinecode">$X = D$</span>) while iterating over all the possible Y values and summing up the joint probabilities.
+
+We can calculate the marginal probability of all the different colors. We can also calculate the marginal probability of cut by using the same logic and summing up the joint probabilities of the columns. For instance, to calculate <span class="inlinecode">$P(Y = Fair)$</span>,
 
 <div>
 $$P(Y = Fair) = \sum_{x \in S_{X}}P(X = x, Y = Fair)$$
@@ -355,6 +357,12 @@ For example, if someone asked you the probability of getting a diamond with the 
 $$P(X\ |\ Y) = \frac{P(X, Y)}{P(Y)}$$
 </div>
 
+Recall that the marginal probability is simply summing up the joint probabilities while holding one variable constant. So we can further breakdown this equation as follows:
+
+<div>
+$$P(X\ |\ Y) = \frac{P(X, Y)}{\sum_{x \in S_{X}}P(X = x, Y)}$$
+</div>
+
 So for us to work this out for our particular question, we need two pieces of information:
 
 1. <span class="inlinecode">$P(Y = ideal)$</span>: Marginal probability of Y = ideal.
@@ -363,7 +371,7 @@ So for us to work this out for our particular question, we need two pieces of in
 So we can calculate the conditional probability as follows:
 
 <div>
-$$P(X = G | Y = ideal) = \frac{P(X = G, Y = ideal)}{P(Y = ideal)}$$
+$$P(X = G\ |\ Y = ideal) = \frac{P(X = G, Y = ideal)}{\sum_{x \in S_{X}}P(X = x, Y = ideal)}$$
 </div>
 
 So the conditional probability would be in this case:
@@ -391,6 +399,18 @@ cond.prob
 So basically if we didn't factor in any other information, our <span class="inlinecode">$P(X = G)$</span> was
 0.2093437.
 But once we factored in an additional level of information which was Y = ideal, our probability changed to 0.2266252. Put another way, we had a "reallocation of our belief" in an event once we factored in additional information. 
+
+## Defining a Joint Probability Equation
+
+In the conditional and marginal probabilities section, we defined the mathematical equations for them. We can now define a mathematical equation for joint probabilities which actually uses both the conditional and marginal probability equations. Starting with the conditional probability equation, we can do a bit of algebraic manipulation for defining joint probabilities now:
+
+<div>
+$$\begin{align}
+P(X\ |\ Y) &= \frac{P(X, Y)}{P(Y)} \\
+P(X\ |\ Y)\ P(Y) &= P(X, Y) \\
+P(X\ |\ Y)\ \sum_{x \in S_{X}}P(X = x, Y) &= P(X, Y) \\
+\end{align}$$
+</div>
 
 ## What about Continuous Random Variables?
 
@@ -423,12 +443,12 @@ If you've done any statistics or analytics, you'll likely have come across the t
 ~~~
 ##  setting  value                       
 ##  version  R version 3.2.2 (2015-08-14)
-##  system   x86_64, darwin14.5.0        
-##  ui       X11                         
+##  system   x86_64, darwin13.4.0        
+##  ui       unknown                     
 ##  language (EN)                        
 ##  collate  en_CA.UTF-8                 
 ##  tz       America/Vancouver           
-##  date     2016-03-20
+##  date     2016-03-22
 ~~~
 
 ~~~
@@ -436,34 +456,34 @@ If you've done any statistics or analytics, you'll likely have come across the t
 ~~~
 
 ~~~
-##  package    * version    date       source                      
-##  argparse   * 1.0.1      2014-04-05 CRAN (R 3.2.2)              
-##  assertthat   0.1        2013-12-06 CRAN (R 3.2.2)              
-##  captioner  * 2.2.3.9000 2015-09-04 local                       
-##  colorspace   1.2-6      2015-03-11 CRAN (R 3.2.2)              
-##  DBI          0.3.1      2014-09-24 CRAN (R 3.2.2)              
-##  devtools     1.10.0     2016-01-23 CRAN (R 3.2.2)              
-##  digest       0.6.9      2016-01-08 CRAN (R 3.2.2)              
-##  dplyr      * 0.4.3      2015-09-01 CRAN (R 3.2.2)              
-##  evaluate     0.8.3      2016-03-05 CRAN (R 3.2.2)              
-##  findpython   1.0.1      2014-04-03 CRAN (R 3.2.2)              
-##  formatR      1.3        2016-03-05 CRAN (R 3.2.2)              
-##  getopt       1.20.0     2013-08-30 CRAN (R 3.2.2)              
-##  ggplot2    * 2.1.0      2016-03-01 CRAN (R 3.2.2)              
-##  gtable       0.2.0      2016-02-26 CRAN (R 3.2.2)              
-##  highr        0.5.1      2015-09-18 CRAN (R 3.2.2)              
-##  knitr      * 1.12.19    2016-03-08 Github (yihui/knitr@6f19de3)
-##  lazyeval     0.1.10     2015-01-02 CRAN (R 3.2.2)              
-##  magrittr     1.5        2014-11-22 CRAN (R 3.2.2)              
-##  memoise      0.2.1      2014-04-22 CRAN (R 3.2.2)              
-##  munsell      0.4.3      2016-02-13 CRAN (R 3.2.2)              
-##  plyr         1.8.3      2015-06-12 CRAN (R 3.2.2)              
-##  proto      * 0.3-10     2012-12-22 CRAN (R 3.2.2)              
-##  R6           2.1.2      2016-01-26 CRAN (R 3.2.2)              
-##  Rcpp         0.12.3     2016-01-10 CRAN (R 3.2.2)              
-##  reshape2   * 1.4.1      2014-12-06 CRAN (R 3.2.2)              
-##  rjson        0.2.15     2014-11-03 CRAN (R 3.2.2)              
-##  scales       0.4.0      2016-02-26 CRAN (R 3.2.2)              
-##  stringi      1.0-1      2015-10-22 CRAN (R 3.2.2)              
+##  package    * version    date       source        
+##  argparse   * 1.0.1      2014-04-05 CRAN (R 3.2.2)
+##  assertthat   0.1        2013-12-06 CRAN (R 3.2.2)
+##  captioner  * 2.2.3.9000 2015-09-16 local         
+##  colorspace   1.2-6      2015-03-11 CRAN (R 3.2.2)
+##  DBI          0.3.1      2014-09-24 CRAN (R 3.2.2)
+##  devtools     1.9.1      2015-09-11 CRAN (R 3.2.2)
+##  digest       0.6.9      2016-01-08 CRAN (R 3.2.2)
+##  dplyr      * 0.4.3      2015-09-01 CRAN (R 3.2.2)
+##  evaluate     0.8        2015-09-18 CRAN (R 3.2.2)
+##  findpython   1.0.1      2014-04-03 CRAN (R 3.2.2)
+##  formatR      1.2.1      2015-09-18 CRAN (R 3.2.2)
+##  getopt       1.20.0     2013-08-30 CRAN (R 3.2.2)
+##  ggplot2    * 2.0.0      2015-12-18 CRAN (R 3.2.2)
+##  gtable       0.1.2      2012-12-05 CRAN (R 3.2.2)
+##  highr        0.5.1      2015-09-18 CRAN (R 3.2.2)
+##  knitr      * 1.12.7     2016-02-09 local         
+##  lazyeval     0.1.10     2015-01-02 CRAN (R 3.2.2)
+##  magrittr     1.5        2014-11-22 CRAN (R 3.2.2)
+##  memoise      0.2.1      2014-04-22 CRAN (R 3.2.2)
+##  munsell      0.4.3      2016-02-13 CRAN (R 3.2.2)
+##  plyr         1.8.3      2015-06-12 CRAN (R 3.2.2)
+##  proto      * 0.3-10     2012-12-22 CRAN (R 3.2.2)
+##  R6           2.1.2      2016-01-26 CRAN (R 3.2.2)
+##  Rcpp         0.12.3     2016-01-10 CRAN (R 3.2.2)
+##  reshape2   * 1.4.1      2014-12-06 CRAN (R 3.2.2)
+##  rjson        0.2.15     2014-11-03 CRAN (R 3.2.2)
+##  scales       0.3.0      2015-08-25 CRAN (R 3.2.2)
+##  stringi      1.0-1      2015-10-22 CRAN (R 3.2.2)
 ##  stringr      1.0.0      2015-04-30 CRAN (R 3.2.2)
 ~~~
