@@ -1,6 +1,6 @@
 ---
 title: "Joint, Marginal, and Conditional Probabilities"
-date: "March 17th, 2016"
+date: "March 20th, 2016"
 layout: post
 output:
   html_document:
