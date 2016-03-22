@@ -44,13 +44,17 @@ P(Y\ |\ X)\ P(X) &= P(X, Y)
 \end{align}$$
 </div>
 
-Notice how we now have two alternative representations of the joint probability <span class="inlinecode">$P(X, Y)$</span>:
+Notice how we now have two alternative representations of the joint probability <span class="inlinecode">$P(X, Y)$</span> which we can equate to each other:
 
 <div>
-$$P(X\ |\ Y)\ P(Y) = P(X, Y) = P(Y\ |\ X)\ P(X)$$
+$$\begin{align}
+P(X\ |\ Y)\ P(Y) &= P(X, Y) \\
+P(Y\ |\ X)\ P(X) &= P(X, Y) \\
+P(X\ |\ Y)\ P(Y) &= P(Y\ |\ X)\ P(X) 
+\end{align}$$
 </div>
 
-If we now have divide by P(Y):
+If we now have divide by <span class="inlinecode">$P(Y)$</span>:
 
 <div>
 $$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)}$$
