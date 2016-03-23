@@ -3,7 +3,7 @@ title: "Bayes' Rule"
 date: "March 17th, 2016"
 layout: post
 output:
-  html_document:
+  html_document
 tags: [R, stats]
 ---
 
@@ -60,11 +60,20 @@ If we now have divide by <span class="inlinecode">$P(Y)$</span>:
 $$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)}$$
 </div>
 
-This is defined as the Bayes' rule.
+This is defined as the Bayes' rule. The different parts of the rule have specific:
+
+* <span class="inlinecode">$P(X)$</span>: Prior probability. This is our prior belief of X before we factor in any other variables. In actualty, it's just a marginal probability but with a fancy name.
+* <span class="inlinecode">$P(X\ |\ Y )$</span>: Posterior probability. This is the conditional probability of X given Y.
+* <span class="inlinecode">$P(Y\ |\ X )$</span>: Likelihood. This is the conditional probability of Y given X. 
+* <span class="inlinecode">$P(Y)$</span>: Marginal probability. This is just the probability of Y before we factor in any other variables. 
+
+Don't be intimated by these names. In actuality, these are just fancy "bayesian terms" for probabilities we have already discussed in a previous post. **There is nothing mathematically different between a "prior probability" and a "marginal probability"**. It's just termed that way because of the context when doing bayesian statistics/inferences.
+
+Notice how this is exacty the same as the conditional probability with the only difference being that the joint probability <span class="inlinecode">$P(X, Y)$</span> has been expanded out to be <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>.
 
 ## Bayes' Rule and the Two-Way Table
 
-In my [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), we produced a two-way joiny probability table on diamond color-cut:
+In my [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), we produced a two-way joint probability table on diamond color-cut combinations:
 
 ```{r, message = FALSE}
 library("ggplot2")
@@ -80,15 +89,62 @@ diamonds.color.cut.df <-
 diamonds.color.cut.prop.df <- 
   diamonds.color.cut.df %>%
   ungroup() %>%
-  mutate(prop = n / sum(n))
+  mutate(joint_prob = n / sum(n))
+
+color.marginal.df <- 
+  diamonds.color.cut.prop.df %>%
+  group_by(color) %>%
+  summarize(marginal = sum(joint_prob))
+
+cut.marginal.df <- 
+  diamonds.color.cut.prop.df %>%
+  group_by(cut) %>%
+  summarize(marginal = sum(joint_prob))
 
 diamonds.color.cut.prop.df %>%
-  dcast(color ~ cut, value.var = "prop") %>%
-  kable(align = "l", format = "html", 
-        table.attr = 'class="table table-striped table-hover"')
+  dcast(color ~ cut, value.var = "joint_prob") %>%
+  left_join(color.marginal.df, by = "color") %>%
+  bind_rows(
+    cut.marginal.df %>%
+    mutate(color = "marginal (cut)") %>%
+    dcast(color ~ cut, value.var = "marginal")
+  ) %>%
+  rename(`marginal (color)` = marginal) %>%
+  kable(align = "l", format = "html",
+        table.attr = 'class="table table-striped table-hover"',
+        row.names = TRUE)
 ```
 
+Without knowing anything about diamond cut, our beliefs in the probabilities of different diamond colors is expressed solely on the "marginal (color)" column. But if we get additional information such as the diamond cut being ideal, then we can focus our attention on the column that contains all the joint probabilities of the "Ideal" cut. Using our conditional probability equation:
+
+<div>
+$$P(X\ |\ Y = Ideal) = \frac{P(X, Y)}{P(Y = Ideal)}$$
+</div>
+
+We can calculate the conditional probabilites as follows:
+
+```{r}
+ideal.marginal <- 
+  cut.marginal.df %>%
+  filter(cut == "Ideal") %>%
+  .$marginal
+
+diamonds.color.cut.prop.df %>%
+  filter(cut == "Ideal") %>%
+  mutate(marginal = ideal.marginal) %>%
+  mutate(cond_prob = joint_prob / marginal) %>%
+  select(-n) %>%
+  kable(align = "l", format = "html",
+        table.attr = 'class="table table-striped table-hover"',
+        row.names = TRUE)
+```
+
+This example demonstrates how we started with a prior belief (marginal probability) on diamond color probabilities, but then reallocated this belief once we incorporated the fact the diamond was of Ideal cut.
+
 ## References
+
+* [Understanding Bayes](http://alexanderetz.com/understanding-bayes/)
+* [Count Bayesie - Bayes' Theorem with Lego](https://www.countbayesie.com/blog/2015/2/18/bayes-theorem-with-lego)
 
 ## R Session
 
