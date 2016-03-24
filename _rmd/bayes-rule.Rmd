@@ -141,6 +141,31 @@ diamonds.color.cut.prop.df %>%
 
 This example demonstrates how we started with a prior belief (marginal probability) on diamond color probabilities, but then reallocated this belief once we incorporated the fact the diamond was of Ideal cut.
 
+This particular example uses the joint probabilities, but specifically the bayes rule expresses the joint probabilities as <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>. We will use another example that utilizies this expression.
+
+* <span class="inlinecode">$D$</span>: Represents the true presence (1) and absence (0) of a disease.
+* <span class="inlinecode">$P(D) = 0.001$</span>: Prior belief that a person selected at random has the disease.
+* 99% hit rate for the test. This means that if a person has the disease, then the test result is positive 99% of the time.
+    + T = +: Positive test result
+    + T = -: Negative test result
+* Observed test result is the datum that we use to modify out belief about the value of the underlying disease parameter.
+* Hit rate is expressed as <span class="inlinecode">$P(T = 1\ |\ D = 1) = 0.99$</span>
+* Test has false positive rate of 5%: <span class="inlinecode">$P(T = 1\ |\ D = 0) = 0.05$</span>
+
+We can summarize all this information into a two-way table:
+
+| Test result (T)    | <span class="inlinecode">$D = 1$</span>                             | <span class="inlinecode">$D = 0$</span>                             | 
+|:------------------:|:------------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| 1                  | <span class="inlinecode">$P(T = 1\ |\ D = 1)\ P(D = 1)$</span> = 0.99 | <span class="inlinecode">$P(T = 1\ |\ D = 0)\ P(D = 0)$</span> |
+| 0                  | <span class="inlinecode">$P(T = 0\ |\ D = 0)\ P(D = 1)$</span> | <span class="inlinecode">$P(T = 0\ |\ D = 0)\ P(D = 0)$</span> |
+| Marginal (disease) | <span class="inlinecode">$P(D = 1)$</span>                          | <span class="inlinecode">$P(D = 0)$</span>                          |
+
+Say we sampled a person from the population, gave them the test, and the test came back positive. What is the posterior probability the person has the disease? Our inituition might be that the probability that this person has the disease is pretty high because we know that the hit rate of the test is 99%. But when we apply bayes rule:
+
+<div>
+$$P(D = 1\ |\ T = 1) = \frac{P(T = 1\ |\ D = 1)\ P(D = 1)}{P(T = 1)}$$
+</div>
+
 ## References
 
 * [Understanding Bayes](http://alexanderetz.com/understanding-bayes/)
