@@ -39,6 +39,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 ## Machine Learning / Statistical Learning
 
+![Machine Learning Algorithm Cheat Sheet]({{ site.url }}/assets/microsoft-machine-learning-algorithm-cheat-sheet-v2.png)
+
 1. Supervised Learning
     * Regression
         + Linear Regression
