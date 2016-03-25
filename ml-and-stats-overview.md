@@ -15,7 +15,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
-    * Joint, Marginal, and Conditional Probabilites
+    * [Joint, Marginal, and Conditional Probabilites]({% post_url 2016-03-20-basic-prob %})
 1. [Probability Distributions]({% post_url 2016-03-17-prob-distr %})
    * Continuous
         + Gaussian (Normal) Distribution
@@ -58,6 +58,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
             - Non-negative Matrix Factorization (NMF)
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
+
+
 
 ### References
 
