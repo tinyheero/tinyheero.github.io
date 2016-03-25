@@ -16,6 +16,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
     * [Joint, Marginal, and Conditional Probabilites]({% post_url 2016-03-20-basic-prob %})
+    * Bayes' Rule
 1. [Probability Distributions]({% post_url 2016-03-17-prob-distr %})
    * Continuous
         + Gaussian (Normal) Distribution
@@ -28,7 +29,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
             - If sampling is done without replacement.
 1. Bayesian Statistics
    * Classical Frequentist vs. Bayesian 
-   * Bayes' Rule
+1. Other
+    * [Confidence Intervals]({% post_url 2015-08-25-how-to-interpret-a-CI %})
 
 ### References
 
@@ -36,6 +38,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 
 ## Machine Learning / Statistical Learning
+
+![Machine Learning Algorithm Cheat Sheet]({{ site.url }}/assets/microsoft-machine-learning-algorithm-cheat-sheet-v2.png)
 
 1. Supervised Learning
     * Regression
@@ -58,8 +62,6 @@ Being a somewhat structured person, it's important for me to see how topics rela
             - Non-negative Matrix Factorization (NMF)
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
-
-
 
 ### References
 

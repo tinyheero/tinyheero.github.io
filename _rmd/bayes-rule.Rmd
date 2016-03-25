@@ -1,0 +1,178 @@
+---
+title: "Bayes' Rule"
+date: "March 17th, 2016"
+layout: post
+output:
+  html_document
+tags: [R, stats]
+---
+
+  
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+```{r echo = FALSE}
+library("knitr")
+library("captioner")
+
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
+```
+
+In my previous post,
+
+Bayes rules can be derived by starting with the conditional probability of <span class="inlinecode">$P(X\ |\ Y)$</span> which is represented as:
+
+<div>
+$$P(X\ |\ Y) = \frac{P(X, Y)}{P(Y)}$$
+</div>
+
+First, let's start by multiplying this with P(Y():
+
+<div>
+$$P(X\ |\ Y)\ P(Y) = P(X, Y)$$
+</div>
+
+We can also perform the algebraic manipulation for <span class="inlinecode">$P(Y\ |\ X)$</span>:
+
+<div>
+$$\begin{align}
+P(Y\ |\ X) &= \frac{P(X, Y)}{P(X)} \\
+P(Y\ |\ X)\ P(X) &= P(X, Y)
+\end{align}$$
+</div>
+
+Notice how we now have two alternative representations of the joint probability <span class="inlinecode">$P(X, Y)$</span> which we can equate to each other:
+
+<div>
+$$\begin{align}
+P(X\ |\ Y)\ P(Y) &= P(X, Y) \\
+P(Y\ |\ X)\ P(X) &= P(X, Y) \\
+P(X\ |\ Y)\ P(Y) &= P(Y\ |\ X)\ P(X) 
+\end{align}$$
+</div>
+
+If we now have divide by <span class="inlinecode">$P(Y)$</span>:
+
+<div>
+$$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)}$$
+</div>
+
+This is defined as the Bayes' rule. The different parts of the rule have specific:
+
+* <span class="inlinecode">$P(X)$</span>: Prior probability. This is our prior belief of X before we factor in any other variables. In actualty, it's just a marginal probability but with a fancy name.
+* <span class="inlinecode">$P(X\ |\ Y )$</span>: Posterior probability. This is the conditional probability of X given Y.
+* <span class="inlinecode">$P(Y\ |\ X )$</span>: Likelihood. This is the conditional probability of Y given X. 
+* <span class="inlinecode">$P(Y)$</span>: Marginal probability. This is just the probability of Y before we factor in any other variables. 
+
+Don't be intimated by these names. In actuality, these are just fancy "bayesian terms" for probabilities we have already discussed in a previous post. **There is nothing mathematically different between a "prior probability" and a "marginal probability"**. It's just termed that way because of the context when doing bayesian statistics/inferences.
+
+Notice how this is exacty the same as the conditional probability with the only difference being that the joint probability <span class="inlinecode">$P(X, Y)$</span> has been expanded out to be <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>.
+
+## Bayes' Rule and the Two-Way Table
+
+In my [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), we produced a two-way joint probability table on diamond color-cut combinations:
+
+```{r, message = FALSE}
+library("ggplot2")
+library("dplyr")
+library("reshape2")
+library("knitr")
+
+diamonds.color.cut.df <-
+  diamonds %>%
+  group_by(color, cut) %>%
+  summarize(n = n())
+
+diamonds.color.cut.prop.df <- 
+  diamonds.color.cut.df %>%
+  ungroup() %>%
+  mutate(joint_prob = n / sum(n))
+
+color.marginal.df <- 
+  diamonds.color.cut.prop.df %>%
+  group_by(color) %>%
+  summarize(marginal = sum(joint_prob))
+
+cut.marginal.df <- 
+  diamonds.color.cut.prop.df %>%
+  group_by(cut) %>%
+  summarize(marginal = sum(joint_prob))
+
+diamonds.color.cut.prop.df %>%
+  dcast(color ~ cut, value.var = "joint_prob") %>%
+  left_join(color.marginal.df, by = "color") %>%
+  bind_rows(
+    cut.marginal.df %>%
+    mutate(color = "marginal (cut)") %>%
+    dcast(color ~ cut, value.var = "marginal")
+  ) %>%
+  rename(`marginal (color)` = marginal) %>%
+  kable(align = "l", format = "html",
+        table.attr = 'class="table table-striped table-hover"',
+        row.names = TRUE)
+```
+
+Without knowing anything about diamond cut, our beliefs in the probabilities of different diamond colors is expressed solely on the "marginal (color)" column. But if we get additional information such as the diamond cut being ideal, then we can focus our attention on the column that contains all the joint probabilities of the "Ideal" cut. Using our conditional probability equation:
+
+<div>
+$$P(X\ |\ Y = Ideal) = \frac{P(X, Y)}{P(Y = Ideal)}$$
+</div>
+
+We can calculate the conditional probabilites as follows:
+
+```{r}
+ideal.marginal <- 
+  cut.marginal.df %>%
+  filter(cut == "Ideal") %>%
+  .$marginal
+
+diamonds.color.cut.prop.df %>%
+  filter(cut == "Ideal") %>%
+  mutate(marginal = ideal.marginal) %>%
+  mutate(cond_prob = joint_prob / marginal) %>%
+  select(-n) %>%
+  kable(align = "l", format = "html",
+        table.attr = 'class="table table-striped table-hover"',
+        row.names = TRUE)
+```
+
+This example demonstrates how we started with a prior belief (marginal probability) on diamond color probabilities, but then reallocated this belief once we incorporated the fact the diamond was of Ideal cut.
+
+This particular example uses the joint probabilities, but specifically the bayes rule expresses the joint probabilities as <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>. We will use another example that utilizies this expression.
+
+* <span class="inlinecode">$D$</span>: Represents the true presence (1) and absence (0) of a disease.
+* <span class="inlinecode">$P(D) = 0.001$</span>: Prior belief that a person selected at random has the disease.
+* 99% hit rate for the test. This means that if a person has the disease, then the test result is positive 99% of the time.
+    + T = +: Positive test result
+    + T = -: Negative test result
+* Observed test result is the datum that we use to modify out belief about the value of the underlying disease parameter.
+* Hit rate is expressed as <span class="inlinecode">$P(T = 1\ |\ D = 1) = 0.99$</span>
+* Test has false positive rate of 5%: <span class="inlinecode">$P(T = 1\ |\ D = 0) = 0.05$</span>
+
+We can summarize all this information into a two-way table:
+
+| Test result (T)    | <span class="inlinecode">$D = 1$</span>                             | <span class="inlinecode">$D = 0$</span>                             | 
+|:------------------:|:------------------------------------------------------------------------:|:------------------------------------------------------------------------:|
+| 1                  | <span class="inlinecode">$P(T = 1\ |\ D = 1)\ P(D = 1)$</span> = 0.99 | <span class="inlinecode">$P(T = 1\ |\ D = 0)\ P(D = 0)$</span> |
+| 0                  | <span class="inlinecode">$P(T = 0\ |\ D = 0)\ P(D = 1)$</span> | <span class="inlinecode">$P(T = 0\ |\ D = 0)\ P(D = 0)$</span> |
+| Marginal (disease) | <span class="inlinecode">$P(D = 1)$</span>                          | <span class="inlinecode">$P(D = 0)$</span>                          |
+
+Say we sampled a person from the population, gave them the test, and the test came back positive. What is the posterior probability the person has the disease? Our inituition might be that the probability that this person has the disease is pretty high because we know that the hit rate of the test is 99%. But when we apply bayes rule:
+
+<div>
+$$P(D = 1\ |\ T = 1) = \frac{P(T = 1\ |\ D = 1)\ P(D = 1)}{P(T = 1)}$$
+</div>
+
+## References
+
+* [Understanding Bayes](http://alexanderetz.com/understanding-bayes/)
+* [Count Bayesie - Bayes' Theorem with Lego](https://www.countbayesie.com/blog/2015/2/18/bayes-theorem-with-lego)
+
+## R Session
+
+```{r session, echo = FALSE}
+devtools::session_info()
+```

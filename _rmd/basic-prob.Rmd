@@ -1,6 +1,6 @@
 ---
 title: "Joint, Marginal, and Conditional Probabilities"
-date: "March 17th, 2016"
+date: "March 20th, 2016"
 layout: post
 output:
   html_document:
@@ -84,7 +84,9 @@ To illustrate this, we will go back to our diamond color-cut combination two-way
 $$P(X = D) = \sum_{y \in S_{Y}}P(X = D, Y = y)$$
 </div>
 
-Where <span class="inlinecode">$S_{Y}$</span> represents all the possible values of the random variable Y. We can calculate the marginal probability of all the different colors. We can also calculate the marginal probability of cut by using the same logic and summing up the joint probabilities of the columns. For instance, to calculate <span class="inlinecode">$P(Y = Fair)$</span>,
+Where <span class="inlinecode">$S_{Y}$</span> represents all the possible values of the random variable Y. In other words, we are holding X constant (<span class="inlinecode">$X = D$</span>) while iterating over all the possible Y values and summing up the joint probabilities.
+
+We can calculate the marginal probability of all the different colors. We can also calculate the marginal probability of cut by using the same logic and summing up the joint probabilities of the columns. For instance, to calculate <span class="inlinecode">$P(Y = Fair)$</span>,
 
 <div>
 $$P(Y = Fair) = \sum_{x \in S_{X}}P(X = x, Y = Fair)$$
@@ -127,6 +129,12 @@ For example, if someone asked you the probability of getting a diamond with the 
 $$P(X\ |\ Y) = \frac{P(X, Y)}{P(Y)}$$
 </div>
 
+Recall that the marginal probability is simply summing up the joint probabilities while holding one variable constant. So we can further breakdown this equation as follows:
+
+<div>
+$$P(X\ |\ Y) = \frac{P(X, Y)}{\sum_{x \in S_{X}}P(X = x, Y)}$$
+</div>
+
 So for us to work this out for our particular question, we need two pieces of information:
 
 1. <span class="inlinecode">$P(Y = ideal)$</span>: Marginal probability of Y = ideal.
@@ -135,7 +143,7 @@ So for us to work this out for our particular question, we need two pieces of in
 So we can calculate the conditional probability as follows:
 
 <div>
-$$P(X = G | Y = ideal) = \frac{P(X = G, Y = ideal)}{P(Y = ideal)}$$
+$$P(X = G\ |\ Y = ideal) = \frac{P(X = G, Y = ideal)}{\sum_{x \in S_{X}}P(X = x, Y = ideal)}$$
 </div>
 
 So the conditional probability would be in this case:
@@ -161,6 +169,18 @@ So basically if we didn't factor in any other information, our <span class="inli
      .$marginal
 `.
 But once we factored in an additional level of information which was Y = ideal, our probability changed to `r cond.prob`. Put another way, we had a "reallocation of our belief" in an event once we factored in additional information. 
+
+## Defining a Joint Probability Equation
+
+In the conditional and marginal probabilities section, we defined the mathematical equations for them. We can now define a mathematical equation for joint probabilities which actually uses both the conditional and marginal probability equations. Starting with the conditional probability equation, we can do a bit of algebraic manipulation for defining joint probabilities now:
+
+<div>
+$$\begin{align}
+P(X\ |\ Y) &= \frac{P(X, Y)}{P(Y)} \\
+P(X\ |\ Y)\ P(Y) &= P(X, Y) \\
+P(X\ |\ Y)\ \sum_{x \in S_{X}}P(X = x, Y) &= P(X, Y) \\
+\end{align}$$
+</div>
 
 ## What about Continuous Random Variables?
 
