@@ -1,0 +1,192 @@
+---
+title: "Bayesian Inference Example"
+date: "March 17th, 2016"
+layout: post
+output:
+  html_document
+tags: [R, stats]
+---
+
+```{r echo = FALSE}
+library("knitr")
+library("captioner")
+library("cowplot")
+
+theme_set(theme_grey())
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
+```
+
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## Steps in Bayesian Analysis:
+
+1. Define a likelihood function
+1. Establish a prior distribution over the set of possible parameter values.
+1. Collect data and apply Bayes' rule to re-allocate credibility across the possible parameter values.
+
+### Step 1: Defining a Likelihood Function
+
+<div>
+$$P(y\ |\ \theta) = \theta^{y}(1 - \theta)^{1 - y}$$
+</div>
+
+This is the Bernouli distribution.
+
+### Step 2: Prior Distribution
+
+Suppose we restrict our parameter values to discrete values of <span class="inlinecode">$\theta = 0, \theta = 0.1, ..., \theta = 1.0$</span>. And we believe that the certain parameters are more likely. For instance, the probability of the coin being "fair" <span class="inlinecode">$\theta = 0.5$</span> is more likely than a coin being unfair. So we could define a prior probability distribution as follows:
+
+```{r prior_distr, message = FALSE}
+library("dplyr")
+library("ggplot2")
+
+# Define the Space of all theta values
+theta.vals <- seq(0, 1, 0.1)
+
+#' Generates a "Triangle" Prior Probability Distribution
+#'
+#' @param vals Sample space of all possible parameter values.
+#' @return 2 column data.frame containing the parameter and tis corresponding
+#'   prior probability.
+get_prior_distr <- function(vals) {
+  vals.pmin <- pmin(vals, 1 - vals)
+
+  # Normalize the prior so that they sum to 1.
+  data_frame(theta = vals,
+             prior = vals.pmin / sum(vals.pmin))
+}
+
+theta.prior.distr.df <- get_prior_distr(theta.vals)
+
+theta.prior.p <- 
+  theta.prior.distr.df %>%
+  ggplot(aes(x = theta, y = prior)) +
+  geom_point() +
+  geom_segment(aes(x = theta, xend = theta, y = prior, yend = 0)) +
+  xlab("theta") +
+  ylab("P(theta)") +
+  scale_x_continuous(breaks = c(theta.vals),
+                     labels = theta.vals) 
+  ggtitle("Prior Distribution")
+
+theta.prior.p
+```
+
+### Step 3: Collection of Data
+
+```{r likelihood}
+in.data <- c(1)
+
+# theta.vals is Defined in Step 2
+likelihood.vals <- c()
+for (cur.theta.val in theta.vals) {
+  likelihood.vals <- 
+    c(likelihood.vals, 
+      (cur.theta.val^in.data) * (1 - cur.theta.val)^(1 - in.data))
+}
+
+likelihood.df <- 
+  data_frame(theta = theta.vals,
+             likelihood = likelihood.vals)
+
+likelihood.p <- 
+  likelihood.df %>%
+  ggplot(aes(x = theta, y = likelihood)) +
+  geom_point() +
+  geom_segment(aes(x = theta, xend = theta, y = likelihood, yend = 0)) +
+  xlab("theta") +
+  ylab("P(theta)") +
+  scale_x_continuous(breaks = c(theta.vals),
+                     labels = theta.vals) +
+  ggtitle("Likelihood Distribution")
+
+likelihood.p
+```
+
+```{r posterior_prob_distr}
+marg.likelihood <- sum(likelihood.df[["likelihood"]])
+
+posterior.p <- 
+  likelihood.df %>%
+  left_join(theta.prior.distr.df) %>%
+  mutate(marg_likelihood = marg.likelihood) %>%
+  mutate(post_prob = (likelihood * prior) / marg.likelihood) %>%
+  ggplot(aes(x = theta, y = post_prob)) +
+  geom_point() +
+  geom_segment(aes(x = theta, xend = theta, y = post_prob, yend = 0)) +
+  xlab("theta") +
+  ylab("P(theta | Data)") +
+  scale_x_continuous(breaks = c(theta.vals),
+                     labels = theta.vals) +
+  ggtitle("Posterior Distribution")
+
+posterior.p
+```
+
+### Putting It All Together
+
+```{r}
+plot_grid(theta.prior.p, likelihood.p, posterior.p, nrow = 3)
+```
+
+### Influence of Sample Size on Bayesian Inference
+
+```{r}
+# Define the Space of all theta values
+theta.new.vals <- seq(0, 1, 0.001)
+
+new.prior.distr.df <- get_prior_distr(theta.new.vals)
+
+# in.data <- sample(c(0, 1), 40, replace = TRUE)
+# num.heads <- sum(in.data)
+# num.tails <- length(in.data) - num.heads
+
+num.heads <- 1
+num.tails <- 3
+
+# theta.vals is Defined in Step 2
+likelihood.vals <- c()
+for (cur.theta.val in theta.new.vals) {
+  likelihood.vals <- 
+    c(likelihood.vals, 
+      (cur.theta.val^num.heads) * (1 - cur.theta.val)^(num.tails))
+}
+
+likelihood.df <- 
+  data_frame(theta = theta.new.vals,
+             likelihood = likelihood.vals)
+
+likelihood.p <- 
+  likelihood.df %>%
+  ggplot(aes(x = theta, y = likelihood)) +
+  geom_point() +
+  geom_segment(aes(x = theta, xend = theta, y = likelihood, yend = 0)) +
+  xlab("theta") +
+  ylab("P(theta)") +
+  ggtitle("Likelihood Distribution")
+
+likelihood.p
+
+
+
+
+```
+
+
+## What Makes Bayesian Inference Difficult
+
+
+
+## References
+
+ [Count Bayesie - Bayes' Theorem with Lego](https://www.countbayesie.com/blog/2015/2/18/bayes-theorem-with-lego)
+
+## R Session
+
+```{r session, echo = FALSE}
+devtools::session_info()
+```
