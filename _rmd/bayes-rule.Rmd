@@ -56,10 +56,12 @@ P(X\ |\ Y)\ P(Y) &= P(Y\ |\ X)\ P(X)
 If we now divide by <span class="inlinecode">$P(Y)$</span>:
 
 <div>
-$$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)}$$
+$$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)},\ if\ P(Y) \neq 0$$
 </div>
 
-This is defined as the Bayes' rule. Notice how this is exacty the same as the conditional probability with the only difference being that the joint probability <span class="inlinecode">$P(X, Y)$</span> has been expanded out to be <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>. The rule doesn't seem to be that interestingly at first glance, but we will see below with some examples why it is actually really important.
+This is defined as the Bayes' rule. Essentially what we have done is relate two different, but related conditional probability equations to each other.
+
+Notice how this is exacty the same as the conditional probability with the only difference being that the joint probability <span class="inlinecode">$P(X, Y)$</span> has been expanded out to be <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>. The rule doesn't seem to be that interestingly at first glance, but we will see below with some examples why it is actually really important.
 
 ## An Initution Behind Bayes' Rule
 
@@ -133,33 +135,63 @@ diamonds.color.cut.prop.df %>%
 
 Notice how now the probablity of getting a G color diamond is different now once "condition" on the fact that the diamons is of Ideal cut - <span class="inlinecode">$P(X = G\ |\ Y = Ideal) = 0.227$</span>. This example is meant to demonstrate how we started with a prior belief (marginal probability) on diamond color probabilities, but then reallocated this belief once we incorporated the fact the diamond was of Ideal cut. In fact, this reallocation is really the crux of what bayesian statistics all about - **start with some prior belief and then reallocate the belief once we condition on some observed data**. 
 
-## Bayes' Rule and the Two-Way Table
+## Correlation of the Bayes' Rule to the Two-Way Table
 
 Let's go back to our two-way table and re-write it in a more general way:
 
-<table class="table table-striped table-hover">
+<table class="table table-striped table-hover table-bordered" align="center">
 <thead>
 <tr>
-<th rowspan="2">X</th>
-<th colspan="4">Y</th>
+  <th rowspan="2">X</th>
+  <th colspan="4">Y</th>
 </tr>
 <tr>
-<th><span class="inlinecode">$Y_{1}$</span></th>
-<th>.</th>
-<th><span class="inlinecode">$Y_{i}$</span></th>
-<th>.</th>
+  <th>...</th>
+  <th>y</th>
+  <th>...</th>
+  <th>Marginal</th>
 </tr>
 </thead>
-  <tr>
-  <td><span class="inlinecode">$X_{1}$</span></td>
-  </tr>
 <tr>
-<td>.</td>
+  <td align="center">...</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
 </tr>
 <tr>
-  <td><span class="inlinecode">$X_{i}$</span></td>
+  <td align="center">x</td>
+  <td></td>
+  <td align="center"><span class="inlinecode">$P(X = x, Y = y) = P(X = x\ |\ Y = y)\ P(Y = y)$</span></td>
+  <td></td>
+  <td align="center"><span class="inlinecode">$P(X = x)$</span></td>
+</tr>
+<tr>
+  <td align="center">...</td>
+  <td></td>
+  <td></td>
+  <td></td>
+  <td></td>
+</tr>
+<tr>
+  <td align="center">Marginal</td>
+  <td></td>
+  <td align="center"><span class="inlinecode">$P(Y = y)$</span></td>
+  <td></td>
+  <td></td>
 </tr>
 </table>
+
+Here the joint probability <span class="inlinecode">$P(X = x, Y = y)$</span> is just re-expressed as <span class="inlinecode">$P(X = x\ |\ Y = y)\ P(Y = y)$</span> as per the conditional probability rule.
+
+If we think back about what we did above, our prior belief on the cut of a diamond was P(Y). We then conditioned on the fact that our diamond was a particular color P(Y | X) so that we focused our attention on a particular row:
+
+<div>
+$$\begin{align}
+P(Y\ |\ X) &= \frac{P(X, Y)}{P(X)} \\
+P(Y\ |\ X) &= \frac{P(X\ |\ Y)\ P(Y)}{P(X)}
+\end{align}$$
+</div>
 
 ## Example #2
 
@@ -188,7 +220,40 @@ Say we sampled a person from the population, gave them the test, and the test ca
 $$P(D = 1\ |\ T = 1) = \frac{P(T = 1\ |\ D = 1)\ P(D = 1)}{P(T = 1)}$$
 </div>
 
+## Bayes' Rule for Inferring Model Parameters
+
+Bayes rule becomes key when we start thinking of applying it to inferring model parameters. If we go back to our two-way table, and we 
+
+<table class="table table-striped table-hover">
+<thead>
+<tr>
+<th rowspan="2">Data</th>
+<th colspan="4">Model Parameter</th>
+</tr>
+<tr>
+<th><span class="inlinecode">$_{1}$</span></th>
+<th>.</th>
+<th><span class="inlinecode">$\theta$</span></th>
+<th>.</th>
+</tr>
+</thead>
+  <tr>
+  <td><span class="inlinecode">$X_{1}$</span></td>
+  </tr>
+<tr>
+<td>.</td>
+</tr>
+<tr>
+  <td><span class="inlinecode">$X_{i}$</span></td>
+</tr>
+</table>
+
+
+
+
 ## Summary
+
+* Bayes rule is typically used to infer model parameters from data
 
 The different parts of the rule have specific:
 
@@ -205,6 +270,10 @@ Don't be intimated by these names. In actuality, these are just fancy "bayesian 
 
 * [Understanding Bayes](http://alexanderetz.com/understanding-bayes/)
 * [Count Bayesie - Bayes' Theorem with Lego](https://www.countbayesie.com/blog/2015/2/18/bayes-theorem-with-lego)
+* [Bayesian machine learning](http://fastml.com/bayesian-machine-learning/)
+* [Where priors come from](http://zinkov.com/posts/2015-06-09-where-priors-come-from/)
+* [What is the difference between Bayes Theorem and conditional probability and how do I know when to apply them?](https://www.quora.com/What-is-the-difference-between-Bayes-Theorem-and-conditional-probability-and-how-do-I-know-when-to-apply-them)
+* [Bayes' Theorem and Conditional Probability](https://brilliant.org/wiki/bayes-theorem/)
 
 ## R Session
 
