@@ -59,18 +59,38 @@ If we now divide by <span class="inlinecode">$P(Y)$</span>:
 $$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)},\ if\ P(Y) \neq 0$$
 </div>
 
-This is defined as the Bayes' rule. Essentially what we have done is relate two different, but related conditional probability equations to each other. This might seem like a pretty unaspiring rule, but the power in it comes from how you define the actual variables you are interested in.
+This is defined as the Bayes' rule. Essentially what we have done is relate two different, but related conditional probability equations to each other. 
 
-Say you had a hypothesis (H) and some data (E) to support or oppose this hypothesis, we can modify the Bayes' rule to reflect this:
+## Bayes Rule, Priors and Posteriors
+
+At first glance, Bayes' rule seems pretty simple and might not be obvious as to why it is so useful. I mean all we've done is just rewritten the conditional probability equation right? While that is true, the power comes from how you intepret the rule and define the variables. 
+
+Let's say we have a hypothesis (H) and some data (E) to support or oppose this hypothesis. If we make our X (from above) equal to H and Y equal to E, then our Bayes' rule becomes:
 
 <div>
-$$P(H\ |\ E) = \frac{P(E\ |\ H)\ P(E)}{P(H)}$$
+$$P(H\ |\ E) = \frac{P(E\ |\ H)\ P(H)}{P(E)}$$
 </div>
 
+So what does this mean? What this rule gives us is a way to relate our "prior probability" of the hypothesis <span class="inlinecode">$P(H)$</span> to our "updated probability" of the hypothesis <span class="inlinecode">$P(H\ |\ E)$</span> once we have some data to consider. This "updated belief" is called the posterior. 
+
+Let's see this in action. Say we are playing cards and we have a prior probability that there is a 1/13 chance of getting a King card. But now say, we also have the data that the card we have in hand is a "face" card (i.e. Jack, Queen, King). What then is the probability of getting a King? Let's break down the individual components of Bayes' rule here:
+
+* P(H) = There is a King in each suit, and there are 4 suits. Hence this is 4 / 52 = 1 / 13
+* P(E) = As there are 3 face cards per suit and there are 4 suits, then this is 12 / 52 = 3 / 13
+* P(E | H) = Since every single King card is a face card, this probability has to be 1.
+
+Now we just fill this in into the Bayes' Equation:
+
+<div>
+$$P(H\ |\ E) = \frac{1 * 1/13}{3 / 13}$$
+</div>
+
+## An Example of Using Bayes Rule
+
+Let's say we start with the hypothesis that 
 
 
-
-Notice how this is exacty the same as the conditional probability with the only difference being that the joint probability <span class="inlinecode">$P(X, Y)$</span> has been expanded out to be <span class="inlinecode">$P(Y\ |\ X)\ P(X)$</span>. The rule doesn't seem to be that interestingly at first glance, but we will see below with some examples why it is actually really important.
+ The rule doesn't seem to be that interestingly at first glance, but we will see below with some examples why it is actually really important.
 
 ## An Initution Behind Bayes' Rule
 
