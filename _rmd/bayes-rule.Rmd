@@ -61,7 +61,7 @@ $$P(X\ |\ Y) = \frac{P(Y\ |\ X)\ P(X)}{P(Y)},\ if\ P(Y) \neq 0$$
 
 This is defined as the Bayes' rule. Essentially what we have done is relate two different, but related conditional probability equations to each other. 
 
-## Bayes Rule, Priors and Posteriors
+## From Prior Belief to Updated Belief
 
 At first glance, Bayes' rule seems pretty simple and might not be obvious as to why it is so useful. I mean all we've done is just rewritten the conditional probability equation right? While that is true, the power comes from how you intepret the rule and define the variables. 
 
@@ -71,26 +71,35 @@ Let's say we have a hypothesis (H) and some data (E) to support or oppose this h
 $$P(H\ |\ E) = \frac{P(E\ |\ H)\ P(H)}{P(E)}$$
 </div>
 
-So what does this mean? What this rule gives us is a way to relate our "prior probability" of the hypothesis <span class="inlinecode">$P(H)$</span> to our "updated probability" of the hypothesis <span class="inlinecode">$P(H\ |\ E)$</span> once we have some data to consider. This "updated belief" is called the posterior. 
+So what does this mean? Well <span class="inlinecode">$P(H)$</span> represents our "prior" belief of what the hypothesis is before we see any data. This prior is typically informed by our opinion on the hypothesis and is subjective. But the beauty of this rule, is that it allows us to relate this prior, <span class="inlinecode">$P(H)$</span>, to an "updated belief" of the hypothesis <span class="inlinecode">$P(H\ |\ E)$</span> once we have some data to consider. In this bayesian terms, this "updated belief" is called the posterior.
 
-Let's see this in action. Say we are playing cards and we have a prior probability that there is a 1/13 chance of getting a King card. But now say, we also have the data that the card we have in hand is a "face" card (i.e. Jack, Queen, King). What then is the probability of getting a King? Let's break down the individual components of Bayes' rule here:
+We will this rule in action in the next step
 
-* P(H) = There is a King in each suit, and there are 4 suits. Hence this is 4 / 52 = 1 / 13
-* P(E) = As there are 3 face cards per suit and there are 4 suits, then this is 12 / 52 = 3 / 13
+### Example of Bayes' Rule Using Playing Cards
+
+<div class="alert alert-dismissible alert-info">
+<h4>Heads Up!</h4>
+This example is shamelessly borrowed from [Bayes' Theorem and Conditional Probability](https://brilliant.org/wiki/bayes-theorem/)
+</div>
+
+Say we are playing cards and we have a prior probability that there is a <span class="inlinecode">$\frac{1}{13}$</span> chance of getting a King card. How do we know this? Well our prior knowledge tells us that there are 52 cards in a deck with a total of 4 suits. Each suit has its own Jack, Queen, King (i.e. face card), and so there must be 4 Kings in total. Therefore, <span class="inlinecode">$\frac{4}{52} = \frac{1}{13}$</span>. 
+
+But now say, we also have the data that the card we have in hand is a "face" card (i.e. Jack, Queen, King). What then is the probability of getting a King now? What we need to solve is the posterior, <span class="inlinecode">$P(H\ |\ E)$</span>, and we use Baye's Rule to help us solve this. Let's break down the individual components of Bayes' rule here:
+
+* P(H) = <span class="inlinecode">$\frac{1}{13}$</span>.
+* P(E) = As there are 3 face cards per suit and there are 4 suits, then this is <span class="inlinecode">$\frac{12}{52} = \frac{3}{13}$</span>
 * P(E | H) = Since every single King card is a face card, this probability has to be 1.
 
 Now we just fill this in into the Bayes' Equation:
 
 <div>
-$$P(H\ |\ E) = \frac{1 * 1/13}{3 / 13}$$
+$$\begin{align}
+P(H\ |\ E) &= \frac{1 * \frac{1}{13}}{\frac{3}{13}} \\
+P(H\ |\ E) &= \frac{1}{13}
+\end{align}$$
 </div>
 
-## An Example of Using Bayes Rule
-
-Let's say we start with the hypothesis that 
-
-
- The rule doesn't seem to be that interestingly at first glance, but we will see below with some examples why it is actually really important.
+### Example of Bayes' Rule Using Disease Testing
 
 ## An Initution Behind Bayes' Rule
 
@@ -280,7 +289,7 @@ Bayes rule becomes key when we start thinking of applying it to inferring model 
 
 
 
-## Summary
+## Revisiting the Bayes' Rule
 
 * Bayes rule is typically used to infer model parameters from data
 
@@ -292,8 +301,6 @@ The different parts of the rule have specific:
 * <span class="inlinecode">$P(Y)$</span>: Marginal probability. This is just the probability of Y before we factor in any other variables. 
 
 Don't be intimated by these names. In actuality, these are just fancy "bayesian terms" for probabilities we have already discussed in a previous post. **There is nothing mathematically different between a "prior probability" and a "marginal probability"**. It's just termed that way because of the context when doing bayesian statistics/inferences.
-
-
 
 ## References
 
