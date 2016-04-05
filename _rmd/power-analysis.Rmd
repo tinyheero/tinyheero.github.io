@@ -1,0 +1,81 @@
+---
+title: "Power and Sample Size Calculations"
+date: "March 17th, 2016"
+layout: post
+output:
+  html_document
+tags: [R, stats]
+---
+
+* In the context of hypothesis testing.
+    + Null hypothesis and alternative hypothesis.
+  * Need to define the crticial value. <span class="inlinecode">$alpha$</span>
+* Alpha level: Probability of rejecting the null hypothesis assuming that the null hypothesis is true.
+* Statistical power: Probability of rejecting the null hypothesis assuming that the alternative hypothesis is true. 
+    + 1 - P(Type II error)
+* Well-designed test will have high statistical power (e.g. 0.8 and 0.9)
+    + We can increase power by increasing the effect size which is the difference between the parameter values of our null and alternative hypothesis
+    + Increase sample size. This will reduce our standard error.
+* To solve for power, we need 4 things:
+    1. Alpha
+        + one-sided or two sides
+        + typically 0.05 or 0.01
+    1. Sample size: Generally dependent on budget and logical constraints
+    1. Effect size: Difference between the hypothesized parameter values
+    1. Variance: Based on previous studies or pilot data.
+
+
+    Sometimes the power is not something we get to selected as it is dicated by the funding agency
+* We can solve the minimum detectable effect size.
+* If we calculate power, then we have a specific sample-size.
+* If we calculate sample-size, then we have a specific power we are interested.
+
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+```{r echo = FALSE}
+library("knitr")
+library("captioner")
+
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
+```
+
+## Power Analysis in R
+
+We can make use of the [pwr R package](https://cran.r-project.org/web/packages/pwr/index.html) to do some power calculations. For instance, we can use the `pwr.t2n.test` to do a power calculation for a two-sample t-test where the two groups have unequal sample sizes. For every test in this package, as long as we have 3 of the 4 following quantities we can calculate the missing quantity:
+
+1. Sample size
+1. Effect size
+1. Significance level
+1. Power
+
+For instance:
+
+```{r }
+library("pwr")
+pwr.t2n.test(n1 = 30, n2 = 270, sig.level = 0.05, power = 0.9)
+```
+
+For two-sample t-tests, the effect sizes are measured as
+
+<div>
+$$d = \frac{|\mu_{1}-\mu_{2}}{\sigma}$$
+</div>
+
+Cohen suggests that d values of 0.2, 0.5, and 0.8 represent small, medium, and large effect sizes respectively.
+
+## References
+
+* [Inference for Means: Comparing Two Independent Samples](http://www.stat.ubc.ca/~rollin/stats/ssize/n2.html)
+* [A conceptual introduction to power and sample size calculations using Stata](https://www.youtube.com/watch?v=QBONLUp7i28)
+* [Quick-R: Power Analysis](http://www.statmethods.net/stats/power.html)
+* [idre - UCLA: Power Analysis for Two-group Independent sample t-test](http://www.ats.ucla.edu/stat/r/dae/t_test_power2.htm)
+
+## R Session
+
+```{r session, echo = FALSE}
+devtools::session_info()
+```
