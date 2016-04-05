@@ -7,7 +7,7 @@ output:
 tags: [R, stats]
 ---
 
-* In the context of hypothesis testing.
+Power calculations are always in the context of hypothesis testing.
     + Null hypothesis and alternative hypothesis.
   * Need to define the crticial value. <span class="inlinecode">$alpha$</span>
 * Alpha level: Probability of rejecting the null hypothesis assuming that the null hypothesis is true.
@@ -43,7 +43,7 @@ library("captioner")
 tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
-## Power Analysis in R
+## Power Analysis for Two-Sample T-tests
 
 We can make use of the [pwr R package](https://cran.r-project.org/web/packages/pwr/index.html) to do some power calculations. For instance, we can use the `pwr.t2n.test` to do a power calculation for a two-sample t-test where the two groups have unequal sample sizes. For every test in this package, as long as we have 3 of the 4 following quantities we can calculate the missing quantity:
 
@@ -52,20 +52,88 @@ We can make use of the [pwr R package](https://cran.r-project.org/web/packages/p
 1. Significance level
 1. Power
 
-For instance:
+For instance, say we have two equal groups of samples (n = 100 samples in each group) and we are interested in detecting a significant difference (<span class="inlinecode">$\alpha = 0.05$</span>) between them with a power of 0.9. 
 
-```{r }
+```{r, message = FALSE}
 library("pwr")
-pwr.t2n.test(n1 = 30, n2 = 270, sig.level = 0.05, power = 0.9)
+library("broom")
+library("dplyr")
+library("ggplot2")
+
+pwr.res.vals <- c("n1", "n2", "d", "sig.level", "power", "alternative")
+
+pwr.t2n.test.res <- pwr.t2n.test(n1 = 100, n2 = 100, sig.level = 0.05, power = 0.9)
+pwr.t2n.test.res.df <- 
+  pwr.t2n.test.res[c(pwr.res.vals)] %>%
+  as_data_frame()
+
+kable(pwr.t2n.test.res.df)
 ```
 
-For two-sample t-tests, the effect sizes are measured as
+Our minimum effect size here is `r pwr.t2n.test.res.df[["d"]]` meaning that we could detect an effect size of this magnitude with 90% power. Keep in mind, the effect size is with respect to the standard deviation here. So really in order for us to reject the null hypothesis, the difference in the two groups would have to be at least `r pwr.t2n.test.res.df[["d"]]` times the standard deviation. 
+
+If we can increase our sample size say to 400 samples per group:
+
+```{r}
+pwr.t2n.test.res <- pwr.t2n.test(n1 = 400, n2 = 400, sig.level = 0.05, power = 0.9)
+pwr.t2n.test.res.df <- 
+  pwr.t2n.test.res[c(pwr.res.vals)] %>%
+  as_data_frame()
+
+kable(pwr.t2n.test.res.df)
+```
+
+Notice how or effect size drops down to `r pwr.t2n.test.res.df[["d"]]`. This makes sense because as we can get more samples we have the ability to detect smaller true differences more confidently. We can actually see how the effect size is affected as the sample increases.
+
+```{r}
+n.list <- seq(10, 1000, by = 5)
+pwr.t2n.test.res.list <- NULL
+for (i in 1:length(n.list)) {
+  num.samples <- n.list[i]
+  pwr.t2n.test.res.list[[i]] <- 
+    pwr.t2n.test(n1 = num.samples, n2 = num.samples, sig.level = 0.05, 
+                 power = 0.9)
+}
+pwr.t2n.test.res.list.df <- 
+  bind_rows(pwr.t2n.test.res.list)
+
+pwr.t2n.test.res.list.df %>%
+  ggplot(aes(x = n1, y = d)) +
+  geom_point() +
+  geom_path(group = 1) +
+  geom_hline(yintercept = 0.2, linetype = "dotted", col = "red") +
+  geom_hline(yintercept = 0.5, linetype = "dotted", col = "red") +
+  geom_hline(yintercept = 0.8, linetype = "dotted", col = "red") +
+  xlab("Sample Size (Per Group)") +
+  ylab("Effect Size") +
+  geom_text(aes(x = 950, y = 0.25, label = "Small Effect")) +
+  geom_text(aes(x = 950, y = 0.55, label = "Medium Effect")) +
+  geom_text(aes(x = 950, y = 0.85, label = "Large Effect"))
+```
+
+It is suggested (by Cohen) that the effect values of 0.2, 0.5, and 0.8 correspond to small, medium, and large effect sizes respectively. 
+
+This if we had over 500 samples, we could detect an effect size as small as 0.2 and confidently say there is an actual difference between the two groups of samples.
+
+
+Meaning that with less than 35 samples, we would require a fairly large effect size (> 0.8) in order to be able to reject the null hypothesis. Between 35 and 85 samples, we would require medium effect sizes (> 0.5). 
+
+```{r}
+library("DT")
+pwr.t2n.test.res.list.df %>%
+  select(-method) %>%
+  datatable(style = "bootstrap",
+            filter = "top")
+```
+
+## Biological Example
+
+
 
 <div>
 $$d = \frac{|\mu_{1}-\mu_{2}}{\sigma}$$
 </div>
 
-Cohen suggests that d values of 0.2, 0.5, and 0.8 represent small, medium, and large effect sizes respectively.
 
 ## References
 
