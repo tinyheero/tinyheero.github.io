@@ -51,15 +51,16 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Support Vector Machines (SVM)
         + Random Forest
 1. Unsupervised Learning
-    * Principle Component Analysis (PCA)
-    * Hierarchical clustering
-    * DBSCAN
     * Cluster Analysis
+        + Principle Component Analysis (PCA)
+        + Hierarchical clustering
+        + DBSCAN
         + K-means
         + [Mixture Models]({% post_url 2015-10-13-mixture-model %})
         + Topic Modeling
             - Latent Dirichlet Allocation (LDA)
             - Non-negative Matrix Factorization (NMF)
+1. Feature Selection
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
 
@@ -69,3 +70,4 @@ Being a somewhat structured person, it's important for me to see how topics rela
     + [Standard Online - This is the corresponding free online course based on this material](https://statlearning.class.stanford.edu)
 * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
 * [PCA vs. Hierarchical clustering](http://www.rna-seqblog.com/a-comparison-between-pca-and-hierarchical-clustering/)
+* [Some Things Every Biologist Should Know About Machine Learning](http://master.bioconductor.org/help/course-materials/2003/Milan/Lectures/MachineLearning.pdf)
