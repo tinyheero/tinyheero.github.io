@@ -106,9 +106,9 @@ pwr.t2n.test.res.list.df %>%
   geom_hline(yintercept = 0.8, linetype = "dotted", col = "red") +
   xlab("Sample Size (Per Group)") +
   ylab("Effect Size") +
-  geom_text(aes(x = 950, y = 0.25, label = "Small Effect")) +
-  geom_text(aes(x = 950, y = 0.55, label = "Medium Effect")) +
-  geom_text(aes(x = 950, y = 0.85, label = "Large Effect"))
+  annotate("text", x = 950, y = 0.25, label = "Small Effect") +
+  annotate("text", x = 950, y = 0.55, label = "Medium Effect") +
+  annotate("text", x = 950, y = 0.85, label = "Large Effect")
 ```
 
 It is suggested (by Cohen) that the effect values of 0.2, 0.5, and 0.8 correspond to small, medium, and large effect sizes respectively. 
