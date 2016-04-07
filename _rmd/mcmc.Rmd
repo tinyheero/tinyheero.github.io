@@ -1,4 +1,21 @@
 
+# Problem is Drawing from Distribution
+
+* MCMC is used to solve the problem of sampling from a complication distribtution
+* We have a distribution, D, over baby names such that given any baby name we get the probability of that baby's name.
+
+> Problem is we want to efficiently draw a name from D, but we have no idea what process was used to make D.
+
+## The sampling problem
+
+* Let D be a distribution over a finite set X. You are given black-box access to the probability distribution function p(x) which outputs the probability of drawing x \in X according to D. Design an efficient randomized algorithm A which outputs an element of X so that the probability of outputting x is approximately p(x). More generally, output a sample of elements from X drawn according to p(x).
+
+* Markov Chain is essentially a fancy term for a random walk on a graph.
+* The main theorem we need to do anything useful with Markov chains is the stationary distribution theorem (sometimes called the “Fundamental Theorem of Markov Chains,” and for good reason). What it says intuitively is that for a very long random walk, the probability that you end at some vertex v is independent of where you started! 
+
+
+
+
 
 # Create Test Data
 
