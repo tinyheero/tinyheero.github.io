@@ -7,7 +7,22 @@ output:
 tags: [R, stats]
 ---
 
-Power calculations are always in the context of hypothesis testing.
+Power calculations are always in the context of hypothesis testing where are interested in comparing the null hypothesis, <span class="inlinecode">$H_{0}$</span> to an alternative hypothesis <span class="inlinecode">$H_{A}$</span>. For instance, jk100
+
+one might be interested in knowing whether the means of two groups of samples are the same are different:
+
+<div>
+$$\begin{align}
+H_{0}: \mu_{1} = \mu_{2} \\
+H_{1}: \mu_{1} \neq \mu_{2}
+\end{align}$$
+</div>
+
+
+
+
+
+
     + Null hypothesis and alternative hypothesis.
   * Need to define the crticial value. <span class="inlinecode">$alpha$</span>
 * Alpha level: Probability of rejecting the null hypothesis assuming that the null hypothesis is true.
@@ -137,10 +152,13 @@ $$d = \frac{|\mu_{1}-\mu_{2}}{\sigma}$$
 
 ## References
 
+* [Youtube - A conceptual introduction to power and sample size calculations using Stata](https://www.youtube.com/watch?v=QBONLUp7i28)
+* [Effect Size for Independent Samples t-Test](http://www.statisticslectures.com/topics/effectsizeindependentsamplest/)
+    + [Youtube video](https://www.youtube.com/watch?v=wGlbyNBxEM8)
 * [Inference for Means: Comparing Two Independent Samples](http://www.stat.ubc.ca/~rollin/stats/ssize/n2.html)
-* [A conceptual introduction to power and sample size calculations using Stata](https://www.youtube.com/watch?v=QBONLUp7i28)
 * [Quick-R: Power Analysis](http://www.statmethods.net/stats/power.html)
 * [idre - UCLA: Power Analysis for Two-group Independent sample t-test](http://www.ats.ucla.edu/stat/r/dae/t_test_power2.htm)
+* [Calculating Power](https://www.youtube.com/watch?v=9lyCnLznAfs&nohtml5=False)
 
 ## R Session
 
