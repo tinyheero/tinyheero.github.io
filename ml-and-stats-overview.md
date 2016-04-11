@@ -13,6 +13,14 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 ## Statistics
 
+* There are 2 major branches of statistics:
+    1. Description statistics: Summarizing and presenting key characteristics about some data.
+    1. Inferential statistics: Inferring characteristics about a population from a small sample of it. In this branch, you typically start with a hypothesis and then test if your sample follows the hypothesis.
+* Probability and statistics deal with questions involving populations and samples, but do so in an "inverse manner" to one another.
+    + In a probability problem, properties of a population under study are known (e.g. specified distribution of a population), and questions regarding a sample taken from the population are posed and answered.
+    + In a statistics problem, characteristics of the sample are known and properties of the population are inferred.
+* We study probability first before statistics because we need to understand the uncertainity associated with taking a sample from a population. Then we are start to understand what a particular sample can tell us about a population.
+
 1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
     * [Joint, Marginal, and Conditional Probabilites]({% post_url 2016-03-20-basic-prob %})
@@ -36,6 +44,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 ### References
 
+* [Kinds of Statistics](http://be.wvu.edu/divmim/mgmt/blakely/homepage/Mktg325/Kinds%20of%20Statistics%20and%20Types%20of%20Data.pdf): Good introductory article on what the two main branches of statistics are.
 * [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 
