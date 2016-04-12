@@ -7,7 +7,7 @@ output:
 tags: [R, stats]
 ---
 
-In my previous post on [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), I introduced the 3 different types of probabilities. One famous probability rule that is built on these probabilities is called "Bayes' Rule" which forms the basis of bayesian statistics. 
+In my previous post on [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), I introduced 3 different types of probabilities. One famous probability rule that is built on these probabilities is called "Bayes' Rule" which forms the basis of bayesian statistics. 
 
 Here is an overview of what will be discussed in this post.
 
@@ -99,16 +99,17 @@ P(H\ |\ E) &= \frac{1}{13}
 \end{align}$$
 </div>
 
-Basically we started with a prior belief, <span class="inlinecode">$P(H) = \frac{1}{13}$</span>, but with new information regarding the card being a face card we are more confident that the card is a King now, <span class="inlinecode">$P(H\ |\ E) = \frac{1}{13}$</span>
+Basically we started with a prior belief, <span class="inlinecode">$P(H) = \frac{1}{13}$</span>, but with new information regarding the card being a face card we are more confident that the card is a King now, <span class="inlinecode">$P(H\ |\ E) = \frac{1}{13}$</span>.
 
 ## Bayes' Rule Example #2: Disease Testing
 
-As another example, we will use disease testing to illustrate bayes' rule. Say we know that in the general populance, the chances that a person will have a disease is 0.001. We also have a test that can detect the disease and it has a 99% chance of giving the correct result. If a person gets the test and it comes back as positive, what are the chances that the person actually has the disease. Let's first setup our variables here:
+As another example, we will use disease testing to illustrate bayes' rule. Say we know that in the general populance, the chances that a person will have a disease is 0.001. We also know that the test has a true positive rate of 99% chance and a false positive rate of 5%. If a person gets the test and it comes back as positive, what are the chances that the person actually has the disease. Let's first setup our variables here:
+
+* <span class="inlinecode">$P(H = disease)$</span>: This is our prior belief of the probability of having the disease. This is 0.001.
+* <span class="inlinecode">$P(T = positive | H = disease)$</span>: This is the probability of the test being positive given the person has the disease. In other words, the true positive rate which is 0.99.
+* <span class="inlinecode">$P(T = positive)$</span>: This is the probability of the test being positive irrespective of whether the person has the disease or not. This would be 0.99 * 0.001 + 0.05 * 0.999.
 
 * <span class="inlinecode">$P(H = disease | T = positive)$</span>: This is the thing (posterior probability) we are most interested in knowing. What is the probability of actually having the disease if our test result is positive? 
-* <span class="inlinecode">$P(H = disease)$</span>: This is our prior belief of the probability of having the disease. This is 0.0001.
-* <span class="inlinecode">$P(T = positive | H = disease)$</span>: This is the probability of the test being positive given the person has the disease. This is 0.99.
-* <span class="inlinecode">$P(T = positive)$</span>: This is the probability of the test being positive irrespective of whether the person has the disease or not. To calculate, we need to cosnider 
 
 
 * <span class="inlinecode">$D$</span>: Represents the true presence (1) and absence (0) of a disease.
@@ -142,6 +143,17 @@ Say we sampled a person from the population, gave them the test, and the test ca
 <div>
 $$P(D = 1\ |\ T = 1) = \frac{P(T = 1\ |\ D = 1)\ P(D = 1)}{P(T = 1)}$$
 </div>
+
+## Revisiting the Bayes' Rule
+
+The different parts of the rule have specific:
+
+* <span class="inlinecode">$P(X)$</span>: Prior probability. This is our prior belief of X before we factor in any other variables. In actualty, it's just a marginal probability but with a fancy name.
+* <span class="inlinecode">$P(X\ |\ Y )$</span>: Posterior probability. This is the conditional probability of X given Y.
+* <span class="inlinecode">$P(Y\ |\ X )$</span>: Likelihood. This is the conditional probability of Y given X. 
+* <span class="inlinecode">$P(Y)$</span>: Marginal probability. This is just the probability of Y before we factor in any other variables. 
+
+Don't be intimated by these names. In actuality, these are just fancy "bayesian terms" for probabilities we have already discussed in a previous post. **There is nothing mathematically different between a "prior probability" and a "marginal probability"**. It's just termed that way because of the context when doing bayesian statistics/inferences.
 
 ## References
 
