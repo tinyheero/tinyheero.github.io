@@ -30,8 +30,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Gaussian (Normal) Distribution
         + Dirichlet Distribution
     * Discrete
-        + Binomial Distribution
-            - Bernoulli Distribution
+        + Bernoulli Distribution
+        + Binomial Distribution (Sum of n Bernoulli trails)
         + Multinomial Distribution
         + Multivariate Hypergeometric Distribution
             - If sampling is done without replacement.
