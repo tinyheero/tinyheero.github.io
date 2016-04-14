@@ -11,3 +11,4 @@ output:
 ## References
 
 * [Binomial Distribution | Khan Academy](https://www.khanacademy.org/math/probability/random-variables-topic/binomial_distribution/v/binomial-distribution)
+* [Relationship between Binomial and Bernoulli?](http://math.stackexchange.com/questions/838107/relationship-between-binomial-and-bernoulli)
