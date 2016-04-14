@@ -9,7 +9,7 @@ output:
 
 ## What is te Dirichlet Distribution?
 
-* Dirichlet distribution is a probability distribution on probability distributions
+* Dirichlet distribution is a probability distribution on probability distributions. In other words, it is a distribution over distributions. In fact, the beta distribution is a special case of the dirichlet for 2 dimensions.
 * A variable, $\theta$, that is dirichlet distributed is represented as $\theta \sim Dir(\alpha)$
 
 ## Probability Density Function
@@ -22,4 +22,5 @@ $$p(\theta) = \frac{1}{\beta(\alpha)}\prod_{i=1}^{n}\theta_{i}^{\alpha_{i-1}}I(\
 
 ## References
 
+* [Dirichlet Processes: A gentle tutorial](https://www.cs.cmu.edu/~kbe/dp_tutorial.pdf)
 * [(ML 7.7.A1) Dirichlet distribution](https://www.youtube.com/watch?v=nfBNOWv1pgE)
