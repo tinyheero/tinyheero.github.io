@@ -24,6 +24,7 @@ Here is an overview of what will be discussed in this post.
 
 ## Steps in Bayesian Analysis:
 
+1. Identify the data being described.
 1. Define a likelihood function
 1. Establish a prior distribution over the set of possible parameter values.
 1. Collect data and apply Bayes' rule to re-allocate credibility across the possible parameter values.

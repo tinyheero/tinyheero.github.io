@@ -7,7 +7,7 @@ output:
 tags: [R, stats]
 ---
 
-In a previous post on [Joint, Marginal, and Conditional Probabilities post]({% post_url 2016-03-20-basic-prob %}), we learned about the 3 different types of probabilities. One famous probability rule that is built on these probabilities (specifically the conditional probability) is called "Bayes' Rule" which forms the basis of bayesian statistics. In this post, we will learn about how to derive this rule and its utility.
+In a previous post on [Joint, Marginal, and Conditional Probabilities]({% post_url 2016-03-20-basic-prob %}), we learned about the 3 different types of probabilities. One famous probability rule that is built on these probabilities (specifically the conditional probability) is called "Bayes' Rule" which forms the basis of bayesian statistics. In this post, we will learn about how to derive this rule and its utility.
 
 Here is an overview of what will be discussed in this post.
 
