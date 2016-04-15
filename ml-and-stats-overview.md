@@ -11,7 +11,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 <p>This page is very much a work-in-progress</p>
 </div>
 
-## Statistics
+## Probability and Statistics
 
 * There are 2 major branches of statistics:
     1. Description statistics: Summarizing and presenting key characteristics about some data.
