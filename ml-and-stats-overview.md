@@ -31,13 +31,14 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Dirichlet Distribution
     * Discrete
         + Bernoulli Distribution
-        + Binomial Distribution (Sum of n Bernoulli trails)
+        + Binomial Distribution (Sum of n independent Bernoulli trails)
         + Multinomial Distribution
         + Multivariate Hypergeometric Distribution
             - If sampling is done without replacement.
 1. Hypothesis Testing
 1. Bayesian Statistics
    * Classical Frequentist vs. Bayesian 
+   * Metropolis algorithm
 1. Other
     * [Confidence Intervals]({% post_url 2015-08-25-how-to-interpret-a-CI %})
     * Power Analysis
