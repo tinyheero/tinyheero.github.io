@@ -67,15 +67,15 @@ This is defined as the Bayes' rule. Essentially what we have done is relate two 
 
 At first glance, Bayes' rule seems pretty simple and might not be obvious as to why it is so useful. I mean all we've done is just rewritten the conditional probability equation right? While that is true, the power comes from how you intepret the rule and define the variables. 
 
-Let's say we have a hypothesis (H) and some data (E) to support or oppose this hypothesis. If we make our X (from above) equal to H and Y equal to E, then our Bayes' rule becomes:
+Let's say we have a hypothesis (<span class="inlinecode">$\theta$</span>) and some data (Y) to support or oppose this hypothesis. If we make our X (from above) equal to <span class="inlinecode">$\theta$</span>, then our Bayes' rule becomes:
 
 <div>
-$$P(H\ |\ E) = \frac{P(E\ |\ H)\ P(H)}{P(E)}$$
+$$P(\theta\ |\ Y) = \frac{P(Y\ |\ \theta)\ P(\theta)}{P(Y)}$$
 </div>
 
-So what does this mean? Well <span class="inlinecode">$P(H)$</span> represents our "prior" belief of what the hypothesis is before we see any data. This prior is informed by our "expert" opinion on the hypothesis and thus is subjective. But the beauty of this rule, is that it allows us to relate this prior, <span class="inlinecode">$P(H)$</span>, to an "updated belief" of the hypothesis <span class="inlinecode">$P(H\ |\ E)$</span> once we have some data to consider. In this bayesian terms, this "updated belief" is called the posterior.
+So what does this mean? Well <span class="inlinecode">$P(\theta)$</span> represents our "prior" belief of what the hypothesis is before we see any data. This prior is informed by our "expert" opinion on the hypothesis and thus is subjective. But the beauty of this rule, is that it allows us to relate this prior, <span class="inlinecode">$P(\theta)$</span>, to an "updated belief" of the hypothesis <span class="inlinecode">$P(\theta\ |\ Y)$</span> once we have some data to consider. In bayesian terms, this "updated belief" is called the posterior.
 
-For the rest of this post, I will be using variables, H and E to represent the Bayes' rule. Now, let's see this rule in action.
+For the rest of this post, I will be using <span class="inlinecode">$P(\theta)$</span> to represent the hypothesis in the Bayes' rule. Now, let's see this rule in action.
 
 ### Using Bayes' Rule Example #1: Playing Cards
 
@@ -105,11 +105,11 @@ Basically we started with a prior belief, <span class="inlinecode">$P(H = King) 
 
 ### Using Bayes' Rule Example #2: Disease Testing
 
-As another example, we will use disease testing to illustrate bayes' rule. Say we know that in the general populance, the chances that a person will have a certain disease is 0.001. We also know that the test has a true positive rate of 95% chance and a false positive rate of 1%. If a person gets the test and it comes back as positive, what are the chances that the person actually has the disease. Let's first setup our variables here:
+As another example, we will use disease testing to illustrate Bayes' rule. Say we know that in the general populance, the chances that a person will have a certain disease is 0.001. We also know that the test has a true positive rate of 95% chance and a false positive rate of 1%. If a person gets the test and it comes back as positive, what are the chances that the person actually has the disease. Let's first setup our variables here:
 
 * <span class="inlinecode">$P(H = disease)$</span>: This is our prior belief on the probability of having the disease. This is 0.001.
 * <span class="inlinecode">$P(E = positive\ |\ H = disease)$</span>: This is the probability of the test being positive given the person has the disease. In other words, the true positive rate which is 0.95.
-* <span class="inlinecode">$P(E = positive)$</span>: This is the probability of the test being positive irrespective of whether the person has the disease or not. So this would include all true positive events and false positive events. So it it would be summation of the two joint probabilities: 
+* <span class="inlinecode">$P(E = positive)$</span>: This is the probability of the test being positive irrespective of whether the person has the disease or not. So this would include all true positive events and false positive events. So it would be summation of the two joint probabilities: 
 
     <div>
     $$\begin{align}
@@ -133,7 +133,7 @@ Notice how despite the fact that the true positive rate of the test is 0.95, the
 
 ## Revisiting the Bayes' Rule
 
-So far, we've defined the the prior probability, <span class="inlinecode">$P(H)$</span>, and posterior probability, <span class="inlinecode">$P(H\ |\ E)$</span>, but the other components of the Bayes' rule have names themselves that you should be aware of. 
+So far, we've defined the the prior probability, <span class="inlinecode">$P(\theta)$</span>, and posterior probability, <span class="inlinecode">$P(H\ |\ E)$</span>, but the other components of the Bayes' rule have names themselves that you should be aware of. 
 
 * <span class="inlinecode">$P(E\ |\ H)$</span>: Likelihood. This is the probability of the data being generated given the hypothesis.
 * <span class="inlinecode">$P(E)$</span>: Marginal likelihood or evidence. This is just the overall probability of the data after we marginalize out all the possible hypothesis.
@@ -141,7 +141,7 @@ So far, we've defined the the prior probability, <span class="inlinecode">$P(H)$
 If we look at the Bayes' rule again:
 
 <div>
-$$P(H\ |\ E) = \frac{P(E\ |\ H)\ P(H)}{P(E)}$$
+$$P(H\ |\ E) = \frac{P(E\ |\ H)\ P(\theta)}{P(E)}$$
 </div>
 
 We can see that the posterior probability and likelihood are almost the same except for the fact the variables have been inverted. It's important to note that these two components, in general, are NOT equivalent to each other. For instance, consider the following likelihood:
