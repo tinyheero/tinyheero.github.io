@@ -7,7 +7,7 @@ output:
 tags: [R, stats]
 ---
 
-```{r echo = FALSE}
+```{r message = FALSE, echo = FALSE}
 library("knitr")
 library("captioner")
 library("cowplot")
@@ -16,32 +16,127 @@ theme_set(theme_grey())
 tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
+Towards the end of the post [Bayes' Rule]({% post_url 2016-03-20-bayes-rule %}), I eluded a bit to how Bayes' rule becomes extremely poweful in bayesian modeling when we start to intepret the variables of Bayes' rule as parameters of a model and observed data. In this post, we will learn exactly how Bayes' rule is used in bayesian modeling by going through a specific example.
+
 Here is an overview of what will be discussed in this post.
 
 **Table of Contents**
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
 
-## Steps in Bayesian Analysis:
+## The Coin Flipping Example and Steps in Bayesian Analysis
+
+Consider the scenario where you found a coin on the side of a street that had an odd looking geometry, unlike anything you have ever seen before. It still has two sides (heads and a tail), and you start to wonder what the probability of getting a head is on a given flip? Given your knowledge of how a typical coin is, your prior guess is that is should be probably 0.5. But given the strange looking geometry, you also entertain the idea that it could be something like 0.4 or 0.6, but think these values are less probable than 0.5. You then proceed to flip the coin 100 times (because you are realy bored and have time on your hands) and you notice that you get 83 heads. Given this observed data now, what now is your guess at the probability of getting a head on a given flip?
+
+If we think back to our examples from the Bayes' Rule post, we can see that this particular example is not that dissimilar:
+
+* We have a prior belief of what the probability of getting a heads is.
+* We have some observed data which is 83 heads out of 100 coin tosses.
+* We need to update our belief of this probability now that we have some observed data.
+
+There is however one key difference in this particular example compared to our previous examples. **Our prior is not a single fixed value, but rather a series of different possible values. It could be 0.5 or 0.4 or 0.6....in fact it could be any value between 0 and 1!** Moreover, the possible values are not all equally likely. For instance, we have a strong belief that it could be 0.5 (because of what we know about coins in general), and while 0.4 and 0.6 or any other value is possible we still think 0.5 is more probable. Visually, we could have something like:
+
+```{r prior_distr}
+library("dplyr")
+library("ggplot2")
+
+#' Generates a "Triangle" Prior Probability Distribution
+#'
+#' @param vals Sample space of all possible parameter values.
+#' @return 2 column data.frame containing the parameter and its corresponding
+#'   prior probability.
+get_prior_distr <- function(vals) {
+  vals.pmin <- pmin(vals, 1 - vals)
+
+  # Normalize the prior so that they sum to 1.
+  dplyr::data_frame(theta = vals,
+                    prior = vals.pmin / sum(vals.pmin))
+}
+
+# Define the Space of all theta values
+theta.vals <- seq(0, 1, 0.1)
+
+theta.prior.distr.df <- get_prior_distr(theta.vals)
+
+theta.prior.p <- 
+  theta.prior.distr.df %>%
+  ggplot(aes(x = theta, y = prior)) +
+  geom_point() +
+  geom_segment(aes(x = theta, xend = theta, y = prior, yend = 0)) +
+  xlab("theta") +
+  ylab("P(theta)") +
+  scale_x_continuous(breaks = c(theta.vals),
+                     labels = theta.vals) 
+  ggtitle("Prior Distribution") 
+
+theta.prior.p
+```
+
+Here we have 10 different possibilities of theta and their associated probabilities. In fact, what we have just described is a probability distribution that was defined in the [Bayes' Rule]({% post_url 2016-03-20-bayes-rule %})! So if we think of our prior as a random variable, <span class="inlinecode">$\theta$</span>, then what we actually have is a prior probability distribution. What implications does this have? Well this ends up affecting how we measure the likelihood because before our likelihood was based on a single prior value. Instead, our likelihood essentially becomes a function of a series of candidate <span class="inlinecode">$\theta$</span> values. In other words, the probability of seeing the observed data is different depending on what the value of <span class="inlinecode">$\theta$</span> is. 
+
+This segues into an important concept in Bayesian data analysis which is **the observed data, Y, is see as being fixed and the parameter(s), <span class="inlinecode">$\theta$</span>, as the variable.**. In this situation, we call it a likelihood function.
+
+we will define a model with meaningful parameters that can describe the observed data. w=
+
+To do the Bayesian analysis, we follow a X step process:
 
 1. Identify the data being described.
 1. Define a likelihood function
 1. Establish a prior distribution over the set of possible parameter values.
 1. Collect data and apply Bayes' rule to re-allocate credibility across the possible parameter values.
 
-### Step 1: Defining a Likelihood Function
+### Step 1: Identifying the observed data 
+
+In this example, each coin flip gives us two possible outcomes: heads and tails. We can use the random variable, Y, to denote the outcome and assign it to 1 if it is heads and 0 if it is tails.
+
+
+## Coin Flipping as an Analogy
+
+We've used coin flipping as our example for Bayesian modeling here, but it's important to understand that even if we don't care about coin flipping 
+
+### Step 2: Choosing a Descriptive Model for the Observed Data
+
+Once we have identified the observed data, our next step is to come up with a descriptive model along with meaningful parameters that can properly describe this data. The idea here is that the model is supposed to represent some generative process that generated this data. For this particular example, we can represent the probability of getting a head as <span class="inlinecode">$\theta$</span>. Formally we can describe this as:
+
+<div>
+$$P(Y = 1 |\ \theta) = \theta$$
+</div>
+
+It then follows that the probability of getting a tail is:
+
+<div>
+$$P(Y = 0 |\ \theta) = 1 - \theta$$
+</div>
+
+These two expressions can be combined into a single expression:
 
 <div>
 $$P(y\ |\ \theta) = \theta^{y}(1 - \theta)^{1 - y}$$
 </div>
 
-This is the Bernouli distribution.
+Notice how when <span class="inlinecode">$Y = 1$</span>, this expression becomes <span class="inlinecode">$P(Y = 1 |\ \theta) = \theta$</span>. And when <span class="inlinecode">$Y = 0$</span>, this expression becomes <span class="inlinecode">$P(Y = 0 |\ \theta) = 1 - \theta$</span>.
+
+This particular expression is actually the probability mass function of the Bernouli distribution. The Bernouli distribution is used when we are describing a single trial (e.g. coin flip) with two possible outcomes (e.g. heads or tails). When we are dealing with multiple independent trials, our expression becomes:
+
+
+<div>
+binomial pmf
+</div>
+
+This expression is the probability mass function for the binomial distribution. As we are dealing with multiple coin flips here, the binomial distribution serves as the perfect model for this data. 
+
+Therefore, the probability mass function of the binomial distribution will be our likelihood function for the bayesian rule.
+
+<div class="alert alert-dismissible alert-warning">
+<h4>Cool Fact</h4>
+The Bernouli distribution is just a special case of the binomial distribution when there is only one trial.
+</div>
 
 ### Step 2: Prior Distribution
 
 Suppose we restrict our parameter values to discrete values of <span class="inlinecode">$\theta = 0, \theta = 0.1, ..., \theta = 1.0$</span>. And we believe that the certain parameters are more likely. For instance, the probability of the coin being "fair" <span class="inlinecode">$\theta = 0.5$</span> is more likely than a coin being unfair. So we could define a prior probability distribution as follows:
 
-```{r prior_distr, message = FALSE}
+```{r prior_distr_triangle, message = FALSE}
 library("dplyr")
 library("ggplot2")
 
