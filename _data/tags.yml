@@ -58,3 +58,6 @@ topicmodels:
 randvar: 
     slug: randvar
     name: Random Variables
+bayesian: 
+    slug: bayesian 
+    name: Bayesian Statistics
