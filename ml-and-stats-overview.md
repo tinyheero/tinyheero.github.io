@@ -29,6 +29,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
    * Continuous
         + Gaussian (Normal) Distribution
         + Dirichlet Distribution
+        + Exponential Distribution
     * Discrete
         + Bernoulli Distribution
         + Binomial Distribution (Sum of n independent Bernoulli trails)
@@ -42,10 +43,12 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Metropolis algorithm
         + Gibbs Sampling (Special case of Metropolis)
         + BUGS, JAGS, STAN
-       
 1. Other
     * [Confidence Intervals]({% post_url 2015-08-25-how-to-interpret-a-CI %})
     * Power Analysis
+1. Survival Analysis
+    * The basics of survival analysis
+    * Kaplan-Meier Curves and the Log-rank Test
 
 ### References
 
