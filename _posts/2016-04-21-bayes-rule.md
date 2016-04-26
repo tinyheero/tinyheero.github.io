@@ -15,12 +15,7 @@ Here is an overview of what will be discussed in this post.
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
 
-```{r echo = FALSE}
-library("knitr")
-library("captioner")
 
-tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
-```
 
 ## Deriving Bayes' Rule
 

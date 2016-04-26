@@ -1,0 +1,65 @@
+---
+title: "The Basics of Survival Analysis"
+date: "April 21st, 2016"
+layout: post
+output:
+  html_document
+tags: [R, stats, bayesian]
+---
+
+
+
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+```{r echo = FALSE}
+library("knitr")
+library("captioner")
+
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
+```
+
+Survivor functions (curves) can be estimated by using the Kaplan-Meier method. Here in this post, we will use the colon dataset from the survival R package.
+
+```{r}
+library("survival")
+library("dplyr")
+library("reshape2")
+
+colon %>%
+  filter(rx == "Obs")
+```
+
+The help understand how the Kaplan-Meier method works, it's best to represent the survival data in a particular tabular format:
+
+| Ordered Event Times | No. Events at Mf | No. Censored 
+
+```{r}
+fail.times <- 
+  colon %>%
+  filter(rx == "Obs", status == 1) %>% 
+  distinct(time) %>%
+  arrange(time) %>%
+  .$time
+
+colon %>%
+  filter(rx == "Obs", time > 0, time <= 20)
+
+fail.times
+
+  group_by(time, status) %>%
+  summarize(num_patients = n()) %>%
+  dcast
+  
+  
+
+```
+
+
+
+# References
+
+* [Survival Analysis - A Self Learning Text](http://www.amazon.ca/Survival-Analysis-Statistics-Biology-Health-ebook/dp/B00DGEF822?ie=UTF8&qid=&ref_=tmm_kin_swatch_0&sr=)

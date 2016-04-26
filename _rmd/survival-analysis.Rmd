@@ -1,0 +1,101 @@
+---
+title: "The Basics of Survival Analysis"
+date: "April 21st, 2016"
+layout: post
+output:
+  html_document
+tags: [R, stats, bayesian]
+---
+
+Survival analysis is a series of statistical methods that deals with outcome variable of interest that have a time associated with the event. For example, it is used in cancer clinical research if we are interested in measuring the time it takes before a patient relapses following treatment. In this case, the event we are measuring here is whether a patient relapses or not which has a time associated with when the relapse occurs. 
+
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+```{r echo = FALSE}
+library("knitr")
+library("captioner")
+
+tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
+```
+
+## Censoring
+
+Censoring occurs when we have some information regarding an individual's survival time, but we don't know exactly when the survival time will be. There are 3 main reasons why this happens:
+
+* Individual does not experience the event when the study is over
+* Individual is lost to follow-up during the study period
+* Individual withdraws from the study
+
+The most common censoring is right-censor. This happens when the survival time is "incomplete" at the right side of the follow-up period. In other words, the **true** survival times will always be equal to or greater than the observed survival time.
+
+### Left-censored
+
+* Occurs when the person's true survival is less than or equal to the observed survival time.
+* Follow persons until they become HIV position and record the event when happens. But we don't know the exact time of the first exposure to the virus.
+
+### Interval-censored
+
+* Occurs when an individual's true survival time is within a certain known time interval
+* HIV test at T1 was negative, but HIV test at T2 was positive. The exposure to the virus was inbetween T1 and T2.
+* Incorporates right and left-censoring.
+
+## Terminology
+
+* T = random variable for a person's survival time.
+* t = specific value of interest for random variable T.
+* d = random variable indicating failure or censorship
+    + d = 1: Event occurs during study period
+    + d = 0: survival time is censored by end of the study
+
+## Survivor Function
+
+* The survivor function (aka. survival function, reliability function) is denoted as <span class="inlinecode">$S(t)$</span>.
+* <span class="inlinecode">$S(t)$</span> gives the probability that a person survives longer than some specific time t. In other words, <span class="inlinecode">$S(t)$</span> gives the probability that T > t.
+
+All survivor functions follow these same 3 characteristics:
+
+* Nonincreasing. As t increases, the S(t) should decrease
+* S(0) = 1. That is at the start of the study, no one has the event and hence the probability of surviving at t = 0 is 1. 
+* <span class="inlinecode">$S(\infty) = 0$</span>. If the study were to go to infinity, then everyone will eventually experience the event and hence the survival probability must be 0.
+
+## Hazard Function
+
+* The hazard function (aka. conditional failure rate) is denoted as <span class="inlinecode">$h(t)$</span> is given by the following formula:
+
+<div>
+$$P(h(t)) = \lim_{\Delta t\to\infty} \frac{P(t \leq T < t + \Delta t\ |\ T \geq \Delta t)}{\Delta t}$$
+</div>
+
+
+* The hazard function gives the instantaneous potential per unit time for the event to occur, given that the individual has survived up to time t. 
+* Focuses on failing in contrast to survivor function which focuses on not failing.
+* Unlike survivor function, the hazard function gives a rate and **NOT** a probability. This is because we divide the expression P, from the hazard function, by <span class="inlinecode">$\Delta$</span> which gives a value that depends on the units of the time used. This number can even be greater than 1.
+* When <span class="inlinecode">$\Delta$</span> approaches 0, we essentially get the instantaneous probability of failing at time t per unit time given survival up to time t. 
+* We can plot <span class="inlinecode">$h(t)$</span> over a range of t values. 
+
+The hazard function <span class="inlinecode">$h(t)$</span> has the following characteristics:
+
+* it is always nonnegative
+* it has no upper bound
+
+Hazard functions can take on various shape/forms, for instance:
+
+1. Constant
+1. Increasing over time. For example, patients not responding to treatment.
+1. Decreasing over time. For example, patients recovering from surgery where the potential of dying after surgery decreases as after surgery increases.
+1. Increases first and then decreases over time. Patients with some diseases which has high risk of dying very early, but risk decreases over time. 
+
+## Survivor Function vs. Hazard Function
+
+* If you know one, then you can determine the other.
+
+* Hazard function is a measure of instantaneous potential whereas a survival function (?) is a cumulative measure over time.
+* The survival model is usually written in terms of the hazard function when mathematical model needs to be performed.
+
+# References
+
+* [Survival Analysis - A Self Learning Text](http://www.amazon.ca/Survival-Analysis-Statistics-Biology-Health-ebook/dp/B00DGEF822?ie=UTF8&qid=&ref_=tmm_kin_swatch_0&sr=)
