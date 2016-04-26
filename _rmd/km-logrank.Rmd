@@ -1,5 +1,5 @@
 ---
-title: "The Basics of Survival Analysis"
+title: "Kaplan-Meier and Log-Rank Test"
 date: "April 21st, 2016"
 layout: post
 output:
@@ -14,49 +14,150 @@ Here is an overview of what will be discussed in this post.
 **Table of Contents**
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
+h
 
 ```{r echo = FALSE}
 library("knitr")
 library("captioner")
 
+opts_chunk$set(
+  fig.pos = 'H',
+  message = FALSE,
+  error = TRUE  # ensures that knitr will execute this document to the end
+)
+
+fig.nums <- captioner(prefix = "<u>Figure</u>", css_class = "figcaption")
 tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
-Survivor functions (curves) can be estimated by using the Kaplan-Meier method. Here in this post, we will use the colon dataset from the survival R package.
+The most popular way to estimate the survivor function (curve) is by using the Kaplan-Meier method. Here in this post, we will use the colon dataset from the survival R package.
 
 ```{r}
 library("survival")
 library("dplyr")
 library("reshape2")
-
-colon %>%
-  filter(rx == "Obs")
 ```
 
 The help understand how the Kaplan-Meier method works, it's best to represent the survival data in a particular tabular format:
 
-| Ordered Event Times | No. Events at Mf | No. Censored 
+| Ordered Event Times <span class="inlinecode">$t(f)$</span> | No. Events at <span class="inlinecode">$m_{f}$</span> | No. Censored | Risk Set |
 
-```{r}
-fail.times <- 
+* Ordered Event Times: Ordered survival times from earliest to latest
+* No. Events at Mf: Number of failures at time f
+* No. Censored: Number of samples that have been censored at time Mf
+* Risk Set: Number of samples who have survived up to time t.
+
+In R, the `survival` package provides the functions to easily create a table like this. We will first create this table for the group that has undergo observation:
+
+## Calculating Survival Probability without Censoring
+
+```{r colon_obs_grp_survfit_tbl}
+library("magrittr")
+library("broom")
+library("ggfortify")
+library("DT")
+
+colon.obs.grp.survfit <- 
   colon %>%
-  filter(rx == "Obs", status == 1) %>% 
-  distinct(time) %>%
-  arrange(time) %>%
-  .$time
+  filter(rx == "Obs") %>%
+  survfit(Surv(time, status) ~ 1, data = .)
 
-colon %>%
-  filter(rx == "Obs", time > 0, time <= 20)
-
-fail.times
-
-  group_by(time, status) %>%
-  summarize(num_patients = n()) %>%
-  dcast
-  
-  
+# Create table of Kaplan-Meier estimator
+tidy(colon.obs.grp.survfit) %>%
+  datatable(filter = "top", 
+            style = "bootstrap",
+            class = "table-stripe") %>%
+  formatRound(c("estimate", "std.error", "conf.high", "conf.low"), 3)
 
 ```
+
+`r tbl.nums("colon_obs_grp_survfit_tbl.cap.lbl", "Kaplan-Meier Estimator Table for Observation Patients.")`
+
+Once we have this table, we can start calculating the probability of surviving **past a certain time**. For instance, we can first ask what the probability of surviving past the first failure time t = `r tidy(colon.obs.grp.survfit)[[1, "time"]]`. We can see from the table there was `r tidy(colon.obs.grp.survfit)[[1, "n.event"]]` event at t = `r tidy(colon.obs.grp.survfit)[[1, "time"]]`. So of the `r tidy(colon.obs.grp.survfit)[[1, "n.risk"]]` patients, `r tidy(colon.obs.grp.survfit)[[1, "n.event"]]` patient had an event at time `r tidy(colon.obs.grp.survfit)[[1, "time"]]` and so the probability of surviving past t = `r tidy(colon.obs.grp.survfit)[[1, "time"]]` is:
+
+<div>
+$$
+1 - \frac{1}{630} = 0.998
+$$
+</div>
+
+In other words, `r tidy(colon.obs.grp.survfit)[[1, "n.risk"]] - tidy(colon.obs.grp.survfit)[[1, "n.event"]]` patients survived past t = `r tidy(colon.obs.grp.survfit)[[1, "time"]]`. This same logic applies for the next survival time. So if we were interested at t = `r tidy(colon.obs.grp.survfit)[[2, "time"]]`, then it would be:
+
+<div>
+$$
+1 - \frac{2}{630} = 0.997
+$$
+</div>
+
+Now we can continue using this "formula" to calculate survival probability past a certain time, but notice at t = 421 (row 111 in the `r tbl.nums("colon_obs_grp_survfit_tbl.cap.lbl", display = "cite")`) that the n.censor column has a 1:
+
+```{r}
+tidy(colon.obs.grp.survfit) %>%
+  filter(time == 421) %>%
+  kable()
+```
+
+The KM estimator method is specifically designed to handle these situations where data is censored (if we have no censored data, we don't actually need the KM estimator).
+
+## Kaplan-Meier Estimator - Calculating Survival Probability for Censored Data
+
+* Formula is the product of conditional probability terms
+    - Each term int he product is the probability of exceeding a specific ordered failure time given that a subject survives up to that failure time.
+* More generally, any KM formula for a survival probability is limited to product terms up to the survival week being specified.
+    - Hence, why KM formula is often referred to as a "product-limit" formula.
+
+<div>
+$$
+\frac{629}{630} * \frac{628}{629}
+$$
+</div>
+
+Thus the term <span class="inlinecode">$\frac{629}{630}$</span> represents the probability of survival **past** t = 20 given that survival **up to** t = 20. Likewise for, <span class="inlinecode">$\frac{628}{629}$</span>, this represents probability of survival **past** t = 36 given that survival **up to** t = 36. 
+
+The survival estimate for a particular time is the product of multiplying the estimate for the immediately preceding failure time by the fraction of ...
+
+```{r}
+tidy(colon.obs.grp.survfit) %>%
+  filter(time >= 417, time <= 433) %>%
+  kable()
+```
+
+Now that we know this formula, we can go back to the issue of censored data. At t = 421, the survival probability would 0.790 * 497/498 just like before. But at t = 433, it is 0.789 * 494/496. Notice how the denominator is 496 and **not** 497. This is because at t = 421, we had one patient with an event **and** one patient who was censored. So at t = 433, these two patients are "no longer at risk". In other words the patients we consider for n.risk at a particular time, these patients must **not** have experienced an event or been censored at any preceeding time.
+
+We can then plot the KM survival probability curve:
+
+```{r colon_obs_grp_survfit_plot}
+autoplot(colon.obs.grp.survfit) +
+  xlab("Time") +
+  ylab("Survival Probability")
+```
+
+`r fig.nums("colon_obs_grp_survfit_plot.cap.lbl", "Kaplan-Meier Estimator Plot for Observation Patients.")`
+
+## Alternatives to the Kaplan-Meier
+
+The Kaplan-Meier method is a non-parametric method for estimating the survivor function, but it is not the only way. 
+
+* Exponential
+* Weibull 
+
+## Comparing Survivor Function - Log-Rank Test
+
+Now that we know how to generate a survivor function, it's often of interest to test whether two survivor functions are similar or not. For instance, one might be interested in testing whether a particular treatment significantly impacted survival compared to a group of patients who didn't receive treatment (i.e. under observation).
+
+```{r}
+colon.obs.lev.5fu.grp.survfit <- 
+  colon %>%
+  filter(rx %in% c("Obs", "Lev+5FU")) %>%
+  survfit(Surv(time, status) ~ rx, data = .)
+
+colon.obs.lev.5fu.grp.survfit %>%
+  autoplot() +
+  xlab("Time") +
+  ylab("Survival Probability")
+```
+
+The most popular way to test for survivor function differences is to use the log-rank test. The log-rank test is simply a chi-square test which makes use of observed vs. expected cell counts over categories of outcomes.
 
 
 
