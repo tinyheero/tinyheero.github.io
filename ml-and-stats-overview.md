@@ -82,6 +82,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 ### References
 
+* [The one machine learning concept you need to know](http://www.sharpsightlabs.com/one-concept-machine-learning/)
 * [Introduction to Statistical Learning](http://www-bcf.usc.edu/~gareth/ISL/)
     + [Standard Online - This is the corresponding free online course based on this material](https://statlearning.class.stanford.edu)
 * [Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)
