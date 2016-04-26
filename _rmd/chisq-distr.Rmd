@@ -1,0 +1,44 @@
+---
+title: "Chi-Square Distribution"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document:
+    toc: true
+---
+
+## What is Chi-Square Distribution?
+
+* Distribution of the chi-square statistic if called the chi-square distribution.
+* Random sample of size n from a normal population with standard deviation equal to <span class="inline">$\sigma$</span>.
+* If the standard deviation of our particular sample is s, then we determine chi-square statistic using the following formula:
+
+<div>
+$$
+\chi^{2} = \frac{[(n-1) * s^{2}]}{\sigma^{2}}
+$$
+</div>
+
+If we repeated the experiment an infinite number of times (i.e. keep drawing random samples of size n), we can obtain a sampling distribution for the chi-square statistic. This is a continuous distribution called the chi-square distribution and is defined by the following [probabiliy density function]({% post_url 2016-03-17-prob-distr %}).
+
+<div>
+$$
+Y = Y_{0} * (\chi^{2})^{(\frac{v}{2} - 1)} * e^{\frac{\chi^{2}}{2}}
+$$
+</div>
+
+* v = n - 1 is the number of degrees of freedom. 
+
+# Other Details
+
+* Special case of the gamma distribution.
+* Primarily used in hypothesis testing (Rarely used to model data) due to its relationship to the normal distribution. Some examples of hypothesis tests are:
+    - Chi-squared test of independence in contingency tables
+    - Log-rank test in sirvuval analysis
+
+
+
+## References
+
+* [Khan Academy - Chi-square distribution introduction](https://www.youtube.com/watch?v=dXB3cUGnaxQ)
+* [Stat Trek - Chi-Square Distribution](http://stattrek.com/probability-distributions/chi-square.aspx)
