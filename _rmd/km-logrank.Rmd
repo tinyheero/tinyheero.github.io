@@ -157,10 +157,117 @@ colon.obs.lev.5fu.grp.survfit %>%
   ylab("Survival Probability")
 ```
 
-The most popular way to test for survivor function differences is to use the log-rank test. The log-rank test is simply a chi-square test which makes use of observed vs. expected cell counts over categories of outcomes.
+The most popular way to test for survivor function differences is to use the log-rank test. The log-rank test is simply a chi-square test which makes use of observed vs. expected cell counts over categories of outcomes. These categories of interest are defined by **each ordered failure time for the entire set of data being analyzed** (not just one group).
 
+To calculate the expected cell counts for group 1, we use the following formula:
 
+<div>
+$$
+e_{1f} = (\frac{n_{1f}}{n_{1f} + n_{2f}}) * (m_{1f} + m_{2f})
+$$
+</div>
+
+Where:
+
+* <span class="inlinecode">$n_{1f}$: Number of samples at risk at time f in group 1</span> 
+* <span class="inlinecode">$n_{2f}$: Number of samples at risk at time f in group 2</span> 
+* <span class="inlinecode">$m_{1f}$: Number of events at time f in group 1</span> 
+* <span class="inlinecode">$m_{2f}$: Number of events at time f in group 2</span> 
+
+Similarly, we can calculate the expected cell counts for group 1:
+
+<div>
+$$
+e_{2f} = (\frac{n_{2f}}{n_{1f} + n_{2f}}) * (m_{1f} + m_{2f})
+$$
+</div>
+
+In other words, the expected cell counts for a particular group is calculated as the proportion of total samples in both groups at risk at time t multipled by the total number of events at time t in both groups. Initutively, you can think of this the expected number of events you would see in a group. For example, if you observed a total of 10 events across both groups and say group 1 is 30% of the entire number of samples, then you would expected that group 1 accounts for 3 of the events.
+
+```{r log_rank_test}
+# Prepare Summary Table for Times Across Both Groups
+all.times <- 
+  tidy(colon.obs.lev.5fu.grp.survfit) %>%
+  .$time %>%
+  sort() %>%
+  unique()
+
+colon.obs.lev.5fu.grp.survfit.summary <- 
+  summary(colon.obs.lev.5fu.grp.survfit, times = all.times)
+
+colon.obs.lev.5fu.grp.survfit.summary.sub <- 
+  lapply(c(2:6, 8:13), 
+         function(x) colon.obs.lev.5fu.grp.survfit.summary[x]) %>%
+  do.call(data.frame, .)
+
+tmp1.df <- 
+  colon.obs.lev.5fu.grp.survfit.summary.sub %>%
+  filter(strata == "rx=Obs") %>%
+  rename(n.event1 = n.event, n.risk1 = n.risk) %>%
+  select(time, n.event1, n.risk1)
+
+tmp2.df <- 
+  colon.obs.lev.5fu.grp.survfit.summary.sub %>%
+  filter(strata == "rx=Lev+5FU") %>%
+  rename(n.event2 = n.event, n.risk2 = n.risk) %>%
+  select(time, n.event2, n.risk2)
+
+logrank.input.df <- 
+  left_join(tmp1.df, tmp2.df) %>%
+  select(time, n.event1, n.event2, n.risk1, n.risk2) %>%
+  mutate(e1 = (n.risk1 / (n.risk1 + n.risk2)) * (n.event1 + n.event2),
+         e2 = (n.risk2 / (n.risk1 + n.risk2)) * (n.event1 + n.event2))
+```
+
+The log-rank test statistic formed using the same of the observed minus the expected counts over all failure times for each group. Where observed is the number of events at time t for each group:
+
+```{r}
+logrank.input.obs.exp.df <- 
+  logrank.input.df %>%
+  mutate(obs_exp1 = n.risk1 - e1,
+         obs_exp2 = n.risk2 - e2)
+
+logrank.input.obs.exp.summary.df <- 
+  logrank.input.obs.exp.df %>%
+  summarize(n.event1.total = sum(n.event1),
+            n.event2.total = sum(n.event2),
+            e1.total = sum(e1),
+            e2.total = sum(e2),
+            obs_exp1.total = sum(obs_exp1),
+            obs_exp2.total = sum(obs_exp2))
+
+logrank.input.obs.exp.summary.df
+```
+
+The log-rank statistic can be calculated as:
+
+<div>
+$$
+\frac{(O_{2} - E_{2})^{2}}{Var(O_{2} - E_{2})}
+$$
+</div>
+
+The above code was meant to demonstrate the details on how to calculate the log-rank test. The `survdiff` function from the `survival` R package already provides the code to easily run this.
+
+```{r}
+colon %>%
+  filter(rx %in% c("Obs", "Lev+5FU")) %>%
+  survdiff(formula(colon.obs.lev.5fu.grp.survfit), data = .)
+```
+
+* logrank is a special case of Cox' proportional hazards model?
+
+## Cox Regression
+
+```{r}
+colon %>%
+  filter(rx %in% c("Obs", "Lev+5FU")) %>%
+  coxph(Surv(time, status) ~ rx, data = .)
+
+```
 
 # References
 
 * [Survival Analysis - A Self Learning Text](http://www.amazon.ca/Survival-Analysis-Statistics-Biology-Health-ebook/dp/B00DGEF822?ie=UTF8&qid=&ref_=tmm_kin_swatch_0&sr=)
+* [How to extract table results from survival summary object](https://stat.ethz.ch/pipermail/r-help/2014-October/422348.html)
+* [Extract summary table from Survfit with Strata](http://stackoverflow.com/questions/31198584/r-extract-summary-table-from-survfit-with-strata)
