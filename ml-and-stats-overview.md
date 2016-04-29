@@ -30,6 +30,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Gaussian (Normal) Distribution
         + Dirichlet Distribution
         + Exponential Distribution
+        + Chi-Square Distribution
     * Discrete
         + Bernoulli Distribution
         + Binomial Distribution (Sum of n independent Bernoulli trails)
