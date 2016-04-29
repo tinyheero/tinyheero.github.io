@@ -61,3 +61,6 @@ randvar:
 bayesian: 
     slug: bayesian 
     name: Bayesian Statistics
+survival: 
+    slug: survival 
+    name: Survival Analysis

@@ -4,7 +4,7 @@ date: "April 21st, 2016"
 layout: post
 output:
   html_document
-tags: [R, stats, bayesian]
+tags: [stats, survival]
 ---
 
 Survival analysis is a series of statistical methods that deals with outcome variable of interest that have a time associated with the event. For example, it is used in cancer clinical research if we are interested in measuring the time it takes before a patient relapses following treatment. In this case, the event we are measuring here is whether a patient relapses or not which has a time associated with when the relapse occurs. 
@@ -24,15 +24,31 @@ library("captioner")
 tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
+## What is Survival Analysis?
+
+Survival analysis is a series of statistical methods that deal with the outcome variable of interest being a **time to event** variable. This is unlike a typical regression problem where we might be working with a continuous outcome variable (e.g. housing price) or a classification problem where we simply have a discrete variable (e.g. Class I or Class II). In survival analysis, the outcome variable has **both a event and a time value associated with it**. Survival analysis is often used in medicine to study for instance the whether a drug is able to prevent a disease or occurring or not (event) and how long it can say prevent it for (time). For the rest of this post, we will refer to time as survival time.
+
 ## Censoring
 
-Censoring occurs when we have some information regarding an individual's survival time, but we don't know exactly when the survival time will be. There are 3 main reasons why this happens:
+One aspect that makes survival analysis difficult is the concept of censoring. What this means is that we don't know exactly when the survival time will be for individuals. There are 3 main reasons why this happens:
 
 * Individual does not experience the event when the study is over
 * Individual is lost to follow-up during the study period
 * Individual withdraws from the study
 
-The most common censoring is right-censor. This happens when the survival time is "incomplete" at the right side of the follow-up period. In other words, the **true** survival times will always be equal to or greater than the observed survival time.
+There are 3 major times of censoring: right, left and interval censoring which we will discuss below.
+
+### Right-censored
+
+Right-censoring, the most common type of censoring, occurs when the survival time is "incomplete" at the right side of the follow-up period. Consider the follow example where we have 3 patients (A, B, C) enrolled onto a clinical study that runs for some period of time (study end - study start). These 3 patients have three different trajectories:
+
+1. Patient A: Experiences a death before the study ends. We count this as an event.
+1. Patient B: Survives passed the end of the study.
+1. Patient C: Withdraws from the study.
+
+Patient A requires no censoring since we know their exact survival time which is the time until death. Patient B however neeeds to be censored (indicated with the + at the end of the ) since we don't know the **exact** survival time of the patient; We only know that they survived up to at least the end of the study. Patient C also needs to be censored since they withdrew before the study ended. So we only know that they survived up to the time they withdrew, but again we don't know the **exact** survival time of this patient. In right censoring, the **true** survival times will always be equal to or greater than the observed survival time. 
+
+Note: This example is a bit unrealistic since it's rare to have all patients enrolled at the same time in a study. In reality, patients would be enrolled at different times in the trial. But this example is meant more so to illustrate the concepts of censoring.
 
 ### Left-censored
 
@@ -71,7 +87,6 @@ All survivor functions follow these same 3 characteristics:
 <div>
 $$P(h(t)) = \lim_{\Delta t\to\infty} \frac{P(t \leq T < t + \Delta t\ |\ T \geq \Delta t)}{\Delta t}$$
 </div>
-
 
 * The hazard function gives the instantaneous potential per unit time for the event to occur, given that the individual has survived up to time t. 
 * Focuses on failing in contrast to survivor function which focuses on not failing.
