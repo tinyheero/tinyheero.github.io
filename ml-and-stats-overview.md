@@ -47,8 +47,10 @@ Being a somewhat structured person, it's important for me to see how topics rela
     * [Confidence Intervals]({% post_url 2015-08-25-how-to-interpret-a-CI %})
     * Power Analysis
 1. Survival Analysis
-    * The basics of survival analysis
+    * The Basics of Survival Analysis
     * Kaplan-Meier Curves and the Log-rank Test
+    * Cox Regression
+    * Survival Analysis Study Design Considerations
 
 ### References
 
