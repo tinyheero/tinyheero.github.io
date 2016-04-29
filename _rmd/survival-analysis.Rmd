@@ -9,6 +9,8 @@ tags: [R, stats, bayesian]
 
 Survival analysis is a series of statistical methods that deals with outcome variable of interest that have a time associated with the event. For example, it is used in cancer clinical research if we are interested in measuring the time it takes before a patient relapses following treatment. In this case, the event we are measuring here is whether a patient relapses or not which has a time associated with when the relapse occurs. 
 
+This will be the first of several posts on this topic. 
+
 Here is an overview of what will be discussed in this post.
 
 **Table of Contents**
