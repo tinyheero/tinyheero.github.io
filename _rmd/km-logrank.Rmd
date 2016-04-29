@@ -266,6 +266,92 @@ colon %>%
 
 ```
 
+## Design Considerations
+
+* Important to distinguish the study size (N) requires from the number of events (Nev) required
+    + study size refers to the total number of subjects chosen to participate in the study (event or no-event)
+    + Number of events refers to those study participatns who actually get an event durin the study period.
+* We typically first determine the expected (or required)A number of events (Nev) then we determine the study size required (N)
+    + Step 1: Determine Nev using alpha, power, and effect size
+    + Step 2: Determine N from Nev by extrapolation using N. We do this by dividing the N by the probability that any participant gets an event (N = Nev / Pev)
+
+### Determining the Required Number of Events (<span class="inlinecode">$N_{ev}$</span>)
+
+If we assume proportional hazards, then the effect size <span class="inlinecode">$\Delta$</span> can be calculated based on any of these three survival attributes:
+
+1. Events rates
+1. Survival probabilities
+1. Median survival times 
+
+We calculate <span class="inlinecode">$N_{ev}$</span> using the following equation (Freedman 1982):
+
+<div>
+$$
+N_{ev} = \left (\frac{(z_{1-\alpha/2} + z_{1-\beta})(\Delta + 1)}{\Delta - 1} \right)^{2}
+$$
+</div>
+
+Where <span class="inlinecode">$P(Z < z_{ev})$</span> is the cumulative probability below zev of the standard normal distribution.
+
+For instance, if we are interested in using median survival times as our effect size and we believe that it should be twice as high in the treatment group.
+
+* <span class="inlinecode">$\alpha = 0.05; z_{1 - \alpha/2} = 1.96$</span>
+
+```{r equal_grp_size_num_events}
+alpha.val <- 0.05
+beta.val <- 0.2
+effect.size <- 2
+numerator <- (qnorm(1 - alpha.val/2) + qnorm(1 - beta.val)) * (effect.size + 1)
+denominator <- effect.size - 1
+
+(numerator / denominator)^2
+```
+
+#### Unequal Group Sizes
+
+When working with unequal group sizes, we need to modify the equation from above:
+
+<div>
+$$
+N_{ev} = \left (\frac{(z_{1-\alpha/2} + z_{1-\beta})(R\Delta + 1)}{\sqrt{R}(\Delta - 1)} \right)^{2}
+$$
+</div>
+
+Where R is the ratio of <span class="inlinecode">$R = \frac{N_{1}}{N_{0}}$</span>. In other words, the ratio of subjects in the treatment group compared to the observed group.
+
+```{r unequal_grp_size_num_events}
+grp.ratio <- 1/4
+alpha.val <- 0.05
+beta.val <- 0.2
+effect.size <- 2
+numerator <- 
+  (qnorm(1 - alpha.val/2) + qnorm(1 - beta.val)) * 
+  (grp.ratio * effect.size + 1)
+denominator <- sqrt(grp.ratio) * (effect.size - 1)
+
+(numerator / denominator)^2
+```
+
+
+
+### Determining the Required Total Number of Participants (N)
+
+We require additional pieces of information:
+
+1. Accrual period, A
+1. Follow-up period, F, after the last subject has been entered into the study
+1. Median follow-up time <span class="inlinecode">$M_{f} = A/2 + F$</span>
+1. Timepoint at study entry for any subject entering between time 0 and time A.
+
+The general formula for total sample size is derive by assuming that the number of events needed (Nev) is the product of the total sample size (N) and the probability (pev) that a subject will get an event since study entry.
+
+```{r}
+
+
+```
+
+
+
 # References
 
 * [Survival Analysis - A Self Learning Text](http://www.amazon.ca/Survival-Analysis-Statistics-Biology-Health-ebook/dp/B00DGEF822?ie=UTF8&qid=&ref_=tmm_kin_swatch_0&sr=)
