@@ -46,39 +46,63 @@ Right-censoring, the most common type of censoring, occurs when the survival tim
 1. Patient B: Survives passed the end of the study.
 1. Patient C: Withdraws from the study.
 
-Patient A requires no censoring since we know their exact survival time which is the time until death. Patient B however neeeds to be censored (indicated with the + at the end of the ) since we don't know the **exact** survival time of the patient; We only know that they survived up to at least the end of the study. Patient C also needs to be censored since they withdrew before the study ended. So we only know that they survived up to the time they withdrew, but again we don't know the **exact** survival time of this patient. In right censoring, the **true** survival times will always be equal to or greater than the observed survival time. 
+Patient A requires no censoring since we know their exact survival time which is the time until death. Patient B however neeeds to be censored (indicated with the + at the end of the ) since we don't know the **exact** survival time of the patient; We only know that they survived up to at least the end of the study. Patient C also needs to be censored since they withdrew before the study ended. So we only know that they survived up to the time they withdrew, but again we don't know the **exact** survival time of this patient. In right censoring, the **true survival times will always be equal to or greater than the observed survival time**.
 
 Note: This example is a bit unrealistic since it's rare to have all patients enrolled at the same time in a study. In reality, patients would be enrolled at different times in the trial. But this example is meant more so to illustrate the concepts of censoring.
 
 ### Left-censored
 
-* Occurs when the person's true survival is less than or equal to the observed survival time.
-* Follow persons until they become HIV position and record the event when happens. But we don't know the exact time of the first exposure to the virus.
+In contrast to right-censoring, left censoring occurs when the person's true survival time is **less than or equal to the observed survival time**. An example of a situation could be for virus testing. For instance, if we've been following an individual and recorded an event when for instance the individual tests positive for a virus But we don't know the exact time of when the individual was exposed to the disease. We only know that there was some exposure between 0 and the time they were tested:
 
 ### Interval-censored
 
-* Occurs when an individual's true survival time is within a certain known time interval
-* HIV test at T1 was negative, but HIV test at T2 was positive. The exposure to the virus was inbetween T1 and T2.
-* Incorporates right and left-censoring.
+Using the virus testing example, if we have the situation whether we've performed testing on the indvidual at some timepoint (t1) and the individual was negative. But then at a timepoint further on (t2), the individual tested positive. In this scenario, we know the individual was exposed to the virus sometime between t1 and t2 but we do not know the exact timing of the exposure. 
 
 ## Terminology
 
-* T = random variable for a person's survival time.
-* t = specific value of interest for random variable T.
-* d = random variable indicating failure or censorship
-    + d = 1: Event occurs during study period
-    + d = 0: survival time is censored by end of the study
+Before going further on in this post, it's a good time to introduce some key terminology and mathematical notation in survival analysis. The first one is:
+
+T 
+
+:    Random variable for a person's survival time.
+
+As T denotes time, it can take on any value between 0 to infinity. We then use:
+
+t
+
+:    Specific value of interest for random variable T.
+
+
+So the notation, <span class="inlinecode">$T(t > 2)$</span>, means we are asking whether the individual had a survival time beyond 2 months (if the unit of time is months).
+
+d
+
+:    Random variable indicating an event or censorship
+
+So for instance, we could encode events as a 1 and thus d = 1 represents the situation where an event occurs during study period. Where as d = 0, survival time is censored by end of the study.
+
+Next there are two quantitative functions which are of interest in survival analysis. These are the survivor function and hazard function
 
 ## Survivor Function
 
-* The survivor function (aka. survival function, reliability function) is denoted as <span class="inlinecode">$S(t)$</span>.
-* <span class="inlinecode">$S(t)$</span> gives the probability that a person survives longer than some specific time t. In other words, <span class="inlinecode">$S(t)$</span> gives the probability that T > t.
+The survivor function (aka. survival function, reliability function) is denoted as <span class="inlinecode">$S(t)$</span>. The survivor function gives the probability that a person survives longer than some specific time t <span class="inlinecode">$S(t) = P(T > t)$</span>. All survivor functions follow these same 3 characteristics:
 
-All survivor functions follow these same 3 characteristics:
-
-* Nonincreasing. As t increases, the S(t) should decrease
+* As t increases, the <span class="inlinecode">$S(t)$</span> should decrease.
 * S(0) = 1. That is at the start of the study, no one has the event and hence the probability of surviving at t = 0 is 1. 
 * <span class="inlinecode">$S(\infty) = 0$</span>. If the study were to go to infinity, then everyone will eventually experience the event and hence the survival probability must be 0.
+
+In theory, survival curves should be a "smooth" function with time ranging from 0 to infinity:
+
+```{r weibull_survival_function, message = FALSE, echo = FALSE}
+library("dplyr")
+library("ggplot2")
+data.frame(x = c(0, 10)) %>%
+  ggplot(aes(x = x)) +
+  stat_function(fun = dexp, args = list(rate = 1)) +
+  ylab("Survival Probability") +
+  xlab("Time")
+```
+
 
 ## Hazard Function
 
