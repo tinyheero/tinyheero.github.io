@@ -31,6 +31,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Dirichlet Distribution
         + Exponential Distribution
         + Chi-Square Distribution
+        + Weibull Distribution
+            - Exponential Distribution
     * Discrete
         + Bernoulli Distribution
         + Binomial Distribution (Sum of n independent Bernoulli trails)
