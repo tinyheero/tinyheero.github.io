@@ -81,7 +81,7 @@ d
 
 So for instance, we could encode events as a 1 and thus d = 1 represents the situation where an event occurs during study period. Where as d = 0, survival time is censored by end of the study.
 
-Next there are two quantitative functions which are of interest in survival analysis. These are the survivor function and hazard function
+Next there are two quantitative functions which are of interest in survival analysis. These are the **survivor function** and **hazard function**.
 
 ## Survivor Function
 
@@ -93,26 +93,45 @@ The survivor function (aka. survival function, reliability function) is denoted 
 
 In theory, survival curves should be a "smooth" function with time ranging from 0 to infinity:
 
-```{r weibull_survival_function, message = FALSE, echo = FALSE}
+```{r weibull_survival_function, message = FALSE}
 library("dplyr")
 library("ggplot2")
 data.frame(x = c(0, 10)) %>%
   ggplot(aes(x = x)) +
   stat_function(fun = dexp, args = list(rate = 1)) +
-  ylab("Survival Probability") +
+  ylab("S(t)") +
   xlab("Time")
 ```
 
+However, it is typical to empirically derive the survivor function from data using what is called the Kaplan-Meier method (we will cover this in an additional post), This results in a function that contains lots of steps:
+
+```{r, message = FALSE}
+library("survival")
+library("ggfortify")
+
+colon %>%
+  filter(rx == "Obs") %>%
+  survfit(Surv(time, status) ~ 1, data = .) %>%
+  autoplot() +
+  ylab("S(t)") +
+  xlab("Time")
+```
 
 ## Hazard Function
 
-* The hazard function (aka. conditional failure rate) is denoted as <span class="inlinecode">$h(t)$</span> is given by the following formula:
+The other quantitative function of interest in survival analysis is the hazard function (aka. conditional failure rate), <span class="inlinecode">$h(t)$</span>. I always found the hazard function a bit difficult to intepret. The easiest way to think about it is to consider the scenario of where you are reading off a speedometer at a specific moment t. At this specific moment, the speed you are travelling at is 40 km/hr. What this means is if you travel at this specific rate for the next hour, you will travel 40 kilometers. But of course, there are flucuations and you will go faster or slower than 40 km/hr so it doesn't really give you the specific distance you will travel. So what does the 40km/hr really mean then? All it tells you is at this **given moment you are travelling this fast.** Importantly, implicit to this is the fact that you have already travelled some amount of distance.
+
+The hazard function is akin to the speedometer here. Where at given moment t in time, you have this **potential risk of having an event given you have survived up to time t.** Mathematically, the hazard function is represented as follows:
 
 <div>
 $$P(h(t)) = \lim_{\Delta t\to\infty} \frac{P(t \leq T < t + \Delta t\ |\ T \geq \Delta t)}{\Delta t}$$
 </div>
 
-* The hazard function gives the instantaneous potential per unit time for the event to occur, given that the individual has survived up to time t. 
+What this tell us is as <span class="inlinecode">$\Delta t$</span> approaches 0 (i.e. as the time interval approaches 0), then the hazard function equals a survival probability statement divided by <span class="inlinecode">$\Delta t$</span>.
+
+
+Essentially what this equation indicates is the **instantaneous potential at a given time for the event to occur, given that the individual has survived up to time t.**
+
 * Focuses on failing in contrast to survivor function which focuses on not failing.
 * Unlike survivor function, the hazard function gives a rate and **NOT** a probability. This is because we divide the expression P, from the hazard function, by <span class="inlinecode">$\Delta$</span> which gives a value that depends on the units of the time used. This number can even be greater than 1.
 * When <span class="inlinecode">$\Delta$</span> approaches 0, we essentially get the instantaneous probability of failing at time t per unit time given survival up to time t. 
