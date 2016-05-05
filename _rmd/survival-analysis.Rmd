@@ -109,9 +109,12 @@ However, it is typical to empirically derive the survivor function from data usi
 library("survival")
 library("ggfortify")
 
-colon %>%
+colon.survfit <- 
+  colon %>%
   filter(rx == "Obs") %>%
-  survfit(Surv(time, status) ~ 1, data = .) %>%
+  survfit(Surv(time, status) ~ 1, data = .)
+
+colon.survfit %>%
   autoplot() +
   ylab("S(t)") +
   xlab("Time")
@@ -129,8 +132,28 @@ $$P(h(t)) = \lim_{\Delta t\to\infty} \frac{P(t \leq T < t + \Delta t\ |\ T \geq 
 
 What this tell us is as <span class="inlinecode">$\Delta t$</span> approaches 0 (i.e. as the time interval approaches 0), then the hazard function equals a survival probability statement divided by <span class="inlinecode">$\Delta t$</span>.
 
-
 Essentially what this equation indicates is the **instantaneous potential at a given time for the event to occur, given that the individual has survived up to time t.**
+
+```{r}
+library("epiR")
+library("muhaz")
+library("magrittr")
+
+colon.haz <- epi.insthaz(colon.survfit, conf.level = 0.95)
+colon.haz %>%
+  ggplot(aes(x = time, y = est)) +
+  geom_point() +
+  geom_line()
+```
+
+```{r}
+colon.kphaz.fit <- 
+  colon %>%
+  filter(rx == "Obs") %$%
+  kphaz.fit(.$time, .$status)
+
+kphaz.plot(colon.kphaz.fit)
+```
 
 * Focuses on failing in contrast to survivor function which focuses on not failing.
 * Unlike survivor function, the hazard function gives a rate and **NOT** a probability. This is because we divide the expression P, from the hazard function, by <span class="inlinecode">$\Delta$</span> which gives a value that depends on the units of the time used. This number can even be greater than 1.
@@ -155,6 +178,17 @@ Hazard functions can take on various shape/forms, for instance:
 
 * Hazard function is a measure of instantaneous potential whereas a survival function (?) is a cumulative measure over time.
 * The survival model is usually written in terms of the hazard function when mathematical model needs to be performed.
+
+## What Are the Goals of Survival Analysis?
+
+```{r}
+colon %>%
+  filter(rx %in% c("Lev+5FU", "Obs")) %>%
+  survfit(Surv(time, status) ~ rx, data = .) %>%
+  autoplot() +
+  ylab("S(t)") +
+  xlab("Time")
+```
 
 # References
 
