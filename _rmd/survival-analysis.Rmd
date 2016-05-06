@@ -130,27 +130,67 @@ The hazard function is akin to the speedometer here. Where at given moment t in 
 $$P(h(t)) = \lim_{\Delta t\to\infty} \frac{P(t \leq T < t + \Delta t\ |\ T \geq \Delta t)}{\Delta t}$$
 </div>
 
-What this tell us is as <span class="inlinecode">$\Delta t$</span> approaches 0 (i.e. as the time interval approaches 0), then the hazard function equals a survival probability statement divided by <span class="inlinecode">$\Delta t$</span>.
+Let's break down this equation:
 
-Essentially what this equation indicates is the **instantaneous potential at a given time for the event to occur, given that the individual has survived up to time t.**
+* <span class="inlinecode">$\lim_{\Delta t\to\infty}$</span>: This indicates as the time interval approaches 0. This essentially gives us the instantaneous measurement at a particular time.
+* <span class="inlinecode">$P(t \leq T < t + \Delta t\ |\ T \geq \Delta t)$</span>: Probability that a person's survival time T will be between the time interval <span class="inlinecode">$t$</span> and <span class="inlinecode">$t + \Delta t$</span> **given** that they have survived up to t (<span class="inlinecode">$T \geq \Delta t$</span>).
 
-```{r}
+So what this equation is telling us is if the time interval approaches 0 (<span class="inlinecode">$\lim_{\Delta t\to\infty}$</span>), then we are getting the instantaneous risk of having an event at time t given they survival up to t.
+
+It's important to note here that the hazard is **not a probability**. Because we are dividing the probability by a time interval, we are instead getting a rate. And since we are dealing with the condition of survival up to time t, this is why sometimes the hazard function is referred to as **conditional failure rate**.
+
+Unlike the survivor function, estimating the hazard function is not as simple. However, we can leverage off the fact that the survivor function and hazard functions are related through these two formulas:
+
+<div>
+$$\begin{align}
+S(t) &= exp\left(-\int_{0}^{t}du\ h(u)\right) \\
+h(t) &= -\left(\frac{dS(t)\ /\ dt}{S(t)}\right)
+\end{align}$$
+</div>
+
+We can make sure of statistical computing languages (e.g. R) to make us make these transformations. For instance, the epiR package in R has the `epi.insthaz` function which can transform a survivor function into a hazard function:
+
+```{r epiR_example, message = FALSE}
 library("epiR")
-library("muhaz")
-library("magrittr")
 
 colon.haz <- epi.insthaz(colon.survfit, conf.level = 0.95)
 colon.haz %>%
   ggplot(aes(x = time, y = est)) +
-  geom_point() +
-  geom_line()
+  geom_line() +
+  ylab("h(t)") +
+  xlab("Time")
 ```
 
+Another approach to estimating <span class="inlinecode">$h(t)$</span>, is to first estimate the cumulative hazard function <span class="inlinecode">$H(t)$</span> which is used as an intermediary to estimating <span class="inlinecode">$h(t)$</span>. One way of estimating <span class="inlinecode">$H(t)$</span> is by using the [Nelson–Aalen estimator](https://en.wikipedia.org/wiki/Nelson%E2%80%93Aalen_estimator).
+
+* It is always non-negative
+* It has no upper bound. In other words, unlike the survivor function, which is a probability, the hazard function can be > 1 and can go up to <span class="inlinecode">$\inf$</span>.
+
+Cumulative Hazard calculation
+
 ```{r}
+library("muhaz")
+library("magrittr")
+
+survfit(Surv(time, status) ~ x, aml, type='fleming') 
+
+colon %>%
+  filter(rx == "Obs") %>%
+  survfit(Surv(time, status) ~ 1, data = .) %>%
+
+
+cumhaz
+
 colon.kphaz.fit <- 
+
   colon %>%
   filter(rx == "Obs") %$%
-  kphaz.fit(.$time, .$status)
+  kphaz.fit(.$time, .$status) %>%
+  as.data.frame() %>%
+  ggplot(aes(x = time, y = haz)) +
+  geom_point()
+
+colon.kphaz.fit
 
 kphaz.plot(colon.kphaz.fit)
 ```
@@ -193,3 +233,4 @@ colon %>%
 # References
 
 * [Survival Analysis - A Self Learning Text](http://www.amazon.ca/Survival-Analysis-Statistics-Biology-Health-ebook/dp/B00DGEF822?ie=UTF8&qid=&ref_=tmm_kin_swatch_0&sr=)
+* [Survival Analysis Part I: Basic concepts and first analyses](http://www.ncbi.nlm.nih.gov/pubmed/12865907)
