@@ -139,7 +139,42 @@ So what this equation is telling us is if the time interval approaches 0 (<span 
 
 It's important to note here that the hazard is **not a probability**. Because we are dividing the probability by a time interval, we are instead getting a rate. And since we are dealing with the condition of survival up to time t, this is why sometimes the hazard function is referred to as **conditional failure rate**.
 
-Unlike the survivor function, estimating the hazard function is not as simple. However, we can leverage off the fact that the survivor function and hazard functions are related through these two formulas:
+Unlike the survivor function, estimating the hazard function is not as simple.  One approach to estimating <span class="inlinecode">$h(t)$</span>, is to first estimate the cumulative hazard function <span class="inlinecode">$H(t)$</span> which is used as an intermediary to estimating <span class="inlinecode">$h(t)$</span>. The [Nelson–Aalen estimator](https://en.wikipedia.org/wiki/Nelson%E2%80%93Aalen_estimator) can be used to first estimate <span class="inlinecode">$H(t)$</span> and then calculate the hazard function from that.
+
+```{r}
+library("muhaz")
+library("magrittr")
+
+colon.kphaz.fit <- 
+  colon %>%
+  filter(rx == "Obs") %$%
+  kphaz.fit(.$time, .$status)
+
+colon.kphaz.fit %>%
+  as.data.frame() %>%
+  ggplot(aes(x = time, y = haz)) +
+  geom_line()
+```
+
+As you can see, the hazard function is fairly erratic which is common. A "smoothing" line is often drawn to help make it more intepretable.
+
+```{r hazard_function_smooth}
+colon.kphaz.fit %>%
+  as.data.frame() %>%
+  ggplot(aes(x = time, y = haz)) +
+  geom_smooth()
+```
+
+Like the survivor function, the hazard function has a few key properties:
+
+* It is always non-negative
+* It has no upper bound. In other words, unlike the survivor function, which is a probability, the hazard function can be > 1 and can go up to <span class="inlinecode">$\inf$</span>.
+
+It is worth mentioning that if we assume the hazard function (and survival function) follow a probability distribution then we can also esimate the functions this way. We will discuss this in a later post.
+
+## Survivor Function vs. Hazard Function
+
+An important thing to mention is that the survivor function and hazard functions are related through these two formulas:
 
 <div>
 $$\begin{align}
@@ -161,65 +196,20 @@ colon.haz %>%
   xlab("Time")
 ```
 
-Another approach to estimating <span class="inlinecode">$h(t)$</span>, is to first estimate the cumulative hazard function <span class="inlinecode">$H(t)$</span> which is used as an intermediary to estimating <span class="inlinecode">$h(t)$</span>. One way of estimating <span class="inlinecode">$H(t)$</span> is by using the [Nelson–Aalen estimator](https://en.wikipedia.org/wiki/Nelson%E2%80%93Aalen_estimator).
-
-* It is always non-negative
-* It has no upper bound. In other words, unlike the survivor function, which is a probability, the hazard function can be > 1 and can go up to <span class="inlinecode">$\inf$</span>.
-
-Cumulative Hazard calculation
-
-```{r}
-library("muhaz")
-library("magrittr")
-
-survfit(Surv(time, status) ~ x, aml, type='fleming') 
-
-colon %>%
-  filter(rx == "Obs") %>%
-  survfit(Surv(time, status) ~ 1, data = .) %>%
-
-
-cumhaz
-
-colon.kphaz.fit <- 
-
-  colon %>%
-  filter(rx == "Obs") %$%
-  kphaz.fit(.$time, .$status) %>%
-  as.data.frame() %>%
-  ggplot(aes(x = time, y = haz)) +
-  geom_point()
-
-colon.kphaz.fit
-
-kphaz.plot(colon.kphaz.fit)
-```
-
-* Focuses on failing in contrast to survivor function which focuses on not failing.
-* Unlike survivor function, the hazard function gives a rate and **NOT** a probability. This is because we divide the expression P, from the hazard function, by <span class="inlinecode">$\Delta$</span> which gives a value that depends on the units of the time used. This number can even be greater than 1.
-* When <span class="inlinecode">$\Delta$</span> approaches 0, we essentially get the instantaneous probability of failing at time t per unit time given survival up to time t. 
-* We can plot <span class="inlinecode">$h(t)$</span> over a range of t values. 
-
-The hazard function <span class="inlinecode">$h(t)$</span> has the following characteristics:
-
-* it is always nonnegative
-* it has no upper bound
-
-Hazard functions can take on various shape/forms, for instance:
-
-1. Constant
-1. Increasing over time. For example, patients not responding to treatment.
-1. Decreasing over time. For example, patients recovering from surgery where the potential of dying after surgery decreases as after surgery increases.
-1. Increases first and then decreases over time. Patients with some diseases which has high risk of dying very early, but risk decreases over time. 
-
-## Survivor Function vs. Hazard Function
 
 * If you know one, then you can determine the other.
 
 * Hazard function is a measure of instantaneous potential whereas a survival function (?) is a cumulative measure over time.
 * The survival model is usually written in terms of the hazard function when mathematical model needs to be performed.
 
-## What Are the Goals of Survival Analysis?
+## Summary
+
+There are 3 ultimate goals in survival analysis:
+
+1. Estimate the survivor and hazard functions.
+1. Compare survivor and/or hazard functions.
+1. Assess the relationship of other variables with the survivor and hazard function.
+
 
 ```{r}
 colon %>%
@@ -234,3 +224,5 @@ colon %>%
 
 * [Survival Analysis - A Self Learning Text](http://www.amazon.ca/Survival-Analysis-Statistics-Biology-Health-ebook/dp/B00DGEF822?ie=UTF8&qid=&ref_=tmm_kin_swatch_0&sr=)
 * [Survival Analysis Part I: Basic concepts and first analyses](http://www.ncbi.nlm.nih.gov/pubmed/12865907)
+* [Nelson-Aalen estimator in R](https://stat.ethz.ch/pipermail/r-help/2004-October/058588.html)
+* [Nelson-Aalen estimator of cumulative hazard](https://stat.ethz.ch/pipermail/r-help/2009-May/390108.html)
