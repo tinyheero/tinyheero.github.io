@@ -1,31 +1,49 @@
 ---
 layout: post
 title:  "Inferring Clonal Dynamics"
-tags: [bioinfo, kallisto]
+tags: [conda]
 ---
 
-## Create Conda Environments
+## Conda Environments
+
+To create a new conda environment:
 
 ~~~
-conda create --name env_name r
+create create -n name_of_environment
 ~~~
+
+To export an existing conda environment:
+
+~~~
+create env export > environment.yml
+~~~
+
+To remove a conda environment:
+
+~~~
+create env remove -n name_of_environment
+~~~
+
+
 
 ## Adding Channels
 
-Checking channels:
+Checking available channels that would be searched when trying to install a package:
 
 ~~~
 conda config --get channels
 ~~~
 
+To add a channel:
+
 ~~~
 conda config --add channels bioconda
 ~~~
 
-## Exporting Conda Environments
+To remove a channel:
 
 ~~~
-create env export > environment.yml
+conda config --force --remove channels http://conda.anaconda.org/mutirri
 ~~~
 
 ## Package Management
@@ -75,3 +93,13 @@ conda build r-rmarkdown
 ~~~
 
 If you have an anaconda account setup properly, this will also automatically 
+
+## Extra
+
+You can get tab completion for conda by via the argcomplete package:
+
+~~~
+conda install argcomplete
+~~~
+
+See this [reference](http://conda.pydata.org/docs/install/tab-completion.html) for more details.
