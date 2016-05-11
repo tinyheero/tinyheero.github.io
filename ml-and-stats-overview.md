@@ -24,7 +24,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
     * [Joint, Marginal, and Conditional Probabilites]({% post_url 2016-03-20-basic-prob %})
-    * Bayes' Rule
+    * [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %})
 1. [Probability Distributions]({% post_url 2016-03-17-prob-distr %})
    * Continuous
         + Gaussian (Normal) Distribution
@@ -33,6 +33,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Chi-Square Distribution
         + Weibull Distribution
             - Exponential Distribution
+        + Beta Distribution
     * Discrete
         + Bernoulli Distribution
         + Binomial Distribution (Sum of n independent Bernoulli trails)
@@ -41,6 +42,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
             - If sampling is done without replacement.
         + Poission Distribution
         + Negative Binomial Distribution
+        + Beta-binomial distribution
 1. Hypothesis Testing
 1. Bayesian Statistics
     * Classical Frequentist vs. Bayesian 
