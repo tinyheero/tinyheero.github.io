@@ -15,7 +15,7 @@ create create -n name_of_environment
 To export an existing conda environment:
 
 ~~~
-create env export > environment.yml
+conda env export > environment.yml
 ~~~
 
 To remove a conda environment:
