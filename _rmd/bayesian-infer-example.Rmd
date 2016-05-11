@@ -16,7 +16,7 @@ theme_set(theme_grey())
 tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
-Towards the end of the post [Bayes' Rule]({% post_url 2016-03-20-bayes-rule %}), I eluded a bit to how Bayes' rule becomes extremely poweful in bayesian modeling when we start to intepret the variables of Bayes' rule as parameters of a model and observed data. In this post, we will learn exactly how Bayes' rule is used in bayesian modeling by going through a specific example.
+Towards the end of the post [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %}), I eluded a bit to how Bayes' rule becomes extremely poweful in bayesian modeling when we start to intepret the variables of Bayes' rule as parameters of a model and observed data. In this post, we will learn exactly how Bayes' rule is used in bayesian modeling by going through a specific example.
 
 Here is an overview of what will be discussed in this post.
 
