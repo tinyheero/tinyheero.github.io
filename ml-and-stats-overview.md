@@ -39,6 +39,8 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Multinomial Distribution
         + Multivariate Hypergeometric Distribution
             - If sampling is done without replacement.
+        + Poission Distribution
+        + Negative Binomial Distribution
 1. Hypothesis Testing
 1. Bayesian Statistics
     * Classical Frequentist vs. Bayesian 
