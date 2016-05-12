@@ -1,0 +1,12 @@
+---
+title: "Concordance Statistics"
+date: "March 17th, 2016"
+layout: post
+output:
+  html_document
+tags: [R, stats]
+---
+
+## References
+
+* [5 Ways to Estimate Concordance Index for Cox Models in R, Why Results Aren't Identical?](http://gaodoris.blogspot.ca/2012/10/5-ways-to-estimate-concordance-index.html)
