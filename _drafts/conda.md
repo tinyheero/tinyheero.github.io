@@ -103,3 +103,17 @@ conda install argcomplete
 ~~~
 
 See this [reference](http://conda.pydata.org/docs/install/tab-completion.html) for more details.
+
+## Installing Cairo on OSX-64
+
+~~~
+anaconda search -t conda cairo
+~~~
+
+~~~
+anaconda search -t conda r-cairo
+~~~
+
+Had to install freetype
+
+See https://github.com/Automattic/node-canvas/issues/471
