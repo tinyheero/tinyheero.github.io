@@ -189,7 +189,7 @@ colon.kphaz.fit %>%
 Like <span class="inlinecode">$S(t)$</span>, <span class="inlinecode">$h(t)$</span> has a few key properties:
 
 * It is always non-negative.
-* It has no upper bound. In other words, unlike <span class="inlinecode">$S(t)$</span>, which is a probability, the <span class="inlinecode">$h(t)$</span> can be > 1 and can go up to <span class="inlinecode">$\infinity$</span>.
+* It has no upper bound. In other words, unlike <span class="inlinecode">$S(t)$</span>, which is a probability, the <span class="inlinecode">$h(t)$</span> can be > 1 and can go up to <span class="inlinecode">$\infty$</span>.
 
 It is worth mentioning that if we assume <span class="inlinecode">$h(t)$</span> (and <span class="inlinecode">$S(t)$</span>) follow a probability distribution then we can also esimate the functions this way. We will discuss this in a later post.
 
