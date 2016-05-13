@@ -7,10 +7,7 @@ output:
 tags: [stats, survival]
 ---
 
-```{r echo = FALSE}
-library("knitr")
-knitr::opts_chunk$set(fig.path='{{ site.url }}/assets/survival-analysis/')
-```
+
 
 Survival analysis is a series of statistical methods that deals with variables that have both a time and event associated with it. For example, it is used in cancer clinical research if we are interested in measuring the time it takes before a patient relapses following treatment. In this case, the event we are measuring here is whether a patient relapses or not which has a time associated with when the relapse occurs. 
 
@@ -107,7 +104,8 @@ The survivor function (aka. survival function, reliability function) is denoted 
 
 In theory, survival curves should be a "smooth" function with time ranging from 0 to <span class="inlinecode">$\infty$</span>:
 
-```{r weibull_survival_function, message = FALSE, fig.height = 6}
+
+~~~r
 library("dplyr")
 library("ggplot2")
 
@@ -116,11 +114,14 @@ data.frame(x = c(0, 10)) %>%
   stat_function(fun = dexp, args = list(rate = 1)) +
   ylab("S(t)") +
   xlab("Time")
-```
+~~~
+
+![plot of chunk weibull_survival_function]({{ site.url }}/assets/survival-analysis/weibull_survival_function-1.png)
 
 However, it is typical to empirically derive the survivor function from data using what is called the Kaplan-Meier method (we will cover this in an additional post). As we are often dealing with small cohorts, the survival curves oftne come out with lots of "steps":
 
-```{r km_survival_function, message = FALSE, fig.height = 6}
+
+~~~r
 library("survival")
 library("ggfortify")
 
@@ -133,7 +134,9 @@ colon.survfit %>%
   autoplot() +
   ylab("S(t)") +
   xlab("Time")
-```
+~~~
+
+![plot of chunk km_survival_function]({{ site.url }}/assets/survival-analysis/km_survival_function-1.png)
 
 ## Hazard Function
 
@@ -156,7 +159,8 @@ It's important to note here that the hazard is **not a probability** because we 
 
 Unlike the <span class="inlinecode">$S(t)$</span>, estimating the <span class="inlinecode">$h(t)$</span> is not as simple.  One approach to estimating <span class="inlinecode">$h(t)$</span>, is to first estimate the cumulative hazard function <span class="inlinecode">$H(t)$</span> which is used as an intermediary to estimating <span class="inlinecode">$h(t)$</span>. The [Nelson–Aalen estimator](https://en.wikipedia.org/wiki/Nelson%E2%80%93Aalen_estimator) can be used to first estimate <span class="inlinecode">$H(t)$</span> and then calculate the hazard function from that.
 
-```{r hazard_function, fig.width = 8, fig.height = 6}
+
+~~~r
 library("muhaz")
 library("magrittr")
 
@@ -173,18 +177,23 @@ colon.kphaz.fit %>%
   geom_line() +
   xlab("Time") +
   ylab("h(t)")
-```
+~~~
+
+![plot of chunk hazard_function]({{ site.url }}/assets/survival-analysis/hazard_function-1.png)
 
 As you can see, the <span class="inlinecode">$h(t)$</span> is fairly erratic which is common. A "smoothing" line is often drawn to help make it more intepretable.
 
-```{r hazard_function_smooth, fig.width = 8, fig.height = 6}
+
+~~~r
 colon.kphaz.fit %>%
   as.data.frame() %>%
   ggplot(aes(x = time, y = haz)) +
   geom_smooth() +
   xlab("Time") +
   ylab("h(t)")
-```
+~~~
+
+![plot of chunk hazard_function_smooth]({{ site.url }}/assets/survival-analysis/hazard_function_smooth-1.png)
 
 Like <span class="inlinecode">$S(t)$</span>, <span class="inlinecode">$h(t)$</span> has a few key properties:
 
@@ -206,7 +215,8 @@ h(t) &= -\left(\frac{dS(t)\ /\ dt}{S(t)}\right)
 
 We can make sure of statistical computing languages (e.g. R) to make us make these transformations. For instance, the epiR package in R has the `epi.insthaz` function which can transform <span class="inlinecode">$S(t)$</span> into a <span class="inlinecode">$h(t)$</span>:
 
-```{r epiR_example, fig.width = 8, fig.height = 6, message = FALSE}
+
+~~~r
 library("epiR")
 
 colon.haz <- epi.insthaz(colon.survfit, conf.level = 0.95)
@@ -215,7 +225,9 @@ colon.haz %>%
   geom_line() +
   ylab("h(t)") +
   xlab("Time")
-```
+~~~
+
+![plot of chunk epiR_example]({{ site.url }}/assets/survival-analysis/epiR_example-1.png)
 
 ## Summary
 
