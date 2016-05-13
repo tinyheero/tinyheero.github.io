@@ -1,6 +1,6 @@
 ---
 title: "The Basics of Survival Analysis"
-date: "April 21st, 2016"
+date: "May 12th, 2016"
 layout: post
 output:
   html_document
