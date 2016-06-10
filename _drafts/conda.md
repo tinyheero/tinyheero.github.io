@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Inferring Clonal Dynamics"
+title:  "A Primer on Conda"
 tags: [conda]
 ---
 
@@ -23,8 +23,6 @@ To remove a conda environment:
 ~~~
 create env remove -n name_of_environment
 ~~~
-
-
 
 ## Adding Channels
 
@@ -90,9 +88,31 @@ Then we need to build it now (notice how R packages will be prepended with a "r"
 
 ~~~
 conda build r-rmarkdown
+~~~~~~
+
+Successful builds can then be uploaded to the anaconda cloud. To do this, you will need the anaconda upload client
+
+~~~
+conda install anaconda-client
 ~~~
 
-If you have an anaconda account setup properly, this will also automatically 
+Create an anaconda cloud account. Then run:
+
+~~~
+anaconda login
+~~~
+
+Enter your authetication details to login. Now when you finished building a package, you can run:
+
+~~~
+anaconda upload /path/to/build
+~~~
+
+Additionally, you can an upload to automatically happen after every successful build
+
+~~~
+conda config --set anaconda_upload yes
+~~~
 
 ## Extra
 
