@@ -44,12 +44,6 @@ Being a somewhat structured person, it's important for me to see how topics rela
         + Negative Binomial Distribution
         + Beta-binomial distribution
 1. Hypothesis Testing
-1. Bayesian Statistics
-    * Classical Frequentist vs. Bayesian 
-    * Markov Chain Monte Carlo (MCMC) processes
-        + Metropolis algorithm
-        + Gibbs Sampling (Special case of Metropolis)
-        + BUGS, JAGS, STAN
 1. Other
     * [Confidence Intervals]({% post_url 2015-08-25-how-to-interpret-a-CI %})
     * Power Analysis
@@ -58,6 +52,25 @@ Being a somewhat structured person, it's important for me to see how topics rela
     * Kaplan-Meier Curves and the Log-rank Test
     * Cox Regression
     * Survival Analysis Study Design Considerations
+
+### Bayesian Statistics
+
+There are 5 main steps in bayesian data analysis:
+
+1. Identify the data you are working with.
+1. Construct a probablistic model to represent the data.
+1. Specify prior distributions over the parameters of your descriptive model.
+1. Use bayesian inference to "reallocate" your belief of the priors in the presence of the data (i.e. prior to posterior).
+1. Check if the posterior estimates are accurate. If not, consider a different descriptive model.
+
+1. Bayesian Statistics
+    * Classical Frequentist vs. Bayesian 
+    * Markov Chain Monte Carlo (MCMC) processes
+        + Metropolis algorithm
+        + Gibbs Sampling (Special case of Metropolis)
+        + BUGS, JAGS, STAN
+
+
 
 ### References
 
