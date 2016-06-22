@@ -53,6 +53,11 @@ Being a somewhat structured person, it's important for me to see how topics rela
     * Cox Regression
     * Survival Analysis Study Design Considerations
 
+### References
+
+* [Kinds of Statistics](http://be.wvu.edu/divmim/mgmt/blakely/homepage/Mktg325/Kinds%20of%20Statistics%20and%20Types%20of%20Data.pdf): Good introductory article on what the two main branches of statistics are.
+* [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
+
 ### Bayesian Statistics
 
 There are 5 main steps in bayesian data analysis:
@@ -70,12 +75,9 @@ There are 5 main steps in bayesian data analysis:
         + Gibbs Sampling (Special case of Metropolis)
         + BUGS, JAGS, STAN
 
-
-
 ### References
 
-* [Kinds of Statistics](http://be.wvu.edu/divmim/mgmt/blakely/homepage/Mktg325/Kinds%20of%20Statistics%20and%20Types%20of%20Data.pdf): Good introductory article on what the two main branches of statistics are.
-* [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
+* [Bayesian Statistics explained to Beginners in Simple English](http://www.analyticsvidhya.com/blog/2016/06/bayesian-statistics-beginners-simple-english/)
 * [Doing Bayesian Data Analysis - A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 
 ## Machine Learning / Statistical Learning
