@@ -58,7 +58,7 @@ Being a somewhat structured person, it's important for me to see how topics rela
 * [Kinds of Statistics](http://be.wvu.edu/divmim/mgmt/blakely/homepage/Mktg325/Kinds%20of%20Statistics%20and%20Types%20of%20Data.pdf): Good introductory article on what the two main branches of statistics are.
 * [Introduction to Statistical Thought](http://people.math.umass.edu/~lavine/Book/book.html)
 
-### Bayesian Statistics
+## Bayesian Statistics
 
 There are 5 main steps in bayesian data analysis:
 
