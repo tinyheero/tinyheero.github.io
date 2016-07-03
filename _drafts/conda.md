@@ -4,7 +4,11 @@ title:  "A Primer on Conda"
 tags: [conda]
 ---
 
+Conda is a package and environment management system. 
+
 ## Conda Environments
+
+Conda provides "virtual environments" which are essentially creates an encapsulated /c
 
 To create a new conda environment:
 
@@ -32,6 +36,8 @@ Checking available channels that would be searched when trying to install a pack
 conda config --get channels
 ~~~
 
+This will return a ranked list of channels from lowest priority to highest priority. Meaning it will search through the higher priority channels for the package of interest before moving to a lower priorty channelto a lower priorty channel.
+
 To add a channel:
 
 ~~~
@@ -44,7 +50,17 @@ To remove a channel:
 conda config --force --remove channels http://conda.anaconda.org/mutirri
 ~~~
 
-## Package Management
+## Using R with Conda
+
+To use R with conda, we can install very easily:
+
+~~~
+conda install -c r r r-essentials
+~~~
+
+Here we are installing both r and r-essentials.
+
+### Package Management
 
 Install a package is as simple as running `conda install`. Here we will use the example of trying to install the rmarkdown package in R.
 
