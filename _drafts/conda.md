@@ -104,7 +104,15 @@ Then we need to build it now (notice how R packages will be prepended with a "r"
 
 ~~~
 conda build r-rmarkdown
-~~~~~~
+~~~
+
+You can also build against a very specific version of R:
+
+~~~
+conda build --R 3.3.1 r-rmarkdown
+~~~
+
+This tells conda to build the rmarkdown R package against the R version 3.3.1
 
 Successful builds can then be uploaded to the anaconda cloud. To do this, you will need the anaconda upload client
 
