@@ -75,7 +75,7 @@ Before going further on in this post, it's a good time to introduce some key ter
 
 T 
 
-:    [Random variable]{% post_url 2016-02-26-random-variables %} for a person's survival time.
+:    [Random variable]({% post_url 2016-02-26-random-variables %}) for a person's survival time.
 
 As T denotes time, it can take on any value between 0 to infinity. We then use:
 
