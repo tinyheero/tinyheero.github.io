@@ -7,7 +7,7 @@ permalink: /about/
 
 <img src="{{ site.url }}/assets/fong-internet.jpg" alt="Fong Chun Chan" style="width: 300px;" class="floatright" />
 
-I am currently the Head of Bioinformatics in the [Department of Lymphoid Cancer Research]((https://lcr-bccrc.github.io/), British Columbia Cancer Research Centre where I spearhead the overall bioinformatics strategic direction of the department.
+I am currently the Head of Bioinformatics in the [Department of Lymphoid Cancer Research](https://lcr-bccrc.github.io/), British Columbia Cancer Research Centre where I spearhead the overall bioinformatics strategic direction of the department.
 
 I am also concurrently undertaking a PhD in Bioinformatics under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/). My main research interest surrounds the implications of tumour diversity on disease progression in B-cell lymphomas. In particular, how tumour and microenvironment evolution plays a role in treatment resistance as understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. 
 
