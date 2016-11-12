@@ -1,27 +1,42 @@
-R:
-    slug: R
-    name: R
+bayesian: 
+    slug: bayesian 
+    name: Bayesian Statistics
+bioconductor:
+    slug: bioconductor
+    name: Bioconductor
+bioinfo:
+    slug: bioinfo
+    name: Bioinformatics
+cancer:
+    slug: cancer
+    name: Cancer
+cairo: 
+    slug: cairo
+    name: Cairo
+conda: 
+    slug: conda
+    name: Conda
+geoquery:
+    slug: geoquery
+    name: GEOquery
 git:
     slug: git
     name: git
+R:
+    slug: R
+    name: R
 xml2:
     slug: xml2
     name: xml2
 svgPanZoom:
     slug: svgPanZoom
     name: svgPanZoom
-bioinfo:
-    slug: bioinfo
-    name: Bioinformatics
 stats:
     slug: stats
     name: Statistics
 TrAp:
     slug: TrAp 
     name: TrAp
-cancer:
-    slug: cancer
-    name: Cancer
 evolution:
     slug: evolution
     name: Evolution
@@ -31,12 +46,6 @@ devtools:
 kallisto:
     slug: kallisto
     name: kallisto
-cairo: 
-    slug: cairo
-    name: Cairo
-v8: 
-    slug: v8
-    name: V8
 picard: 
     slug: picard
     name: Picard
@@ -58,9 +67,9 @@ topicmodels:
 randvar: 
     slug: randvar
     name: Random Variables
-bayesian: 
-    slug: bayesian 
-    name: Bayesian Statistics
 survival: 
     slug: survival 
     name: Survival Analysis
+v8: 
+    slug: v8
+    name: V8
