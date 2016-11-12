@@ -17,41 +17,20 @@ I have a passion for applying statistical and machine learning approaches to big
 1. I have extensive experience in doing reproducible research through interactive applications and D3 web reporting (e.g. Rmarkdown, knitr, pandoc, git, shiny)
 1. I have expertise in developing/managing big data processing pipelines through the Make engine with experience in using ruffus, bpipe, snakemake, and nextflow. 
 
-### Software
-
-<div class="list-group">
-  <div class="list-group-item">
-    <h4 class="list-group-item-heading">cofeatureR</h4>
-    <p class="list-group-item-text">An R package for generating cofeature (feature by sample) matrices. The package utilizies ggplot2::geom_tile to generate the matrix allowing for easy additions from the base matrix.</p>
-		<br />
-		<ul class="list-inline">
-		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
-			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
-		</ul>
-  </div>
-  <div class="list-group-item">
-    <h4 class="list-group-item-heading">CHL26predictor</h4>
-		<p class="list-group-item-text">An R Package for the Classical Hodgkin Lymphoma (CHL) 26 Gene Overall Survival Predictor. This is the companion R package for the predictor that has been published.</p>
-		<br />
-		<ul class="list-inline">
-		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
-		</ul>
-  </div>
-  <div class="list-group-item">
-    <h4 class="list-group-item-heading">survutils</h4>
-    <p class="list-group-item-text">An R package for Survival Analysis. This package provides wrappers around various survival analysis functions (e.g. coxph) providing a more inituitive interface.</p>
-		<br />
-		<ul class="list-inline">
-		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
-			<li><img src="http://www.r-pkg.org/badges/version/survutils" /></li>
-		</ul>
-  </div>
-</div>
-
 <h3>Selected Publications <small><a href="https://scholar.google.co.in/citations?user=BbZVuYMAAAAJ&hl=en&oi=ao" target="_new">[Google Scholar]</a></small>
 </h3>
 
 <div class="list-group">
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Histological Transformation and Progression in Follicular Lymphoma: a Clonal Evolution Study</h4>
+    <div>Robert Kridel*, Fong Chun Chan*, Anja Mottok, Merrill Boyle, <i>et al.</i> 2016. <a href="http://journals.plos.org/plosmedicine/">PLOS Medicine</a>.</div>
+    <div>* Equal Contribution</div>
+    <div>
+      <ul class="list-inline">
+         <li><span class="label label-success">In Press</span></li>
+      </ul>
+    </div>
+  </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">An RCOR1 loss-associated gene expression signature identifies a prognostically significant DLBCL subgroup</h4>
     <div>Fong Chun Chan, Adele Telenius, Shannon Healy, Susana Ben-Neriah, <i>et al.</i> 2015. <a href="http://www.bloodjournal.org/">Blood</a>.</div>
@@ -82,6 +61,7 @@ I have a passion for applying statistical and machine learning approaches to big
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Gene expression-based model using formalin-fixed paraffin-embedded biopsies predicts overall survival in advanced-stage classical Hodgkin lymphoma</h4>
     <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://jco.ascopubs.org/">Journal of Clinical Oncology</a>.</div>
+
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984"><span class="label label-success">PubMed</span></a></li>
@@ -89,3 +69,59 @@ I have a passion for applying statistical and machine learning approaches to big
       </ul>
     </div>
 </div>
+
+<h3>Software</h3>
+
+<div class="list-group">
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">cofeatureR</h4>
+    <p class="list-group-item-text">An R package for generating cofeature (feature by sample) matrices. The package utilizies ggplot2::geom_tile to generate the matrix allowing for easy additions from the base matrix.</p>
+		<br />
+		<ul class="list-inline">
+		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
+			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
+		</ul>
+  </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">CHL26predictor</h4>
+		<p class="list-group-item-text">An R Package for the Classical Hodgkin Lymphoma (CHL) 26 Gene Overall Survival Predictor. This is the companion R package for the predictor that has been <a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984">published</a>.</p>
+		<br />
+		<ul class="list-inline">
+		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
+		</ul>
+  </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">survutils</h4>
+    <p class="list-group-item-text">An R package for Survival Analysis. This package provides wrappers around various survival analysis functions (e.g. coxph) providing a more inituitive interface.</p>
+		<br />
+		<ul class="list-inline">
+		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
+			<li><img src="http://www.r-pkg.org/badges/version/survutils" /></li>
+		</ul>
+  </div>
+</div>
+
+<h3>Teaching</h3>
+
+<div class="list-group">
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Variant Calling in Cancer Genomes</h4>
+    <div>Workshop on how calling somatic single nucleotide variants in cancer genome data</div>
+		<br />
+    <div>
+      <ul class="list-inline">
+        <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/variant_calling_in_cancer_genomes_seminar">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Generating Heatmaps in R - Workshop</h4>
+    <div>UBC R Study Group Workshop on generating Heatmaps in R</div>
+		<br />
+    <div>
+      <ul class="list-inline">
+        <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/R-Heatmaps">Github</a></li>
+      </ul>
+    <div>
+         
+  </div>
