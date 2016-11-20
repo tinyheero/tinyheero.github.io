@@ -15,3 +15,6 @@ kramdown:
     input: GFM
 
 highlighter: rouge
+
+# Google services
+google_analytics: UA-87660981-1

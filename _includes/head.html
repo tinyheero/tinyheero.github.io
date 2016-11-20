@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="{{ "/css/main.css" | prepend: site.baseurl }}">
   <link rel="stylesheet" href="{{ "/css/syntax-style.css" | prepend: site.baseurl }}">
   <link rel="stylesheet" href="{{ "/css/site.css" | prepend: site.baseurl }}">
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: site.baseurl | prepend: site.url }}">
   <link rel="alternate" type="application/rss+xml" title="{{ site.title }}" href="{{ "/feed.xml" | prepend: site.baseurl | prepend: site.url }}" />
 
@@ -17,4 +17,8 @@
   <script type="text/javascript" src="{{ "/js/jquery-1.11.3.min.js" | prepend: site.baseurl }}"></script>
   <script type="text/javascript" src="{{ "/js/jq_mathjax_parse.js" | prepend: site.baseurl }}"></script>
   <script type="text/javascript" src="{{ "/js/jquery.toc.min.js" | prepend: site.baseurl }}"></script>
+
+  {% if jekyll.environment == 'production' %}
+  {% include analytics.html %}
+  {% endif %}
 </head>
