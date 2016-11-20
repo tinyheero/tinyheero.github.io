@@ -58,6 +58,11 @@ This makes it so that this javascript is loaded on each post. Now in your posts,
 
 In this case, any `h2` or `h3` headers will appears in the table of contents. 
 
+## Adding Google Analytics
+
+I followed the simple instructions ["Google Analytics for Jekyll"](https://desiredpersona.com/google-analytics-jekyll/) to add google analytics in just a few minutes!
+
 #### Updates
 
+* Nov 19, 2016 - Added section on "Adding Google Analytics"
 * Jan 12, 2016 - Added instructions on how I got math equations and table of contents to appear in my posts.
