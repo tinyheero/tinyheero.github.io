@@ -28,7 +28,7 @@ I have a passion for applying statistical and machine learning approaches to big
     <div>
       <ul class="list-inline">
          <li><span class="label label-success">In Press</span></li>
-         <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001001709"><span class="label label-info">EGA</span></a></li>
+         <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001001709"><span class="label label-info">Data</span></a></li>
       </ul>
     </div>
   </div>
