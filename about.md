@@ -47,6 +47,7 @@ I have a passion for applying statistical and machine learning approaches to big
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/24531327"><span class="label label-success">PubMed</span></a></li>
+         <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001000554"><span class="label label-info">Data</span></a></li>
       </ul>
     </div>
   </div>
