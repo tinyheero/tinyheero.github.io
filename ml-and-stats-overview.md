@@ -93,6 +93,7 @@ There are 5 main steps in bayesian data analysis:
             - Naive Bayes Classifier
         + Support Vector Machines (SVM)
         + Random Forest
+        + Neural Networks (non-linear classification)
 1. Unsupervised Learning
     * Cluster Analysis
         + Principle Component Analysis (PCA)
