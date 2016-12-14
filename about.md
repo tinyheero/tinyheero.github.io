@@ -28,6 +28,7 @@ I have a passion for applying statistical and machine learning approaches to big
     <div>
       <ul class="list-inline">
          <li><span class="label label-success">In Press</span></li>
+         <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001001709"><span class="label label-info">Data</span></a></li>
       </ul>
     </div>
   </div>
@@ -37,6 +38,7 @@ I have a passion for applying statistical and machine learning approaches to big
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/25395426"><span class="label label-success">PubMed</span></a></li>
+         <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001001000"><span class="label label-info">Data</span></a></li>
       </ul>
     </div>
   </div>
@@ -46,6 +48,7 @@ I have a passion for applying statistical and machine learning approaches to big
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/24531327"><span class="label label-success">PubMed</span></a></li>
+         <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001000554"><span class="label label-info">Data</span></a></li>
       </ul>
     </div>
   </div>
@@ -61,7 +64,6 @@ I have a passion for applying statistical and machine learning approaches to big
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Gene expression-based model using formalin-fixed paraffin-embedded biopsies predicts overall survival in advanced-stage classical Hodgkin lymphoma</h4>
     <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://jco.ascopubs.org/">Journal of Clinical Oncology</a>.</div>
-
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984"><span class="label label-success">PubMed</span></a></li>
