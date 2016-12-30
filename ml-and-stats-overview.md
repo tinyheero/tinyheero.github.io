@@ -87,13 +87,16 @@ There are 5 main steps in bayesian data analysis:
 1. Supervised Learning
     * Regression (predict continuous values)
         + Linear Regression
+        + Artificial Neural Networks (ANN)
+            - Can also be used for classification.
     * Classification (predict discrete value; which class a data point belongs to)
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
             - Naive Bayes Classifier
         + Support Vector Machines (SVM)
         + Random Forest
-        + Artificial Neural Networks (ANN; non-linear classification)
+        + ANN
+            - Can also be used for regression.
 1. Unsupervised Learning
     * Cluster Analysis
         + Principle Component Analysis (PCA)
@@ -107,6 +110,8 @@ There are 5 main steps in bayesian data analysis:
 1. Feature Selection
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
+    * Receiver operating characteristic (ROC) curve
+    * Mathews correlation coefficient (MCC)
 
 ### References
 
