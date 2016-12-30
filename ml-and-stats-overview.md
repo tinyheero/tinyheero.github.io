@@ -85,9 +85,9 @@ There are 5 main steps in bayesian data analysis:
 ![Machine Learning Algorithm Cheat Sheet]({{ site.url }}/assets/microsoft-machine-learning-algorithm-cheat-sheet-v2.png)
 
 1. Supervised Learning
-    * Regression
+    * Regression (predict continuous values)
         + Linear Regression
-    * Classification
+    * Classification (predict discrete value; which class a data point belongs to)
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
             - Naive Bayes Classifier
