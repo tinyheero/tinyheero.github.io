@@ -21,6 +21,10 @@ Being a somewhat structured person, it's important for me to see how topics rela
     + In a statistics problem, characteristics of the sample are known and properties of the population are inferred.
 * We study probability first before statistics because we need to understand the uncertainity associated with taking a sample from a population. Then we are start to understand what a particular sample can tell us about a population.
 
+1. Descriptional Statistics
+    * Correlation analysis
+        + Parametric
+        + Non-Parametric (Kendall and Spearman)
 1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
     * [Joint, Marginal, and Conditional Probabilites]({% post_url 2016-03-20-basic-prob %})
@@ -89,7 +93,7 @@ There are 5 main steps in bayesian data analysis:
         + Linear Regression
         + Artificial Neural Networks (ANN)
             - Can also be used for classification.
-    * Classification (predict discrete value; which class a data point belongs to)
+    * Classification - Predict discrete (categorical) values (i.e. class a data point belongs to)
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
             - Naive Bayes Classifier
