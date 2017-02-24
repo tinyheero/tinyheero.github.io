@@ -21,6 +21,10 @@ Being a somewhat structured person, it's important for me to see how topics rela
     + In a statistics problem, characteristics of the sample are known and properties of the population are inferred.
 * We study probability first before statistics because we need to understand the uncertainity associated with taking a sample from a population. Then we are start to understand what a particular sample can tell us about a population.
 
+1. Descriptional Statistics
+    * Correlation analysis
+        + Parametric
+        + Non-Parametric (Kendall and Spearman)
 1. [Random Variables]({% post_url 2016-02-26-random-variables %})
 1. Probabilities
     * [Joint, Marginal, and Conditional Probabilites]({% post_url 2016-03-20-basic-prob %})
@@ -85,14 +89,18 @@ There are 5 main steps in bayesian data analysis:
 ![Machine Learning Algorithm Cheat Sheet]({{ site.url }}/assets/microsoft-machine-learning-algorithm-cheat-sheet-v2.png)
 
 1. Supervised Learning
-    * Regression
+    * Regression (predict continuous values)
         + Linear Regression
-    * Classification
+        + Artificial Neural Networks (ANN)
+            - Can also be used for classification.
+    * Classification - Predict discrete (categorical) values (i.e. class a data point belongs to)
         + Logistic Regression
         + Linear Discriminant Analysis (LDA)
             - Naive Bayes Classifier
         + Support Vector Machines (SVM)
         + Random Forest
+        + ANN
+            - Can also be used for regression.
 1. Unsupervised Learning
     * Cluster Analysis
         + Principle Component Analysis (PCA)
@@ -106,6 +114,8 @@ There are 5 main steps in bayesian data analysis:
 1. Feature Selection
 1. Other
     * [Bias-Variance Tradeoff](http://scott.fortmann-roe.com/docs/BiasVariance.html)
+    * Receiver operating characteristic (ROC) curve
+    * Mathews correlation coefficient (MCC)
 
 ### References
 

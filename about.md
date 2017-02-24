@@ -27,7 +27,7 @@ I have a passion for applying statistical and machine learning approaches to big
     <div>* Equal Contribution</div>
     <div>
       <ul class="list-inline">
-         <li><span class="label label-success">In Press</span></li>
+         <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/27959929"><span class="label label-success">Pubmed</span></a></li>
          <li><a href="https://www.ebi.ac.uk/ega/studies/EGAS00001001709"><span class="label label-info">Data</span></a></li>
       </ul>
     </div>

@@ -1,5 +1,6 @@
 ---
 title: "Using Mixture Models for Clustering"
+date: "October 13th, 2015"
 layout: post
 tags: [mixmodels, R]
 ---
@@ -119,10 +120,10 @@ data.frame(x = mixmdl$x) %>%
   geom_histogram(aes(x, ..density..), binwidth = 1, colour = "black", 
                  fill = "white") +
   stat_function(geom = "line", fun = plot_mix_comps,
-                arg = list(mixmdl$mu[1], mixmdl$sigma[1], lam = mixmdl$lambda[1]),
+                args = list(mixmdl$mu[1], mixmdl$sigma[1], lam = mixmdl$lambda[1]),
                 colour = "red", lwd = 1.5) +
   stat_function(geom = "line", fun = plot_mix_comps,
-                arg = list(mixmdl$mu[2], mixmdl$sigma[2], lam = mixmdl$lambda[2]),
+                args = list(mixmdl$mu[2], mixmdl$sigma[2], lam = mixmdl$lambda[2]),
                 colour = "blue", lwd = 1.5) +
   ylab("Density")
 ~~~
@@ -229,7 +230,7 @@ post.df %>%
 
 As you'll seen from the above example, the usage of mixture model clustering can be very powerful in providing an objective way to clustering data. Some benefits to using mixture model clustering are:
 
-* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have. We can even mix together different types of distributions. For example, it is common to have a GMM with an additional uniform distribution to capture any outlier data points.
+* **Choice of Component Distribution**: In this post, we've used a gaussian distribution for each component. But we are not limited to using just gaussians. We can use [binomials](https://en.wikipedia.org/wiki/Binomial_distribution), [multinomials](https://en.wikipedia.org/wiki/Multinomial_distribution), [student-t](https://en.wikipedia.org/wiki/Student%27s_t-distribution), and other types of distributions depending on the type of data we have. We can even mix together different types of distributions. For example, it is common to GMM with an additional uniform distribution to capture any outlier data points.
 * **"Soft Labels"**: There are no "hard" labels in mixture model clustering. Instead what we get is a probability of a data point belonging each component. Ultimately, the end-user decides on the probability threshold to assign a data point to a cluster creating what are called "soft" labels.
 * **Density Estimation**: We get a measure how much data each component represents through the mixing weights.
 
@@ -238,3 +239,65 @@ If you are like me, you might be interested in knowing what is happening "under 
 ## References
 
 * [Mixture Models](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf)
+
+## R Session 
+
+
+~~~r
+devtools::session_info()
+~~~
+
+~~~
+## Session info --------------------------------------------------------------
+~~~
+
+~~~
+##  setting  value                       
+##  version  R version 3.2.2 (2015-08-14)
+##  system   x86_64, darwin11.4.2        
+##  ui       unknown                     
+##  language (EN)                        
+##  collate  en_CA.UTF-8                 
+##  tz       America/Vancouver           
+##  date     2017-01-13
+~~~
+
+~~~
+## Packages ------------------------------------------------------------------
+~~~
+
+~~~
+##  package    * version date       source        
+##  argparse   * 1.0.1   2014-04-05 CRAN (R 3.2.2)
+##  assertthat   0.1     2013-12-06 CRAN (R 3.2.2)
+##  boot         1.3-17  2015-06-29 CRAN (R 3.2.2)
+##  colorspace   1.2-6   2015-03-11 CRAN (R 3.2.2)
+##  DBI          0.3.1   2014-09-24 CRAN (R 3.2.2)
+##  devtools     1.9.1   2015-09-11 CRAN (R 3.2.2)
+##  digest       0.6.9   2016-01-08 CRAN (R 3.2.2)
+##  dplyr      * 0.4.3   2015-09-01 CRAN (R 3.2.2)
+##  evaluate     0.8     2015-09-18 CRAN (R 3.2.2)
+##  findpython   1.0.1   2014-04-03 CRAN (R 3.2.2)
+##  formatR      1.2.1   2015-09-18 CRAN (R 3.2.2)
+##  getopt       1.20.0  2013-08-30 CRAN (R 3.2.2)
+##  ggplot2    * 2.1.0   2016-03-01 CRAN (R 3.2.2)
+##  gtable       0.1.2   2012-12-05 CRAN (R 3.2.2)
+##  knitr      * 1.13    2016-05-09 CRAN (R 3.2.2)
+##  labeling     0.3     2014-08-23 CRAN (R 3.2.2)
+##  lazyeval     0.1.10  2015-01-02 CRAN (R 3.2.2)
+##  magrittr     1.5     2014-11-22 CRAN (R 3.2.2)
+##  MASS         7.3-45  2015-11-10 CRAN (R 3.2.2)
+##  memoise      0.2.1   2014-04-22 CRAN (R 3.2.2)
+##  mixtools   * 1.0.4   2016-01-12 CRAN (R 3.2.2)
+##  munsell      0.4.2   2013-07-11 CRAN (R 3.2.2)
+##  nvimcom    * 0.9-14  2017-01-13 local         
+##  plyr         1.8.3   2015-06-12 CRAN (R 3.2.2)
+##  proto      * 0.3-10  2012-12-22 CRAN (R 3.2.2)
+##  R6           2.1.1   2015-08-19 CRAN (R 3.2.2)
+##  Rcpp         0.12.2  2015-11-15 CRAN (R 3.2.2)
+##  rjson        0.2.15  2014-11-03 CRAN (R 3.2.2)
+##  scales       0.3.0   2015-08-25 CRAN (R 3.2.2)
+##  segmented    0.5-1.4 2015-11-04 CRAN (R 3.2.2)
+##  stringi      1.0-1   2015-10-22 CRAN (R 3.2.2)
+##  stringr      1.0.0   2015-04-30 CRAN (R 3.2.2)
+~~~
