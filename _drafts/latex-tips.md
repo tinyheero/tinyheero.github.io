@@ -15,6 +15,8 @@
 % http://tex.stackexchange.com/questions/77774/undefined-control-sequence-when-cross-referencing-with-xr-hyper
 \usepackage{nameref,zref-xr}
 \zxrsetup{toltxlabel}
+
+zexternaldocument
 ~~~
 
 * http://tex.stackexchange.com/questions/73862/how-can-i-make-a-clickable-table-of-contents
@@ -27,4 +29,32 @@ Figure captions contain short and long descriptions. Allows for the table of con
 
 ~~~
 \newcommand*\mycaption[2]{\caption[#1]{\textbf{#1}. #2}}
+~~~
+
+# Bottom Right Side Page Numbers
+
+~~~
+%----------
+% Bottom Right Side Page Number
+% http://tex.stackexchange.com/questions/153167/how-to-set-page-number-at-right-footer
+%----------
+\usepackage{fancyhdr}
+
+% Turn on the style
+\pagestyle{fancy}
+
+% Clear the header and footer
+\fancyhead{}
+\fancyfoot{}
+
+% Set the right side of the footer to be the page number
+\fancyfoot[R]{\thepage}
+
+% Removes Horizontal Rule Added by pagestyle fancy
+\renewcommand{\headrulewidth}{0pt}
+
+\hfuzz=20pt
+\vfuzz=20pt
+\hbadness=20000
+\vbadness=\maxdimen
 ~~~
