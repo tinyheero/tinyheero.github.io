@@ -50,6 +50,14 @@ To remove a channel:
 conda config --force --remove channels http://conda.anaconda.org/mutirri
 ~~~
 
+Managing channel priorities:
+
+~~~
+conda config --add channels channel_name
+~~~
+
+This will add this channel and make it the highest priority. If it is already in the channel list, this will bump it to the highest priority.
+
 ## Using R with Conda
 
 To use R with conda, we can install very easily:

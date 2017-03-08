@@ -104,6 +104,7 @@ There are 5 main steps in bayesian data analysis:
 1. Unsupervised Learning
     * Cluster Analysis
         + Principle Component Analysis (PCA)
+        + t-SNE
         + Hierarchical clustering
         + DBSCAN
         + K-means
