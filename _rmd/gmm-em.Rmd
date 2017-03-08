@@ -10,7 +10,10 @@ tags: [R, mixmodels, EM]
 
 ```{r echo = FALSE}
 library("knitr")
-knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/")
+library("svglite")
+knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/", 
+                      dev = "svglite",
+                      fig.ext = ".svg")
 ```
 
 In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM), one type of mixure model, for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run the `normalmixEM` function from mixtools?  How does it know where to "put" the components?  In this post, I will cover how we can implement your own GMM in R. 
@@ -402,11 +405,11 @@ data.frame(x = wait) %>%
   geom_histogram(aes(x, ..density..), binwidth = 1, colour = "black", 
                  fill = "white") +
   stat_function(geom = "line", fun = plot_mix_comps,
-                arg = list(m.step$mu[1], sqrt(m.step$var[1]), 
+                args = list(m.step$mu[1], sqrt(m.step$var[1]), 
                            lam = m.step$alpha[1]),
                 colour = "red", lwd = 1.5) +
   stat_function(geom = "line", fun = plot_mix_comps,
-                arg = list(m.step$mu[2], sqrt(m.step$var[2]), 
+                args = list(m.step$mu[2], sqrt(m.step$var[2]), 
                            lam = m.step$alpha[2]),
                 colour = "blue", lwd = 1.5) +
   ylab("Density") +
@@ -418,6 +421,12 @@ data.frame(x = wait) %>%
 In this post, I have demonstrated how to implement your own mixture model where each component is a gaussian. The logic can easily be extended to other types of mixture models by simply substituting the components for the appropriate statistical distribution needed. We used the well known EM algorithm to allow us to use MLE in the incomplete data scenario. 
 
 I hope this post gives you some insight into the inner workings of how to fit a gaussian mixture model!
+
+## R Session
+
+```{r}
+devtools::session_info()
+```
 
 ## References
 
