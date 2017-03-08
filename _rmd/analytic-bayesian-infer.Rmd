@@ -1,0 +1,55 @@
+---
+title: "The Analytical Approach to Bayesian Inference"
+date: "March 8th, 2017"
+layout: post
+output:
+  html_document
+tags: [R, stats, bayesian]
+---
+
+```{r message = FALSE, echo = FALSE}
+library("knitr")
+library("cowplot")
+library("svglite")
+
+knitr::opts_chunk$set(fig.path='{{ site.url }}/assets/how-to-bayesian-infer-101/',
+                      dev = "svglite", 
+                      fig.ext = ".svg")
+theme_set(theme_grey())
+```
+
+In a previous post called [How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %}), I introduced and walked through the key steps to Bayesian inference using a coin flipping example. In that post, I demonstrated an exhaustive approach to calculating the posterior distribution. In practice though, this approach will not scale well with a larger parameter space. As such, there are two main approaches to calculating the posterior distribution in Bayesian inference:
+
+1. Analytical approach. 
+1. Approximation approach (e.g. using Markov chain Monte Carlo (MCMC) methods).
+
+The analytical approach will be the topic of today's post and we shall save the approximation approach for a different post. When I was first learning this, I found it a bit confusing what this meant. What helped me was first understanding this in the context of why Bayesian inference is challenging. Once we understand this, it will be clear when we can and cannot use the analytical approach. Then we will walk through the approach using the [coin flipping example]((% 2017-03-08-how-to-bayesian-infer-101#the-coin-flipping-example %}).
+
+Here is an overview of what will be discussed in this post.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## What Makes Bayesian Inference Hard?
+
+When using an analytical approach, what we are doing is calculating the posterior in a mathematical way. This is possible because we can b This is often referred to as a "closed-form" solution. This is actually the "ideal" way of calculating the posterior as we can definitely solve the equation. The reason
+
+
+
+* Integral 
+
+## Beta Prior Distribution
+
+## The Posterior Beta
+
+## References
+
+* [Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
+* [Points of significance: Bayesian statistics](www.nature.com/nmeth/journal/v12/n5/full/nmeth.3368.html)
+
+## R Session
+
+```{r session, echo = FALSE}
+devtools::session_info()
+```
