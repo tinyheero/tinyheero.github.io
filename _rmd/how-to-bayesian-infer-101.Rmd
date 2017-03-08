@@ -1,5 +1,5 @@
 ---
-title: "How to do Bayesian Inference 101"
+title: "How to Do Bayesian Inference 101"
 date: "March 8th, 2017"
 layout: post
 output:
@@ -18,10 +18,19 @@ knitr::opts_chunk$set(fig.path='{{ site.url }}/assets/how-to-bayesian-infer-101/
 theme_set(theme_grey())
 ```
 
-Towards the end of the post [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %}), I eluded a bit to how Bayes' rule becomes extremely powerful in Bayesian inference when we start to interpret the variables of Bayes' rule as parameters of a model and observed data. In this post, we will learn exactly how Bayes' rule is used in Bayesian inference by going through a specific example of coin tossing. A lot of this post and examples are inspired by [John K. Kruschke's "Doing Bayesian Data Analysis"](https://sites.google.com/site/doingbayesiandataanalysis/). An incredible book that I have been using for my entry into world of Bayesian statistics. I would highly recommend anyone interested in Bayesian statistics to get this book.
+Towards the end of the post [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %}), I eluded a bit to how Bayes' rule becomes extremely powerful in Bayesian inference. The link happens when we start to interpret the variables of Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) of a model and observed data (<span class="inlinecode">$D$</span>):
+
+<div>
+$$\begin{align}
+P(X\ |\ Y) &= \frac{P(Y\ |\ X)\ P(X)}{P(Y)} \\
+P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
+\end{align}$$
+</div>
+
+In this post, we will learn exactly how Bayes' rule is used in Bayesian inference by going through a specific example of coin tossing. A lot of this post and examples are inspired by [John K. Kruschke's "Doing Bayesian Data Analysis"](https://sites.google.com/site/doingbayesiandataanalysis/). An incredible book that I have been using for my entry into world of Bayesian statistics. I would highly recommend anyone interested in Bayesian statistics to get this book.
 
 <div class="alert alert-dismissible alert-warning">
-<h4>Important</h4>
+<h4>Important!</h4>
 Please ensure that you are familiar with Bayes' rule before continuing as this post will not make sense with a thorough understanding of it. If you are not familiar, please review my previous post on <a href="/2016/04/21/bayes-rule.html">Bayes' Rule</a> for details.
 </div>
 
@@ -140,12 +149,12 @@ $$P(Y = y\ |\ \theta) = \theta^{y}(1 - \theta)^{1 - y}$$
 
 Notice how when <span class="inlinecode">$Y = 1$</span>, this expression becomes <span class="inlinecode">$P(Y = 1 |\ \theta) = \theta$</span>. And when <span class="inlinecode">$Y = 0$</span>, this expression becomes <span class="inlinecode">$P(Y = 0\ |\ \theta) = 1 - \theta$</span>.
 
-This particular expression is actually the probability mass function of the [Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). The Bernoulli distribution is used when we are describing a single trial (e.g. coin flip) with two possible outcomes (e.g. heads or tails). We can extend this to the situation where we have multiple independent trials very easily. First, we let <span class="inlinecode">$y_{i}$</span> represent the outcome of the i<sup>th</sup> coin flip and the set of all outcomes to be <span class="inlinecode">$\{y_{i}\}$</span>. Since each coin toss is an independent trial (i.e. the outcome of a coin toss is independent of the previous coin toss outcomes), the probability of <span class="inlinecode">$\{y_{i}\}$</span> is then multiplicative product of the individual outcomes:
+This particular expression is actually the probability mass function of the [Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). The Bernoulli distribution is used when we are describing a single trial (e.g. coin flip) with two possible outcomes (e.g. heads or tails). We can extend this to the situation where we have multiple independent trials very easily. First, we let <span class="inlinecode">$y_{i}$</span> represent the outcome of the i<sup>th</sup> coin flip and the set of all outcomes to be <span class="inlinecode">$D$</span>. Since each coin toss is an independent trial (i.e. the outcome of a coin toss is independent of the previous coin toss outcomes), the probability of <span class="inlinecode">D</span> is then multiplicative product of the individual outcomes:
 
 <div>
 $$\begin{align}
-P(\{y_{i}\}\ |\ \theta) &= \prod_{i}{P(y_{i}\ |\ \theta)} \\
-P(\{y_{i}\}\ |\ \theta) & = \theta^{\#heads}(1 - \theta)^{\#tails}
+P(D\ |\ \theta) &= \prod_{i}{P(y_{i}\ |\ \theta)} \\
+P(D\ |\ \theta) & = \theta^{\#heads}(1 - \theta)^{\#tails}
 \end{align}$$
 </div>
 
@@ -313,7 +322,16 @@ Here is the posterior is almost exactly the same as the likelihood.
 
 ## Conclusions
 
-In this post, I have introduced how one can make use of Bayes' rule to do Bayesian inference. I have provided an overview of the 4 key steps to any Bayesian inference, and how the posterior distribution represents a compromise between the prior and likelihood. Stay tuned for subsequent posts that will discuss why Bayesian statistics is difficult and a class of methods called Markov chain Monte Carlo (MCMC) can help us!
+In this post, I have introduced how one can make use of Bayes' rule to do Bayesian inference. Remember that the happens when we start to interpret the variables of Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) of a model and observed data (<span class="inlinecode">$D$</span>):
+
+<div>
+$$\begin{align}
+P(X\ |\ Y) &= \frac{P(Y\ |\ X)\ P(X)}{P(Y)} \\
+P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
+\end{align}$$
+</div>
+
+I have provided an overview of the 4 key steps to any Bayesian inference, and how the posterior distribution represents a compromise between the prior and likelihood. In this example, the prior distribution was chosen arbitrary and we calculated the posterior distribution by exhaustively calculating each value. This was possible because our parameter space was small, but does not scale well to larger parameter spaces. In follow-up posts, I will discuss how we can use an analytical approach to solve this, which in turn depends on our selection of a prior distribution. Moreover, I will discuss why Bayesian statistics is difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can help us deal with this!
 
 ## References
 
