@@ -64,20 +64,12 @@ Being a somewhat structured person, it's important for me to see how topics rela
 
 ## Bayesian Statistics
 
-There are 5 main steps in bayesian data analysis:
-
-1. Identify the data you are working with.
-1. Construct a probablistic model to represent the data.
-1. Specify prior distributions over the parameters of your descriptive model.
-1. Use bayesian inference to "reallocate" your belief of the priors in the presence of the data (i.e. prior to posterior).
-1. Check if the posterior estimates are accurate. If not, consider a different descriptive model.
-
-1. Bayesian Statistics
-    * Classical Frequentist vs. Bayesian 
-    * Markov Chain Monte Carlo (MCMC) processes
-        + Metropolis algorithm
-        + Gibbs Sampling (Special case of Metropolis)
-        + BUGS, JAGS, STAN
+1. [Bayesian Inference 101]({% post_url 2017-03-08-how-to-bayesian-infer-101 %})
+1. Classical Frequentist vs. Bayesian 
+1. Markov Chain Monte Carlo (MCMC) processes
+    + Metropolis algorithm
+    + Gibbs Sampling (Special case of Metropolis)
+    + BUGS, JAGS, STAN
 
 ### References
 
