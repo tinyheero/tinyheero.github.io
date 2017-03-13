@@ -12,8 +12,7 @@ tags: [R, mixmodels, EM]
 library("knitr")
 library("svglite")
 knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/", 
-                      dev = "svglite",
-                      fig.ext = ".svg")
+                      dev = "svglite")
 ```
 
 In my previous post ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}), I covered the concept of mixture models and how one could use a gaussian mixture model (GMM), one type of mixure model, for clustering. If you are like me, not knowing what is happening "under the hood" may bug you. What is actually happening when I run the `normalmixEM` function from mixtools?  How does it know where to "put" the components?  In this post, I will cover how we can implement your own GMM in R. 
@@ -28,7 +27,7 @@ We will first start this post by discussing a bit about parameter estimation. Th
 
 Let's start with the scenario where you are given the following 1-dimensional data with the colors representing the "source" they are from:
 
-```{r parameter_est_complete_data, dev = "svg", message = FALSE, fig.height = 2}
+```{r parameter_est_complete_data, message = FALSE, fig.height = 2}
 library("ggplot2")
 library("dplyr")
 library("reshape2")
@@ -76,7 +75,7 @@ This is very close to the true parameters of the gaussian which were mean and st
 
 Now let us consider the following scenario where you have the same data but you don't know the source now.
 
-```{r parameter_est_incomplete_data, dev = "svg", message = FALSE, fig.height = 2}
+```{r parameter_est_incomplete_data, message = FALSE, fig.height = 2}
 vals.df %>%
   ggplot(aes(x = vals, y = 0)) +
   geom_point(alpha = 0.4) +
@@ -139,7 +138,7 @@ When it comes to initialization of a GMM, we are asking the fundamental question
 
 Where <span class="inlinecode">$N_{k}$</span> indicates the number of data points in the kth component. Let's try that here:
 
-```{r kmeans_init, dev = "svg", fig.height = 4}
+```{r kmeans_init, fig.height = 4}
 wait <- faithful$waiting
 
 wait.kmeans <- kmeans(wait, 2)
@@ -153,7 +152,8 @@ wait.df %>%
   geom_point() +
   ylab("Values") +
   ylab("Data Point Number") +
-  scale_color_discrete(name = "Cluster")
+  scale_color_discrete(name = "Cluster") +
+  ggtitle("K-means Clustering")
 ```
 
 Since we specified 2 clusters, k-means nicely splits the data into 2 clusters with means and standard deviation as follows:
@@ -236,15 +236,15 @@ comp2.post <- comp2.prod / normalizer
 
 Now that we have posterior probabilites (i.e. soft labels), we can re-estimate our component parameters. We simply have to make a little adjustment to the MLE equations that we specified early. Specifically, the <span class="inlinecode">$N_{k}$</span> (remember there are no hard labels) is replaced with the posterior probability <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> in each equation.
 
-* <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})x_{i,k}}{P(x_{i} | x_{i} \in k_{j})}$</span>
-* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N}(P(x_{i} | x_{i} \in k_{j})x_{i,k} - \mu_{k})^2}{P(x_{i} | x_{i} \in k_{j})}$</span>
-* <span class="inlinecode">$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} | x_{i} \in k_{j})}{N}$</span>
+* <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})x_{i}}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
+* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})(x_{i} - \mu_{k})^2}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
+* <span class="inlinecode">$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}{N}$</span>
 
 With these equations we can now plug in our values and calculate the components parameters using our example from above:
 
 ```{r}
-comp1.n <- sum(comp1.prod)
-comp2.n <- sum(comp2.prod)
+comp1.n <- sum(comp1.post)
+comp2.n <- sum(comp2.post)
 
 comp1.mu <- 1/comp1.n * sum(comp1.post * wait)
 comp2.mu <- 1/comp2.n * sum(comp2.post * wait)
@@ -389,7 +389,7 @@ m.step
 
 Which produces the following mixture model:
 
-```{r final_gmm, dev = "svg"}
+```{r final_gmm, fig.asp = 0.5}
 #' Plot a Mixture Component
 #' 
 #' @param x Input ata.
@@ -413,7 +413,8 @@ data.frame(x = wait) %>%
                            lam = m.step$alpha[2]),
                 colour = "blue", lwd = 1.5) +
   ylab("Density") +
-  xlab("Values")
+  xlab("Values") +
+  ggtitle("Final GMM Fit")
 ```
 
 ## Summary
@@ -421,6 +422,8 @@ data.frame(x = wait) %>%
 In this post, I have demonstrated how to implement your own mixture model where each component is a gaussian. The logic can easily be extended to other types of mixture models by simply substituting the components for the appropriate statistical distribution needed. We used the well known EM algorithm to allow us to use MLE in the incomplete data scenario. 
 
 I hope this post gives you some insight into the inner workings of how to fit a gaussian mixture model!
+
+* March 13, 2017 - Fixed maximization equations. Used the likelihood instead of posterior equation by accident. Thanks [Koustuv Sinha](https://disqus.com/by/koustuvsinha/) for pointing this out!
 
 ## R Session
 
