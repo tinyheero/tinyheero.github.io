@@ -45,6 +45,22 @@ Figure captions contain short and long descriptions. Allows for the table of con
 \newcommand*\mycaption[2]{\caption[#1]{\textbf{#1}. #2}}
 ~~~
 
+## Captions to Span Multiple Pages
+
+* http://tex.stackexchange.com/questions/112293/break-figure-description-over-two-pages
+
+~~~
+\begin{figure}[!t]
+\includegraphics{}
+\caption{...continued}
+\end{figure}
+
+\begin{figure}[!t]
+\ContinuedFloat
+\caption{continued caption}
+\end{figure}
+~~~
+
 # Bottom Right Side Page Numbers
 
 ~~~
