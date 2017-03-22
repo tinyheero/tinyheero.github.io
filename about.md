@@ -92,6 +92,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
 			<li><img src="http://www.r-pkg.org/badges/version/survutils" /></li>
 		</ul>
+  </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">CHL26predictor</h4>
 		<p class="list-group-item-text">An R Package for the Classical Hodgkin Lymphoma (CHL) 26 Gene Overall Survival Predictor. This is the companion R package for the predictor that has been <a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984">published</a>.</p>
@@ -99,7 +100,6 @@ I have a passion for applying statistical and machine learning approaches to big
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
 		</ul>
-  </div>
   </div>
 </div>
 
