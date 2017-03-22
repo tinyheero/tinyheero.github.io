@@ -82,6 +82,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
 			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
+			<li><a href="https://cran.r-project.org/package=survutils"><img src="http://www.r-pkg.org/badges/version/survutils /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
