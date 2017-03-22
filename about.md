@@ -90,7 +90,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		<br />
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
-			<li><img src="http://www.r-pkg.org/badges/version/survutils" /></li>
+			<li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://www.r-pkg.org/badges/version/survutils" /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
