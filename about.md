@@ -86,7 +86,7 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">survutils</h4>
-    <p class="list-group-item-text">An R package for Survival Analysis. This package provides wrappers around various survival analysis functions (e.g. coxph) providing a more inituitive interface.</p>
+    <p class="list-group-item-text">This package uses functional programming principles to iteratively run Cox regression and plot its results. The results are reported in tidy data frames. Additional utility functions are available for working with other aspects of survival analysis such as survival curves, C-statistics, etc.</p>
 		<br />
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
