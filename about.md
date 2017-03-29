@@ -82,6 +82,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
 			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
+      <li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://cranlogs.r-pkg.org/badges/cofeatureR" /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
@@ -91,6 +92,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
 			<li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://www.r-pkg.org/badges/version/survutils" /></a></li>
+      <li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://cranlogs.r-pkg.org/badges/survutils" /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
@@ -124,6 +126,27 @@ I have a passion for applying statistical and machine learning approaches to big
       <ul class="list-inline">
         <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/R-Heatmaps">Github</a></li>
       </ul>
+    </div>
+</div>
+
+<h3>Theses</h3>
+
+<div class="list-group">
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Clinical Implications of inter-tumour, intra-tumour, and tumour microenvironment heterogeneity in B-cell lymphomas</h4>
+    <div>PhD Thesis. 2012 - 2017.</div>
     <div>
-         
+      <ul class="list-inline">
+         <li><a href="http://hdl.handle.net/2429/61022"><span class="label label-success">UBC Circle</span></a></li>
+      </ul>
+    </div>
   </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Detection of differentially expressed alternative transcripts using conventional microarrays : with application to diffuse large B-cell lymphoma</h4>
+    <div>MSc Thesis. 2009 - 2011.</div>
+    <div>
+      <ul class="list-inline">
+         <li><a href="http://hdl.handle.net/2429/39846"><span class="label label-success">UBC Circle</span></a></li>
+      </ul>
+    </div>
+</div>
