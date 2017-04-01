@@ -83,6 +83,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/cofeatureR">GitHub</a></li>
 			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
       <li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://cranlogs.r-pkg.org/badges/cofeatureR" /></a></li>
+      <li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="https://cranlogs.r-pkg.org/badges/grand-total/cofeatureR" /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
@@ -93,6 +94,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
 			<li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://www.r-pkg.org/badges/version/survutils" /></a></li>
       <li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://cranlogs.r-pkg.org/badges/survutils" /></a></li>
+      <li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="https://cranlogs.r-pkg.org/badges/grand-total/survutils" /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
