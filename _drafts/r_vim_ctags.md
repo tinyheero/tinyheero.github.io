@@ -6,7 +6,7 @@ tags: [pan cancer]
 
 I've been an avid Vim user for many years and believe it's one of the best text editors out there. My enthusiasm for Vim is also one of the major reasons why I have never adopted RStudio for R programming and instead opted to use the [Nvim-R plugin](https://github.com/jalvesaq/Nvim-R). 
 
-Recently I discovered the power of Ctags.
+Recently I discovered the power of Ctags. See this [video](https://www.youtube.com/watch?v=4f3AENLrdYo)
 
 https://andrew.stwrt.ca/posts/vim-ctags/
 
