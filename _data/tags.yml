@@ -16,6 +16,9 @@ cairo:
 conda: 
     slug: conda
     name: Conda
+ctags: 
+    slug: ctags
+    name: Ctags
 geoquery:
     slug: geoquery
     name: GEOquery
@@ -73,3 +76,6 @@ survival:
 v8: 
     slug: v8
     name: V8
+vim: 
+    slug: vim
+    name: Vim
