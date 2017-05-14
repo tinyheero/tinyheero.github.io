@@ -10,13 +10,14 @@ tags: [R, stats, bayesian]
 ```{r message = FALSE, echo = FALSE}
 library("knitr")
 library("cowplot")
-library("Cairo")
+#library("Cairo")
+#library("bookdown")
 library("ggplot2")
 library("dplyr")
 
 knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/analytic-bayesian-infer/",
-                      dev = "svg")
-#                      fig.ext = ".svg")
+                      dev = "svglite",
+                      fig.ext = "svg")
 theme_set(theme_grey())
 ```
 
@@ -44,21 +45,21 @@ When using an analytical approach, what we are doing is solving the posterior in
 To do Bayesian statistics in a purely mathematical way, we need a way to describe the prior distribution such that we have a prior probability for each value of $\theta$ in the interval [0, 1]. In theory, we could actually use any probability distribution that gives values between the interval [0, 1]. However, there are 2 important considerations:
 
 1. The product of $P(D\ |\ \theta)$ and $P(\theta)$ (i.e. the numerator of Bayes' rule) should result in a function that has the same form as $P(\theta)$. The reason why we want this is because we can subsequently include additional data and derive another posterior distribution, which is the same form as the prior.
-1. The denominator of Bayes' rule, $P(D)$, needs to be solvable analytically. This depends on how $P(\theta)$ relates to $P(D | \theta)$.
+1. The denominator of Bayes' rule, $P(D)$, needs to be solvable analytically. This depends on how $P(\theta)$ relates to $P(D\ |\ \theta)$.
 
-When $P(D\ |\ \theta)$ and $P(\theta)$ combine to give a form that is the same as the prior distribution, we call $P(\theta)$ a **conjugate prior** for $P(D | \theta)$. In the context of the binomial distribution being the likelihood function, the corresponding conjugate prior is the **beta distribution**. Formally, the beta distribution can be described as follows:
+When $P(D\ |\ \theta)$ and $P(\theta)$ combine to give a form that is the same as the prior distribution, we call $P(\theta)$ a **conjugate prior** for $P(D\ |\ \theta)$. In the context of the binomial distribution being the likelihood function, the corresponding conjugate prior is the **beta distribution**. Formally, the beta distribution can be described as follows:
 
 $$
-p(\theta | a, b) = beta(\theta | a,b) = \frac{\theta^{(a-1)}(1 - \theta)^{(b-1)}}{B(a,b)}
+p(\theta\ |\ a, b) = beta(\theta\ |\ a,b) = \frac{\theta^{(a-1)}(1 - \theta)^{(b-1)}}{B(a,b)}
 $$
 
 Where $B(a,b)$ is a normalizing constant that simply ensures that the area under the beta density integrates to 1. I won't go into too much detail about the beta distribution and instead refer you to this wonderful post by David Robinson titled "[Understanding the beta distribution (using baseball statistics)](http://varianceexplained.org/statistics/beta_distribution_and_baseball/) for more initution. To steal a quote:
 
 > In short, the beta distribution can be understood as representing a probability distribution of probabilities- that is, it represents all the possible values of a probability when we don’t know what that probability is.
 
-The beta distribution is parameterized by two shape parameters, $a$ and $b$, that can take on any real positive value. Below are a few examples of some beta distributions.
+The beta distribution is parameterized by two shape parameters, $a$ and $b$, that can take on any real positive value. And when describing these parameters in the context of using as a part of a prior distribution, then these parameters are known as **hyperparameters**. Below are a few examples of some beta distributions.
 
-```{r beta-distr-examples}
+```{r beta-distr-examples, fig.cap = "4 different beta distributions corresponding to different shape parameters."}
 probs <- seq(0, 1, len = 100)
 
 beta.p.tpl <- 
@@ -86,7 +87,7 @@ p4 <- beta.p.tpl +
 plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2, labels = LETTERS[1:4])
 ```
 
-Here we have 4 different beta distributions corresponding to different shape parameters. You can see how each plot shows a different distribution of probabilities:
+You can see how each plot shows a different distribution of probabilities:
 
 * Panel A shows a distribution that places a lot of weight towards 0 and 1 probabilites. 
 * Panel B shows a flat distribution demonstrating that the prior probability for each probability is equally likely. This often refer to as a "non-informative" prior.
@@ -99,20 +100,60 @@ TODO: need to fill this in.
 
 ## The Posterior Beta
 
-Now that we have the conjugate prior selected (i.e. beta distribution), let's see how the posterior distribution looks when we combine our Binomial likelihood with the beta prior. If we let our data be N flips and z heads, then after some math our Bayes' rule looks like this:
+Now that we have the conjugate prior selected (i.e. beta distribution), let's see how the posterior distribution looks like. If we let our data be N flips and z heads, then our Bayes' rule looks like this:
 
-<div>
-$$\begin{align}
-P(\theta\ |\ z, N) &= \frac{P(z, N | \theta) P(\theta)}{P(z,N)} \\
-P(\theta\ |\ z, N) &= \theta^{((z+a)-1)}(1-\theta)^{((N-z+b)-1} / B(z + a, N - z + b)
-\end{align}$$
-</div>
+$$
+P(\theta\ |\ z, N) = \frac{P(z, N\ |\ \theta)\ P(\theta)}{P(z,N)}
+$$
+
+Now let's substitute in the binomial and beta distributions into our Bayes' rule:
+
+$$
+\begin{align}
+P(\theta\ |\ z, N) =& \frac{\theta^{z}(1-\theta)^{N-z}\ \frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a,b)}}{p(z,N)} \\
+=& \frac{\theta^{z}(1-\theta)^{N-z}\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a,b)p(z,N)}
+\end{align}
+$$
+
+If we recall some [basic rule on exponents](http://www.purplemath.com/modules/exponent.html), then we can manipulate the equation to look like this:
+
+$$
+P(\theta\ |\ z, N) = \frac{\theta^{(z+a-1)}(1-\theta)^{(N-z+b-1)}}{B(a,b)p(z,N)}
+$$
+
+If we do one aesthetic step:
+
+$$
+P(\theta\ |\ z, N) = \frac{\theta^{([z+a]-1)}(1-\theta)^{([N-z+b]-1)}}{B(a,b)p(z,N)}
+$$
+
+What is important about small step? What you might notice is that this numerator would be the same numerator as a beta function of this form:
+
+$$
+P(\theta\ |\ z + a, N -z + b)
+$$
+
+As such, in order for the posterior distribution to be probability distribution, then the denominator must be a normalizing factor for this beta distribution, which would be <span class="inlinecode">$B(z + a, N -z + b)$</span>. So now we have:
+
+$$
+\begin{align}
+P(\theta\ |\ z, N) =& \frac{P(z, N\ |\ \theta)\ P(\theta)}{P(z,N)} \\
+P(\theta\ |\ z, N) =& \frac{\theta^{([z+a]-1)}(1-\theta)^{([N-z+b]-1)}}{B(z + a, N -z + b)}
+\end{align}
+$$
+
+What's interesting is that the equation for this posterior distribution actually represents a beta distribution:
+
+$$
+beta(\theta\ |\ z + a, N -z + b)
+$$
 
 ## References
 
 * [Understanding the beta distribution (using baseball statistics)](http://varianceexplained.org/statistics/beta_distribution_and_baseball/)
 * [Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 * [Points of significance: Bayesian statistics](www.nature.com/nmeth/journal/v12/n5/full/nmeth.3368.html)
+* [CrossValidated - Can anyone explain conjugate priors in simplest possible terms?](https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms)
 
 ## R Session
 
