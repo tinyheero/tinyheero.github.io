@@ -21,18 +21,34 @@ knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/analytic-bayesian-infer/",
 theme_set(theme_grey())
 ```
 
-In a previous post called "[How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %})", I introduced and walked through the key steps to Bayesian inference using a coin flipping example. In that post, I demonstrated an exhaustive approach to calculating the posterior distribution. In practice though, this approach will not scale well with a larger parameter space. As such, there are two main approaches to calculating the posterior distribution in Bayesian inference:
+In a previous post called "[How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %})", I introduced and walked through the key steps to Bayesian inference using a coin flipping example. In that post, I demonstrated an exhaustive approach to calculating the posterior distribution. In practice though, this approach will not scale well with a larger parameter space. As such, there are really two main approaches to calculating the posterior distribution in Bayesian inference:
 
 1. Analytical approach. 
 1. Approximation approach (e.g. using Markov chain Monte Carlo (MCMC) methods).
 
-The analytical approach will be the topic of today's post and we shall save the approximation approach for a different post. When I was first learning this, I found it a bit confusing what this meant. What helped me was first understanding this in the context of why Bayesian inference is challenging. Once we understand this, it will be clear when we can and cannot use the analytical approach. Then we will walk through the approach using the [coin flipping example]((% 2017-03-08-how-to-bayesian-infer-101#the-coin-flipping-example %}).
+The analytical approach will be the topic of today's post and we shall save the approximation approach for a different post. We start by reviewing again the 4 major steps in any Bayesian analysis, discuss how to define best define a prior, how this is related the posterior, and then walk through an example of doing Bayesian inference using the analytical approach.
+
+When I was first learning this, I found it a bit confusing what this meant. What helped me was first understanding this in the context of why Bayesian inference is challenging. Once we understand this, it will be clear when we can and cannot use the analytical approach. Then we will walk through the approach using the [coin flipping example]((% 2017-03-08-how-to-bayesian-infer-101#the-coin-flipping-example %}).
 
 Here is an overview of what will be discussed in this post.
 
 **Table of Contents**
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## 4 Major Steps of Bayesian Inference 
+
+Recall that to do any Bayesian inference, we follow a 4 step process:
+
+1. Identify the observed data you are working with.
+1. Construct a probabilistic model to represent the data (likelihood).
+1. Specify prior distributions over the parameters of your probabilistic model (prior).
+1. Collect data and apply Bayes' rule to re-allocate credibility across the possible parameter values (posterior).
+
+We 
+
+Let us walk through these steps one by one in the context of this example.
+
 
 ## What Makes Bayesian Inference Hard?
 
@@ -94,6 +110,8 @@ You can see how each plot shows a different distribution of probabilities:
 * Panel C shows a distribution that places weight towards the middle probabilities.
 * Panel D shows a skewed distribution with weight towards the lowest probability value.
 
+### Choosing the shape parameters for the Beta distribution
+
 In terms of choosing these the values for these shape parameters, essentially what we want to do is convert our prior belief into the shape parameter values such that our beta distribution will appropriately represent our prior belief. What we can do is treat $a$ as the number of heads and $b$ as the number of tails. 
 
 TODO: need to fill this in.
@@ -127,7 +145,7 @@ $$
 P(\theta\ |\ z, N) = \frac{\theta^{([z+a]-1)}(1-\theta)^{([N-z+b]-1)}}{B(a,b)p(z,N)}
 $$
 
-What is important about small step? What you might notice is that this numerator would be the same numerator as a beta function of this form:
+What is important about small step? What you might notice is that this numerator is the numerator for a beta function of this form:
 
 $$
 P(\theta\ |\ z + a, N -z + b)
@@ -136,10 +154,7 @@ $$
 As such, in order for the posterior distribution to be probability distribution, then the denominator must be a normalizing factor for this beta distribution, which would be <span class="inlinecode">$B(z + a, N -z + b)$</span>. So now we have:
 
 $$
-\begin{align}
-P(\theta\ |\ z, N) =& \frac{P(z, N\ |\ \theta)\ P(\theta)}{P(z,N)} \\
 P(\theta\ |\ z, N) =& \frac{\theta^{([z+a]-1)}(1-\theta)^{([N-z+b]-1)}}{B(z + a, N -z + b)}
-\end{align}
 $$
 
 What's interesting is that the equation for this posterior distribution actually represents a beta distribution:
@@ -147,6 +162,63 @@ What's interesting is that the equation for this posterior distribution actually
 $$
 beta(\theta\ |\ z + a, N -z + b)
 $$
+
+## Example
+
+Now that we have defined the posterior distribution in an analytical form, let's run through an example of how it works. We will again use our coin flipping experiment from the [previous post](% 2017-03-08-how-to-bayesian-infer-101 %}). Let's say we have 
+
+```{r}
+num.heads <- 15
+num.flips <- 20
+beta.prior.a <- 5
+beta.prior.b <- 5
+
+likelihood.binom <- function(theta, z, N) {
+  dbinom(z, N, theta)
+}
+
+post.beta <- function(theta, z, N, a, b) {
+  numerator <- theta^(z + a - 1) * (1 - theta)^(N - z + b - 1)
+  denominator <- beta(z + a, N - z + b)
+  numerator / denominator
+}
+
+prior.p <- 
+  data_frame(x = probs) %>%
+  ggplot(aes(x = probs)) +
+  xlab("Probability") +
+  ylab("Density of Beta") +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = beta.prior.a, 
+                            shape2 = beta.prior.b)) +
+  ggtitle("Prior beta distribution", subtitle = "a = 5, b = 5")
+
+likelihood.p <- 
+  beta.p.tpl +
+  stat_function(fun = likelihood.binom, 
+                args = list(z = num.heads, N = num.flips)) +
+  ggtitle("Likelihood distribution", 
+          subtitle = "15 heads from 20 coin tosses") +
+  ylab("Likelihood")
+
+post.p <- 
+  beta.p.tpl + 
+  stat_function(fun = post.beta, 
+                args = list(z = num.heads, 
+                            N = num.flips, 
+                            a = beta.prior.a, 
+                            b = beta.prior.b)) +
+  ggtitle("Posterior beta distribution", subtitle = "a = 5, b = 5")
+
+plot_grid(prior.p, 
+          likelihood.p,
+          post.p, 
+          nrow = 3)
+```
+
+## How is this different from "other" approach
+
+In the previous post "[How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %})", we solved for the posterior distribution by first calculating the prior distribution, likelihood distribution, and the marginal probability distribution values. Then we used Bayes' rule to calculate the posterior distribution. This was called the "exhaustive approximation" approach. But with the analytical approach demonstrated in the post, we showed how we can calculate the posterior distribution by essentially deriving its mathematical equation and solving it in one step. 
 
 ## References
 
