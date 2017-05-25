@@ -1,0 +1,269 @@
+---
+title: "Fitting a Binomial Mixture Model Using the Expectation-Maximization Algorithm in R"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document:
+    toc: true
+tags: [R, mixmodels, EM, bmm]
+---
+
+```{r echo = FALSE}
+library("knitr")
+library("svglite")
+knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/bmm-em/")
+                      #dev = "svglite")
+```
+
+In my previous post ["Fitting a Gaussian Mixture Model Using the Expectation-Maximization Algorithm in R"]({% post_url 2016-01-03-gmm-em %}), I went over how to implement a mixture model using the expectation-maximization (EM) algorithm in R. Specifically, this was done with gaussian distributions as our components. In this post, I will show how we can use binomial distributions instead of gaussian distributions allowing us to perform binomial mixture model (BMM) clustering.
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## Setup
+
+Let's setup a scenario of where a BMM would be useful. Let's say for example, you have a bag that has 2 coins in it. You run experiment where you do the following:
+
+1. Reach your hand into the bag and draw one of these coins. 
+1. You then proceed to flip this coin 60 times and note the number of heads.
+1. Put the coin back in the bag.
+1. Repeats steps 1-3 a total of 1000 times.
+
+Say you ran this very very time consuming experiment and these were your results:
+
+```{r bmm-scenario, message = FALSE}
+library("dplyr")
+library("ggplot2")
+
+set.seed(1)
+
+#' Random BMM data generator
+#'
+#' Code is taken from https://cran.r-project.org/web/packages/sBIC/vignettes/BinomialMixtures.pdf
+#' @param n Number of experiments.
+#' @param alpha Mixing weights of the components.
+#' @param theta Probability of success of each component.
+#' @param size Number of trials in each experiment.
+#' @return vector Data from a BMM
+rbinommix <- function(n, alpha, theta, size) {
+  nindex = rmultinom(1, size = n, prob = alpha)
+  rbinom(n, size, rep(theta, nindex))
+}
+
+num.trials <- 60
+
+coin.flip.data <- 
+  rbinommix(1000, 
+            alpha = c(0.4, 0.6), 
+            theta = c(0.35, 0.65), 
+            size = num.trials)
+
+data_frame(num_successes = coin.flip.data) %>%
+  ggplot(aes(x = num_successes)) +
+  geom_histogram(binwidth = 1) +
+  xlab("Number of Heads") +
+  ylab("Number of Experiments")
+```
+
+Fill in details...
+
+
+## The Binomial Distribution
+
+Recall from the ["Using Mixture Models for Clustering in R"]({% post_url 2015-10-13-mixture-model %}) post, a mixture model is a mixture of <span class="inlinecode">$k$</span> component distributions that collectively make a mixture distribution <span class="inlinecode">$f(x)$</span>:
+
+<div>
+$$f(x) = \sum_{k=1}^{K}\alpha_{k}f_{k}(x)$$
+</div>
+
+The <span class="inlinecode">$\alpha_{k}$</span> represents a mixing weight for the <span class="inlinecode">$k^{th}$</span> component where <span class="inlinecode">$\sum_{k=1}^{K}\alpha_{k} = 1$</span>. Remember that the <span class="inlinecode">$f_k(x)$</span> components in principle are arbitrary in the sense that you can choose any sort of distribution. In this post, our components will be binomial distributions to form a BMM. A binomial distribution is a discrete probability distribution that is represented as:
+
+<div>
+$$
+B(n, p)
+$$
+</div>
+
+The binomial distribution is parameterized by two variables:
+
+* <span class="inlinecode">$n$</span>: Number of trials.
+* <span class="inlinecode">$p \in [0, 1]$</span>: Success probability in each trial.
+
+The distribution is often used to model the number of "successes" in a sample size of n drawn with replacement from a population of size N. The modeling of coin flips is often an example of where the binomial distribution is used. This is because each coin flip has a probability of giving a head (assuming head is what we define as a "success"). We can flip the coin n number of times to generate a sample size of n. Each coin flip is independent of other coin flips and thus is ....TO FILL IN.
+
+## Fitting a BMM using Expectation Maximization 
+
+Recall that the EM algorithm consists of 3 major steps:
+
+1. Initialization
+1. Expectation (E-step)
+1. Maximization (M-step)
+
+Steps 2 and 3 are repeated until convergence. We will cover each of these steps and how convergence is reached below. But first we must understand how to mathematically represent a BMM:
+
+<div>
+$$P(X\ |\ n,p,\alpha) = \sum_{k=1}^{K}\alpha_kB(X\ |\ n_{k},p_{k})$$
+</div>
+
+* X = Dataset of n elements (<span class="inlinecode">$x_{1}, ..., x_{n}$</span>).
+* <span class="inlinecode">$\alpha_{k}$</span> = Mixing weight of the <span class="inlinecode">k</span>th component. <span class="inlinecode">$\sum_{k=1}^{K}\alpha_{k} = 1$</span>.
+* <span class="inlinecode">$B(X\ |\ n_{k},p_{k})$</span> = [Binomial probability mass function (pmf)](https://en.wikipedia.org/wiki/Binomial_distribution) of the <span class="inlinecode">k</span>th component defined by the parameters <span class="inlinecode">$n$</span> and <span class="inlinecode">$p$</span>.
+* <span class="inlinecode">$n_{k}$</span> = Number of trials for each experiment in the <span class="inlinecode">$k$</span>th component. In this scenario, this number is 60 for every experiment.
+* <span class="inlinecode">$p_{k}$</span> = Probability of a success in the <span class="inlinecode">$k$</span>th component.
+
+So for a two component BMM, we would mathematically represent this as:
+
+<div>
+$$P(X\ |\ n,p,\alpha) = \alpha_{1}B(X\ |\ n_{1}, p_{1}) + \alpha_{2}B(X\ |\ n_{2},p_{2})$$
+</div>
+
+In case you were wondering what the <span class="inlinecode">$P(X|\mu,\sigma,\alpha)$</span> means, don't worry about that for now. We will explain exactly what this means later on in the post.
+
+### Initialization: Determining the Initial BMM Parameters
+
+So the first thing we need to do is to set the **initial model parameters** of a BMM. I am not entirely sure if there is a standard way of doing this, but k-means should be a viable approach to performing some initial cluster and getting the initial BMM parameters from these clusters.
+
+* <span class="inlinecode">$p_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$</span>
+* <span class="inlinecode">$\alpha_{k} = \frac{N_{k}}{N}$</span>
+
+Where <span class="inlinecode">$N_{k}$</span> indicates the number of data points in the kth component. Let's try that here:
+
+```{r kmeans_init, fig.height = 4}
+#coin.flip.data.kmeans <- kmeans(coin.flip.data, 2)
+#
+#coin.flip.data.kmeans.cluster <- coin.flip.data.kmeans$cluster
+
+coin.flip.data.kmeans.df <- 
+  data_frame(num_heads = coin.flip.data, 
+             cluster = base::sample(1:2, 
+                                    length(coin.flip.data), 
+                                    replace = TRUE))
+
+coin.flip.data.kmeans.df %>%
+  ggplot(aes(x = num_heads, fill = factor(cluster))) +
+  geom_density(alpha = 0.4) +
+  xlab("Number of Heads") +
+  ylab("Density") +
+  scale_color_discrete(name = "Cluster") +
+  ggtitle("K-means Clustering") +
+  scale_fill_discrete(name = "Cluster")
+```
+
+Since we specified 2 clusters, k-means nicely splits the data into 2 clusters. We can calculate the <span class="inlinecode">$p$</span> and <span class="inlinecode">$\alpha$</span>
+
+```{r}
+coin.flip.data.kmeans.summary.df <- 
+  coin.flip.data.kmeans.df %>%
+  mutate(prob = num_heads / num.trials) %>%
+  group_by(cluster) %>%
+  summarize(prob = mean(prob), size = n()) %>%
+  mutate(alpha = size / sum(size))
+
+kable(coin.flip.data.kmeans.summary.df,
+      caption = "Initial parameters of the BMM")
+```
+
+### Expectation: Calculating the "Soft Labels" of Each Data Point (E-step)
+
+Now that we have the initial parameters of our BMM, we now have to determine what is the probability (soft label; responsibility) that the data point (<span class="inlinecode">$x_{i}$</span>) belongs to component (<span class="inlinecode">$k_{j}$</span>)? This is considered the expectation step (E-step) of MLE where we are calculating the "expectation values" of the soft labels for each data point. 
+
+Mathematically, the question can be posed like this <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span>. How do we actually solve this equation? To help us, we can apply [Bayes' rule](https://en.wikipedia.org/wiki/Bayes%27_rule) here:
+
+<div>
+$$P(x_{i} \in k_{j} | x_{i}) = \frac{P(x_{i} | x_{i} \in k_{j})\ P(k_{j})}{P(x_{i})}$$
+</div>
+
+The parts of this equation are related to the BMM equation above as follows:
+
+* <span class="inlinecode">$P(x_{i} | x_{i} \in k_{j}) = B(x_{i}\ |\ n,p_{k_{j}})$</span>
+* <span class="inlinecode">$P(k_{j}) = \alpha_{k_{j}}$</span>
+* <span class="inlinecode">$P(x_{i}) = \sum_{k=1}^{K}\alpha_{k}B(x_{i}\ |\ n,p_{k_{j}})$</span>
+
+What we are interested in is <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> which is called the posterior probability. Knowing these equations, we can easily calculate this. For instance, what is the posterior probability of x = 66 belong to the first component? We can first calculate the top part of the equation like this in R:
+
+```{r}
+num.heads <- 30
+coin.flip.data.kmeans.summary.df
+
+comp1.prod <- 
+  dbinom(num.heads, num.trials, coin.flip.data.kmeans.summary.df$prob[1]) *
+  coin.flip.data.kmeans.summary.df$alpha[1]
+```
+
+Here we are using the `binom` function from R to make use of the binomial pmf To calculate the bottom part of the equation, we actually need to calculate this value for both components and sum them up:
+
+```{r}
+comp2.prod <- 
+  dbinom(num.heads, num.trials, coin.flip.data.kmeans.summary.df$prob[2]) *
+  coin.flip.data.kmeans.summary.df$alpha[2]
+
+normalizer <- comp1.prod + comp2.prod
+```
+
+Now that we have all the components of the equation, let's plug and solve this:
+
+```{r}
+comp1.prod / normalizer
+```
+
+We can easily calculate this for every data point as follows:
+
+```{r}
+comp1.prod <- dbinom(x = coin.flip.data, 
+                     size = num.trials,
+                     prob = coin.flip.data.kmeans.summary.df$prob[1])
+
+comp2.prod <- dbinom(x = coin.flip.data, 
+                     size = num.trials,
+                     prob = coin.flip.data.kmeans.summary.df$prob[2])
+
+normalizer <- comp1.prod + comp2.prod
+
+comp1.post <- comp1.prod / normalizer
+comp2.post <- comp2.prod / normalizer
+```
+
+### Maximization: Re-estimate the Component Parameters (M-step)
+
+Now that we have posterior probabilites (i.e. soft labels), we can re-estimate our component parameters. We simply have to make a little adjustment to the MLE equations that we specified early. Specifically, the <span class="inlinecode">$N_{k}$</span> (remember there are no hard labels) is replaced with the posterior probability <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> in each equation.
+
+* <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})x_{i}}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
+* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})(x_{i} - \mu_{k})^2}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
+* <span class="inlinecode">$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}{N}$</span>
+
+With these equations we can now plug in our values and calculate the components parameters using our example from above:
+
+```{r}
+comp1.n <- sum(comp1.post)
+comp2.n <- sum(comp2.post)
+
+comp1.prob <- 1/comp1.n * sum(comp1.post * coin.flip.data)
+comp2.prob <- 1/comp2.n * sum(comp2.post * coin.flip.data)
+
+comp1.alpha <- comp1.n / length(coin.flip.data)
+comp2.alpha <- comp2.n / length(coin.flip.data)
+
+comp.params.df <- data.frame(comp = c("comp1", "comp2"),
+                             comp.prob = c(comp1.prob, comp2.prob),
+                             comp.alpha = c(comp1.alpha, comp2.alpha),
+                             comp.cal = c("self", "self"))
+comp.params.df
+```
+
+
+## Summary
+
+## R Session
+
+```{r}
+devtools::session_info()
+```
+
+## References
+
+* [Youtube Videos on Mixture Models](https://www.youtube.com/playlist?list=PLBv09BD7ez_4e9LtmK626Evn1ion6ynrt)
+* [Mixture Models](http://www.stat.cmu.edu/~cshalizi/uADA/12/lectures/ch20.pdf)
+* [Expectation Maximization and Gaussian Mixture Models](http://www.slideshare.net/petitegeek/expectation-maximization-and-gaussian-mixture-models)
+* [Nature Computational Biology Primer - What is the expectation maximization algorithm?](http://www.nature.com/nbt/journal/v26/n8/full/nbt1406.html)
+Thankfully we have co
