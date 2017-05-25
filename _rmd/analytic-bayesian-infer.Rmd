@@ -10,28 +10,45 @@ tags: [R, stats, bayesian]
 ```{r message = FALSE, echo = FALSE}
 library("knitr")
 library("cowplot")
-library("Cairo")
+#library("Cairo")
+#library("bookdown")
 library("ggplot2")
 library("dplyr")
 
 knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/analytic-bayesian-infer/",
-                      dev = "svg")
-#                      fig.ext = ".svg")
+                      dev = "svglite",
+                      fig.ext = "svg")
 theme_set(theme_grey())
 ```
 
-In a previous post called "[How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %})", I introduced and walked through the key steps to Bayesian inference using a coin flipping example. In that post, I demonstrated an exhaustive approach to calculating the posterior distribution. In practice though, this approach will not scale well with a larger parameter space. As such, there are two main approaches to calculating the posterior distribution in Bayesian inference:
+In a previous post called "[How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %})", I introduced and walked through the key steps to Bayesian inference using a coin flipping example. In that post, I demonstrated an exhaustive approach to calculating the posterior distribution. In practice though, this approach will not scale well with a larger parameter space. As such, there are really two main approaches to calculating the posterior distribution in Bayesian inference:
 
 1. Analytical approach. 
 1. Approximation approach (e.g. using Markov chain Monte Carlo (MCMC) methods).
 
-The analytical approach will be the topic of today's post and we shall save the approximation approach for a different post. When I was first learning this, I found it a bit confusing what this meant. What helped me was first understanding this in the context of why Bayesian inference is challenging. Once we understand this, it will be clear when we can and cannot use the analytical approach. Then we will walk through the approach using the [coin flipping example]((% 2017-03-08-how-to-bayesian-infer-101#the-coin-flipping-example %}).
+The analytical approach will be the topic of today's post and we shall save the approximation approach for a different post. We start by reviewing again the 4 major steps in any Bayesian analysis, discuss how to define best define a prior, how this is related the posterior, and then walk through an example of doing Bayesian inference using the analytical approach.
+
+When I was first learning this, I found it a bit confusing what this meant. What helped me was first understanding this in the context of why Bayesian inference is challenging. Once we understand this, it will be clear when we can and cannot use the analytical approach. Then we will walk through the approach using the [coin flipping example]((% 2017-03-08-how-to-bayesian-infer-101#the-coin-flipping-example %}).
 
 Here is an overview of what will be discussed in this post.
 
 **Table of Contents**
 
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## 4 Major Steps of Bayesian Inference 
+
+Recall that to do any Bayesian inference, we follow a 4 step process:
+
+1. Identify the observed data you are working with.
+1. Construct a probabilistic model to represent the data (likelihood).
+1. Specify prior distributions over the parameters of your probabilistic model (prior).
+1. Collect data and apply Bayes' rule to re-allocate credibility across the possible parameter values (posterior).
+
+We 
+
+Let us walk through these steps one by one in the context of this example.
+
 
 ## What Makes Bayesian Inference Hard?
 
@@ -44,21 +61,21 @@ When using an analytical approach, what we are doing is solving the posterior in
 To do Bayesian statistics in a purely mathematical way, we need a way to describe the prior distribution such that we have a prior probability for each value of $\theta$ in the interval [0, 1]. In theory, we could actually use any probability distribution that gives values between the interval [0, 1]. However, there are 2 important considerations:
 
 1. The product of $P(D\ |\ \theta)$ and $P(\theta)$ (i.e. the numerator of Bayes' rule) should result in a function that has the same form as $P(\theta)$. The reason why we want this is because we can subsequently include additional data and derive another posterior distribution, which is the same form as the prior.
-1. The denominator of Bayes' rule, $P(D)$, needs to be solvable analytically. This depends on how $P(\theta)$ relates to $P(D | \theta)$.
+1. The denominator of Bayes' rule, $P(D)$, needs to be solvable analytically. This depends on how $P(\theta)$ relates to $P(D\ |\ \theta)$.
 
-When $P(D\ |\ \theta)$ and $P(\theta)$ combine to give a form that is the same as the prior distribution, we call $P(\theta)$ a **conjugate prior** for $P(D | \theta)$. In the context of the binomial distribution being the likelihood function, the corresponding conjugate prior is the **beta distribution**. Formally, the beta distribution can be described as follows:
+When $P(D\ |\ \theta)$ and $P(\theta)$ combine to give a form that is the same as the prior distribution, we call $P(\theta)$ a **conjugate prior** for $P(D\ |\ \theta)$. In the context of the binomial distribution being the likelihood function, the corresponding conjugate prior is the **beta distribution**. Formally, the beta distribution can be described as follows:
 
 $$
-p(\theta | a, b) = beta(\theta | a,b) = \frac{\theta^{(a-1)}(1 - \theta)^{(b-1)}}{B(a,b)}
+p(\theta\ |\ a, b) = beta(\theta\ |\ a,b) = \frac{\theta^{(a-1)}(1 - \theta)^{(b-1)}}{B(a,b)}
 $$
 
 Where $B(a,b)$ is a normalizing constant that simply ensures that the area under the beta density integrates to 1. I won't go into too much detail about the beta distribution and instead refer you to this wonderful post by David Robinson titled "[Understanding the beta distribution (using baseball statistics)](http://varianceexplained.org/statistics/beta_distribution_and_baseball/) for more initution. To steal a quote:
 
 > In short, the beta distribution can be understood as representing a probability distribution of probabilities- that is, it represents all the possible values of a probability when we don’t know what that probability is.
 
-The beta distribution is parameterized by two shape parameters, $a$ and $b$, that can take on any real positive value. Below are a few examples of some beta distributions.
+The beta distribution is parameterized by two shape parameters, $a$ and $b$, that can take on any real positive value. And when describing these parameters in the context of using as a part of a prior distribution, then these parameters are known as **hyperparameters**. Below are a few examples of some beta distributions.
 
-```{r beta-distr-examples}
+```{r beta-distr-examples, fig.cap = "4 different beta distributions corresponding to different shape parameters."}
 probs <- seq(0, 1, len = 100)
 
 beta.p.tpl <- 
@@ -86,12 +103,14 @@ p4 <- beta.p.tpl +
 plot_grid(p1, p2, p3, p4, nrow = 2, ncol = 2, labels = LETTERS[1:4])
 ```
 
-Here we have 4 different beta distributions corresponding to different shape parameters. You can see how each plot shows a different distribution of probabilities:
+You can see how each plot shows a different distribution of probabilities:
 
 * Panel A shows a distribution that places a lot of weight towards 0 and 1 probabilites. 
 * Panel B shows a flat distribution demonstrating that the prior probability for each probability is equally likely. This often refer to as a "non-informative" prior.
 * Panel C shows a distribution that places weight towards the middle probabilities.
 * Panel D shows a skewed distribution with weight towards the lowest probability value.
+
+### Choosing the shape parameters for the Beta distribution
 
 In terms of choosing these the values for these shape parameters, essentially what we want to do is convert our prior belief into the shape parameter values such that our beta distribution will appropriately represent our prior belief. What we can do is treat $a$ as the number of heads and $b$ as the number of tails. 
 
@@ -99,20 +118,114 @@ TODO: need to fill this in.
 
 ## The Posterior Beta
 
-Now that we have the conjugate prior selected (i.e. beta distribution), let's see how the posterior distribution looks when we combine our Binomial likelihood with the beta prior. If we let our data be N flips and z heads, then after some math our Bayes' rule looks like this:
+Now that we have the conjugate prior selected (i.e. beta distribution), let's see how the posterior distribution looks like. If we let our data be N flips and z heads, then our Bayes' rule looks like this:
 
-<div>
-$$\begin{align}
-P(\theta\ |\ z, N) &= \frac{P(z, N | \theta) P(\theta)}{P(z,N)} \\
-P(\theta\ |\ z, N) &= \theta^{((z+a)-1)}(1-\theta)^{((N-z+b)-1} / B(z + a, N - z + b)
-\end{align}$$
-</div>
+$$
+P(\theta\ |\ z, N) = \frac{P(z, N\ |\ \theta)\ P(\theta)}{P(z,N)}
+$$
+
+Now let's substitute in the binomial and beta distributions into our Bayes' rule:
+
+$$
+\begin{align}
+P(\theta\ |\ z, N) =& \frac{\theta^{z}(1-\theta)^{N-z}\ \frac{\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a,b)}}{p(z,N)} \\
+=& \frac{\theta^{z}(1-\theta)^{N-z}\theta^{(a-1)}(1-\theta)^{(b-1)}}{B(a,b)p(z,N)}
+\end{align}
+$$
+
+If we recall some [basic rule on exponents](http://www.purplemath.com/modules/exponent.html), then we can manipulate the equation to look like this:
+
+$$
+P(\theta\ |\ z, N) = \frac{\theta^{(z+a-1)}(1-\theta)^{(N-z+b-1)}}{B(a,b)p(z,N)}
+$$
+
+If we do one aesthetic step:
+
+$$
+P(\theta\ |\ z, N) = \frac{\theta^{([z+a]-1)}(1-\theta)^{([N-z+b]-1)}}{B(a,b)p(z,N)}
+$$
+
+What is important about small step? What you might notice is that this numerator is the numerator for a beta function of this form:
+
+$$
+P(\theta\ |\ z + a, N -z + b)
+$$
+
+As such, in order for the posterior distribution to be probability distribution, then the denominator must be a normalizing factor for this beta distribution, which would be <span class="inlinecode">$B(z + a, N -z + b)$</span>. So now we have:
+
+$$
+P(\theta\ |\ z, N) =& \frac{\theta^{([z+a]-1)}(1-\theta)^{([N-z+b]-1)}}{B(z + a, N -z + b)}
+$$
+
+What's interesting is that the equation for this posterior distribution actually represents a beta distribution:
+
+$$
+beta(\theta\ |\ z + a, N -z + b)
+$$
+
+## Example
+
+Now that we have defined the posterior distribution in an analytical form, let's run through an example of how it works. We will again use our coin flipping experiment from the [previous post](% 2017-03-08-how-to-bayesian-infer-101 %}). Let's say we have 
+
+```{r}
+num.heads <- 15
+num.flips <- 20
+beta.prior.a <- 5
+beta.prior.b <- 5
+
+likelihood.binom <- function(theta, z, N) {
+  dbinom(z, N, theta)
+}
+
+post.beta <- function(theta, z, N, a, b) {
+  numerator <- theta^(z + a - 1) * (1 - theta)^(N - z + b - 1)
+  denominator <- beta(z + a, N - z + b)
+  numerator / denominator
+}
+
+prior.p <- 
+  data_frame(x = probs) %>%
+  ggplot(aes(x = probs)) +
+  xlab("Probability") +
+  ylab("Density of Beta") +
+  stat_function(fun = dbeta, 
+                args = list(shape1 = beta.prior.a, 
+                            shape2 = beta.prior.b)) +
+  ggtitle("Prior beta distribution", subtitle = "a = 5, b = 5")
+
+likelihood.p <- 
+  beta.p.tpl +
+  stat_function(fun = likelihood.binom, 
+                args = list(z = num.heads, N = num.flips)) +
+  ggtitle("Likelihood distribution", 
+          subtitle = "15 heads from 20 coin tosses") +
+  ylab("Likelihood")
+
+post.p <- 
+  beta.p.tpl + 
+  stat_function(fun = post.beta, 
+                args = list(z = num.heads, 
+                            N = num.flips, 
+                            a = beta.prior.a, 
+                            b = beta.prior.b)) +
+  ggtitle("Posterior beta distribution", subtitle = "a = 5, b = 5")
+
+plot_grid(prior.p, 
+          likelihood.p,
+          post.p, 
+          nrow = 3)
+```
+
+## How is this different from "other" approach
+
+In the previous post "[How to Do Bayesian Inference 101](% 2017-03-08-how-to-bayesian-infer-101 %})", we solved for the posterior distribution by first calculating the prior distribution, likelihood distribution, and the marginal probability distribution values. Then we used Bayes' rule to calculate the posterior distribution. This was called the "exhaustive approximation" approach. But with the analytical approach demonstrated in the post, we showed how we can calculate the posterior distribution by essentially deriving its mathematical equation and solving it in one step. 
 
 ## References
 
 * [Understanding the beta distribution (using baseball statistics)](http://varianceexplained.org/statistics/beta_distribution_and_baseball/)
 * [Doing Bayesian Data Analysis: A Tutorial with R, JAGS, and Stan](https://sites.google.com/site/doingbayesiandataanalysis/)
 * [Points of significance: Bayesian statistics](www.nature.com/nmeth/journal/v12/n5/full/nmeth.3368.html)
+* [CrossValidated - Can anyone explain conjugate priors in simplest possible terms?](https://stats.stackexchange.com/questions/176668/can-anyone-explain-conjugate-priors-in-simplest-possible-terms)
 
 ## R Session
 
