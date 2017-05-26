@@ -35,6 +35,7 @@ Say you ran this very very time consuming experiment and these were your results
 ```{r bmm-scenario, message = FALSE}
 library("dplyr")
 library("ggplot2")
+library("tidyr")
 
 set.seed(1)
 
@@ -124,23 +125,22 @@ In case you were wondering what the <span class="inlinecode">$P(X|\mu,\sigma,\al
 
 So the first thing we need to do is to set the **initial model parameters** of a BMM. I am not entirely sure if there is a standard way of doing this, but k-means should be a viable approach to performing some initial cluster and getting the initial BMM parameters from these clusters.
 
-* <span class="inlinecode">$p_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$</span>
+* <span class="inlinecode">$p_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k}\ /\ 60)}{N_{k}}$</span>
 * <span class="inlinecode">$\alpha_{k} = \frac{N_{k}}{N}$</span>
 
 Where <span class="inlinecode">$N_{k}$</span> indicates the number of data points in the kth component. Let's try that here:
 
 ```{r kmeans_init, fig.height = 4}
 #coin.flip.data.kmeans <- kmeans(coin.flip.data, 2)
-#
 #coin.flip.data.kmeans.cluster <- coin.flip.data.kmeans$cluster
 
-coin.flip.data.kmeans.df <- 
+coin.flip.data.init.cluster.df <- 
   data_frame(num_heads = coin.flip.data, 
              cluster = base::sample(1:2, 
                                     length(coin.flip.data), 
                                     replace = TRUE))
 
-coin.flip.data.kmeans.df %>%
+coin.flip.data.init.cluster.df %>%
   ggplot(aes(x = num_heads, fill = factor(cluster))) +
   geom_density(alpha = 0.4) +
   xlab("Number of Heads") +
@@ -153,14 +153,14 @@ coin.flip.data.kmeans.df %>%
 Since we specified 2 clusters, k-means nicely splits the data into 2 clusters. We can calculate the <span class="inlinecode">$p$</span> and <span class="inlinecode">$\alpha$</span>
 
 ```{r}
-coin.flip.data.kmeans.summary.df <- 
-  coin.flip.data.kmeans.df %>%
+coin.flip.data.init.cluster.df <- 
+  coin.flip.data.init.cluster.df %>%
   mutate(prob = num_heads / num.trials) %>%
   group_by(cluster) %>%
   summarize(prob = mean(prob), size = n()) %>%
   mutate(alpha = size / sum(size))
 
-kable(coin.flip.data.kmeans.summary.df,
+kable(coin.flip.data.init.cluster.df,
       caption = "Initial parameters of the BMM")
 ```
 
@@ -180,23 +180,22 @@ The parts of this equation are related to the BMM equation above as follows:
 * <span class="inlinecode">$P(k_{j}) = \alpha_{k_{j}}$</span>
 * <span class="inlinecode">$P(x_{i}) = \sum_{k=1}^{K}\alpha_{k}B(x_{i}\ |\ n,p_{k_{j}})$</span>
 
-What we are interested in is <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> which is called the posterior probability. Knowing these equations, we can easily calculate this. For instance, what is the posterior probability of x = 66 belong to the first component? We can first calculate the top part of the equation like this in R:
+What we are interested in is <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> which is called the posterior probability. Knowing these equations, we can easily calculate this. For instance, what is the posterior probability of x = 30 belong to the first component? We can first calculate the top part of the equation like this in R:
 
 ```{r}
 num.heads <- 30
-coin.flip.data.kmeans.summary.df
 
 comp1.prod <- 
-  dbinom(num.heads, num.trials, coin.flip.data.kmeans.summary.df$prob[1]) *
-  coin.flip.data.kmeans.summary.df$alpha[1]
+  dbinom(num.heads, num.trials, coin.flip.data.init.cluster.df$prob[1]) *
+  coin.flip.data.init.cluster.df$alpha[1]
 ```
 
 Here we are using the `binom` function from R to make use of the binomial pmf To calculate the bottom part of the equation, we actually need to calculate this value for both components and sum them up:
 
 ```{r}
 comp2.prod <- 
-  dbinom(num.heads, num.trials, coin.flip.data.kmeans.summary.df$prob[2]) *
-  coin.flip.data.kmeans.summary.df$alpha[2]
+  dbinom(num.heads, num.trials, coin.flip.data.init.cluster.df$prob[2]) *
+  coin.flip.data.init.cluster.df$alpha[2]
 
 normalizer <- comp1.prod + comp2.prod
 ```
@@ -205,21 +204,30 @@ Now that we have all the components of the equation, let's plug and solve this:
 
 ```{r}
 comp1.prod / normalizer
+comp2.prod / normalizer
 ```
+
 
 We can easily calculate this for every data point as follows:
 
 ```{r}
-comp1.prod <- dbinom(x = coin.flip.data, 
-                     size = num.trials,
-                     prob = coin.flip.data.kmeans.summary.df$prob[1])
+# Calculate numerators
+comp1.prod <- 
+  dbinom(x = coin.flip.data, 
+         size = num.trials,
+         prob = coin.flip.data.init.cluster.df$prob[1]) *
+  coin.flip.data.init.cluster.df$alpha[1]
 
-comp2.prod <- dbinom(x = coin.flip.data, 
-                     size = num.trials,
-                     prob = coin.flip.data.kmeans.summary.df$prob[2])
+comp2.prod <- 
+  dbinom(x = coin.flip.data, 
+         size = num.trials,
+         prob = coin.flip.data.init.cluster.df$prob[2]) *
+  coin.flip.data.init.cluster.df$alpha[2]
 
+# Calculate denominators
 normalizer <- comp1.prod + comp2.prod
 
+# Calculate posteriors
 comp1.post <- comp1.prod / normalizer
 comp2.post <- comp2.prod / normalizer
 ```
@@ -228,8 +236,7 @@ comp2.post <- comp2.prod / normalizer
 
 Now that we have posterior probabilites (i.e. soft labels), we can re-estimate our component parameters. We simply have to make a little adjustment to the MLE equations that we specified early. Specifically, the <span class="inlinecode">$N_{k}$</span> (remember there are no hard labels) is replaced with the posterior probability <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> in each equation.
 
-* <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})x_{i}}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
-* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})(x_{i} - \mu_{k})^2}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
+* <span class="inlinecode">$p_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})x_{i}\ /\ 60}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
 * <span class="inlinecode">$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}{N}$</span>
 
 With these equations we can now plug in our values and calculate the components parameters using our example from above:
@@ -238,9 +245,8 @@ With these equations we can now plug in our values and calculate the components 
 comp1.n <- sum(comp1.post)
 comp2.n <- sum(comp2.post)
 
-comp1.prob <- 1/comp1.n * sum(comp1.post * coin.flip.data)
-comp2.prob <- 1/comp2.n * sum(comp2.post * coin.flip.data)
-
+comp1.prob <- 1/comp1.n * (sum(comp1.post * coin.flip.data) / num.trials) 
+comp2.prob <- 1/comp2.n * (sum(comp2.post * coin.flip.data) / num.trials)
 comp1.alpha <- comp1.n / length(coin.flip.data)
 comp2.alpha <- comp2.n / length(coin.flip.data)
 
@@ -251,6 +257,148 @@ comp.params.df <- data.frame(comp = c("comp1", "comp2"),
 comp.params.df
 ```
 
+### Putting it All Together
+
+
+Now that we have all these pieces of information together, let's put it altogether:
+
+```{r}
+#' Expectation Step of the EM Algorithm
+#'
+#' Calculate the posterior probabilities (soft labels) that each component
+#' has to each data point.
+#'
+#' @param sd.vector Vector containing the standard deviations of each component
+#' @param sd.vector Vector containing the mean of each component
+#' @param alpha.vector Vector containing the mixing weights  of each component
+#' @return Named list containing the loglik and posterior.df
+e_step <- function(x, num.trials, prob.vector, alpha.vector) {
+  comp1.prod <- dbinom(x, num.trials, prob.vector[1]) * alpha.vector[1]
+  comp2.prod <- dbinom(x, num.trials, prob.vector[2]) * alpha.vector[2]
+  sum.of.comps <- comp1.prod + comp2.prod
+  comp1.post <- comp1.prod / sum.of.comps
+  comp2.post <- comp2.prod / sum.of.comps
+
+  sum.of.comps.ln <- log(sum.of.comps, base = exp(1))
+  sum.of.comps.ln.sum <- sum(sum.of.comps.ln)
+
+  list("loglik" = sum.of.comps.ln.sum,
+       "posterior.df" = cbind(comp1.post, comp2.post))
+}
+
+#' Maximization Step of the EM Algorithm
+#'
+#' Update the Component Parameters
+#'
+#' @param x Input data.
+#' @param posterior.df Posterior probability data.frame.
+#' @return Named list containing the mean (mu), variance (var), and mixing
+#'   weights (alpha) for each component.
+m_step <- function(x, posterior.df) {
+  comp1.n <- sum(posterior.df[, 1])
+  comp2.n <- sum(posterior.df[, 2])
+
+  comp1.prob <- 1/comp1.n * (sum(posterior.df[, 1] * x) / 60)
+  comp2.prob <- 1/comp2.n * (sum(posterior.df[, 2] * x) / 60)
+
+  comp1.alpha <- comp1.n / length(x)
+  comp2.alpha <- comp2.n / length(x)
+
+  list("prob" = c(comp1.prob, comp2.prob),
+       "alpha" = c(comp1.alpha, comp2.alpha))
+}
+```
+
+Now we just need to write a loop to go between the functions for each EM step. Each iteration will consist of us first calling the `e_step` function and then calling the `m_step` function (if needed). We will run this for 50 iterations or when the log likelihood difference between two iteration is less than `1e-6` (whichever comes first):
+
+```{r}
+# Track how parameters change over EM
+params.list.1 <- list("prob" = coin.flip.data.init.cluster.df[["prob"]][1],
+                      "alpha" = coin.flip.data.init.cluster.df[["alpha"]][1])
+
+params.list.2 <- list("prob" = coin.flip.data.init.cluster.df[["prob"]][2],
+                      "alpha" = coin.flip.data.init.cluster.df[["alpha"]][2])
+
+for (i in 1:50) {
+  if (i == 1) {
+    # Initialization
+    e.step <- e_step(coin.flip.data, num.trials, coin.flip.data.init.cluster.df[["prob"]], 
+                     coin.flip.data.init.cluster.df[["alpha"]])
+    m.step <- m_step(coin.flip.data, e.step[["posterior.df"]])
+    cur.loglik <- e.step[["loglik"]]
+    loglik.vector <- e.step[["loglik"]]
+  } else {
+    # Repeat E and M steps till convergence
+    e.step <- e_step(coin.flip.data, num.trials, m.step[["prob"]], m.step[["alpha"]])
+    m.step <- m_step(coin.flip.data, e.step[["posterior.df"]])
+    loglik.vector <- c(loglik.vector, e.step[["loglik"]])
+
+    params.list.1[["prob"]] <- c(params.list.1[["prob"]], m.step[["prob"]][1])
+    params.list.1[["alpha"]] <- c(params.list.1[["alpha"]], m.step[["alpha"]][1])
+
+    params.list.2[["prob"]] <- c(params.list.2[["prob"]], m.step[["prob"]][2])
+    params.list.2[["alpha"]] <- c(params.list.2[["alpha"]], m.step[["alpha"]][2])
+
+    loglik.diff <- abs((cur.loglik - e.step[["loglik"]]))
+    if(loglik.diff < 1e-6) {
+      break
+    } else {
+      cur.loglik <- e.step[["loglik"]]
+    }
+  }
+}
+m.step
+```
+
+Which produces the following mixture model:
+
+```{r final_bmm, fig.asp = 0.5}
+#' Plot a Mixture Component
+#' 
+#' @param x Input ata.
+#' @param mu Mean of component.
+#' @param sigma Standard of component.
+#' @param lam Mixture weight of component.
+plot_mix_comps <- function(x, num.trials, prob, lam) {
+  dbinom(x, num.trials, prob) * lam
+}
+
+data_frame(x = coin.flip.data) %>%
+  ggplot() +
+  geom_histogram(aes(x, ..density..), binwidth = 1, colour = "black", 
+                 fill = "white") +
+  stat_function(geom = "line", fun = plot_mix_comps,
+                args = list(prob = m.step$prob[1], num.trials = num.trials, 
+                            lam = m.step$alpha[1]),
+                colour = "red", lwd = 1.5, n = length(unique(coin.flip.data))) +
+  stat_function(geom = "line", fun = plot_mix_comps,
+                args = list(prob = m.step$prob[2], num.trials = num.trials,
+                            lam = m.step$alpha[2]),
+                colour = "blue", lwd = 1.5, n = length(unique(coin.flip.data))) +
+  ylab("Density") +
+  xlab("Values") +
+  ggtitle("Final BMM Fit")
+```
+
+```{r chung_tag}
+params.df.list <- list()
+params.df.list[[1]] <- data_frame(iter_num = 1:length(params.list.1[["prob"]]),
+                                prob = params.list.1[["prob"]],
+                                alpha = params.list.1[["alpha"]])
+
+params.df.list[[2]] <- data_frame(iter_num = 1:length(params.list.2[["prob"]]),
+                                  prob = params.list.2[["prob"]],
+                                  alpha = params.list.2[["alpha"]])
+
+bind_rows(params.df.list, .id = "cluster_id") %>%
+  gather(key = "param", value = "value", prob, alpha) %>%
+  ggplot(aes(x = iter_num, y = value, color = cluster_id)) +
+  facet_grid(param ~ .) +
+  geom_line(lwd = 2)
+
+
+
+```
 
 ## Summary
 
