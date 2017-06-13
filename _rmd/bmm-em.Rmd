@@ -15,7 +15,9 @@ knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/bmm-em/")
                       #dev = "svglite")
 ```
 
-In my previous post ["Fitting a Gaussian Mixture Model Using the Expectation-Maximization Algorithm in R"]({% post_url 2016-01-03-gmm-em %}), I went over how to implement a mixture model using the expectation-maximization (EM) algorithm in R. Specifically, this was done with gaussian distributions as our components. In this post, I will show how we can use binomial distributions instead of gaussian distributions allowing us to perform binomial mixture model (BMM) clustering.
+In my previous post ["Fitting a Gaussian Mixture Model Using the Expectation-Maximization Algorithm in R"]({% post_url 2016-01-03-gmm-em %}), I went over how to implement a mixture model using the expectation-maximization (EM) algorithm in R. Specifically, this was done with gaussian distributions as our components, which works well when we have continuous data. What happens when we have discrete data?
+
+In this post, I will show how we can cluster discrete data by using binomial distributions allowing us to perform binomial mixture model (BMM) clustering.
 
 **Table of Contents**
 
@@ -26,11 +28,11 @@ In my previous post ["Fitting a Gaussian Mixture Model Using the Expectation-Max
 Let's setup a scenario of where a BMM would be useful. Let's say for example, you have a bag that has 2 coins in it. You run experiment where you do the following:
 
 1. Reach your hand into the bag and draw one of these coins. 
-1. You then proceed to flip this coin 60 times and note the number of heads.
+1. You then proceed to flip this coin 60 times and jot down the number of heads.
 1. Put the coin back in the bag.
 1. Repeats steps 1-3 a total of 1000 times.
 
-Say you ran this very very time consuming experiment and these were your results:
+Say you ran this very time consuming experiment and these were your results:
 
 ```{r bmm-scenario, message = FALSE}
 library("dplyr")
@@ -52,15 +54,17 @@ rbinommix <- function(n, alpha, theta, size) {
   rbinom(n, size, rep(theta, nindex))
 }
 
-num.trials <- 60
+num_trials <- 60
 
-coin.flip.data <- 
-  rbinommix(1000, 
-            alpha = c(0.4, 0.6), 
-            theta = c(0.35, 0.65), 
-            size = num.trials)
+coin_flip_data <- 
+  rbinommix(
+    1000, 
+    alpha = c(0.4, 0.6), 
+    theta = c(0.35, 0.65), 
+    size = num_trials
+  )
 
-data_frame(num_successes = coin.flip.data) %>%
+data_frame(num_successes = coin_flip_data) %>%
   ggplot(aes(x = num_successes)) +
   geom_histogram(binwidth = 1) +
   xlab("Number of Heads") +
@@ -86,12 +90,14 @@ B(n, p)
 $$
 </div>
 
-The binomial distribution is parameterized by two variables:
+Where it is parameterized by two variables:
 
 * <span class="inlinecode">$n$</span>: Number of trials.
 * <span class="inlinecode">$p \in [0, 1]$</span>: Success probability in each trial.
 
 The distribution is often used to model the number of "successes" in a sample size of n drawn with replacement from a population of size N. The modeling of coin flips is often an example of where the binomial distribution is used. This is because each coin flip has a probability of giving a head (assuming head is what we define as a "success"). We can flip the coin n number of times to generate a sample size of n. Each coin flip is independent of other coin flips and thus is ....TO FILL IN.
+
+Importantly is that the flipping of a coin is analogous too many real-life processes.
 
 ## Fitting a BMM using Expectation Maximization 
 
