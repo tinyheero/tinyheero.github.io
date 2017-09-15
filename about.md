@@ -22,6 +22,25 @@ I have a passion for applying statistical and machine learning approaches to big
 
 <div class="list-group">
   <div class="list-group-item">
+    <h4 class="list-group-item-heading">Prognostic Model to Predict Post-Autologous Stem-Cell Transplantation Outcomes in Classical Hodgkin Lymphoma</h4>
+    <div>Fong Chun Chan*, Anja Mottok*, Aline Gerrie, <i>et al.</i> 2017. <a href="http://ascopubs.org/journal/jco">Journal of Clinical Oncology</a>.</div>
+    <div>* Equal Contribution</div>
+    <div>
+      <ul class="list-inline">
+         <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/28898161"><span class="label label-success">Pubmed</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Observing Clonal Dynamics Across Spatiotemporal Axes: A Prelude to Quantitative Fitness Models for Cancer</h4>
+    <div>Andrew McPherson, Fong Chun Chan, and Sohrab Shah <i>et al.</i> 2016. <a href="http://perspectivesinmedicine.cshlp.org/">Cold Spring Harb Perspect Med</a>.</div>
+    <div>
+      <ul class="list-inline">
+         <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/28630229"><span class="label label-success">Pubmed</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="list-group-item">
     <h4 class="list-group-item-heading">Histological Transformation and Progression in Follicular Lymphoma: a Clonal Evolution Study</h4>
     <div>Robert Kridel*, Fong Chun Chan*, Anja Mottok, Merrill Boyle, <i>et al.</i> 2016. <a href="http://journals.plos.org/plosmedicine/">PLOS Medicine</a>.</div>
     <div>* Equal Contribution</div>
@@ -63,7 +82,7 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Gene expression-based model using formalin-fixed paraffin-embedded biopsies predicts overall survival in advanced-stage classical Hodgkin lymphoma</h4>
-    <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://jco.ascopubs.org/">Journal of Clinical Oncology</a>.</div>
+    <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://ascopubs.org/journal/jco">Journal of Clinical Oncology</a>.</div>
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984"><span class="label label-success">PubMed</span></a></li>
