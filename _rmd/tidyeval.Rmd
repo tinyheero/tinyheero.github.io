@@ -1,0 +1,22 @@
+
+
+speed_quo <- quo(speed)
+dist_quo <- quo(dist)
+filter(cars, (!!speed_quo) == 4, (!!dist_quo) == 2)
+
+library("dplyr")
+library("glue")
+
+simpleFunction <- function(dataset, col_name, value){
+  col_name <- enquo(col_name)
+  dataset %>%
+    filter((!!col_name) == value) %>%
+    summarise(mean_cyl = mean(cyl)) -> dataset
+  return(dataset)
+}
+
+region <- c(1:5)
+test <- glue("{regions}_vaf")
+quos(test)
+quos(mpg, cyl)
+simpleFunction(mtcars, mpg, 1)

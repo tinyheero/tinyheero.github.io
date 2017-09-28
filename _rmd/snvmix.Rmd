@@ -1,0 +1,24 @@
+* $G_{i} \in {aa,ab,bb} represents the genotype$
+* $N_{i} \in {0, 1, ...} is the number of reads$
+* $a_{i} \in {0, 1, ...N_{i}} is the number of reference reads$
+
+## Input and Output
+
+Allelic counts and the output is inference of the predicted genotypes.
+
+Consider $G_{i} = k, k \in {aa,ab,bb}$ to b e a multinomial random variable representing the genotype at nucleotide position i, where aa is the homozygous for the reference allele, ab is heterozygous, and bb is homozygous for the non-reference allele.
+
+## Likelihood Model
+
+The following likelihood model is assumed:
+
+$$
+p(a_{i} | G_{i} = k, N_{i}, \mu_{1:3}) ~ Binom(a_{i} | \mu_{k}, N_{i})
+$$
+
+$\mu_{k}$: Parameter of the binomial distribution for genotype $k$. This models the expectation that for a given genotype $k$, a randomly sampled allele will be the reference allele. As such, we can expect $\mu_{aa}$ to be close to 1 (i.e. homozygous for the reference allele), $\mu_{ab}$ to be close to 0.5 (i.e. heterozygous), and $\mu_{bb}$ to be close to 0 (i.e. homozygous for the non-reference allele).
+
+We can then use 
+
+
+This is basically a mixture model of binomial distributions.
