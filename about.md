@@ -7,20 +7,45 @@ permalink: /about/
 
 <img src="{{ site.url }}/assets/fong-internet.jpg" alt="Fong Chun Chan" style="width: 300px;" class="floatright" />
 
-I am currently the Head of Bioinformatics in the [Department of Lymphoid Cancer Research](https://lcr-bccrc.github.io/), British Columbia Cancer Research Centre, Vancouver, Canada where I spearhead the overall bioinformatics strategic direction of the department.
+I am currently a senior bioinformatician in [Achilles Therapeutics](http://achillestx.com/). My primary focus has been to develop an industry-grade immunotherapy/immunogenomics pipeline (based on the TRACERx pipeline pioneered from Charles Swanton's lab )that identifies clonal neo-antigens that can elicit antitumor responses.
 
-I am also concurrently undertaking a PhD in Bioinformatics under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/). My main research interest surrounds the implications of tumour diversity on disease progression in B-cell lymphomas. In particular, how tumour and microenvironment evolution plays a role in treatment resistance as understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. 
+I completed my Bioinformatics PhD in 2017 under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/) studying tumour heterogeneity and its implications on disease progression in B-cell lymphomas. In particular, how tumour evolution plays a role in treatment resistance and how understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. Throughout my PhD and industry experience, I have acquired experience/skills in the following specific areas:
+
+* Cancer genomic analyses that include prediction of somatic single nucleotide variants, small insertions/deletions, genomic breakpoints, gene-fusions, and copy number calling.
+* Cancer evolution analyses that include the deconvolution of clonal composition, both at the single region and multi-regional level, and tracking of tumor evolution over time through serial sampling (e.g. primary vs. relapse)
+* Prognostic biomarker discovery and modeling (e.g. multi-variate elastic-net Cox regression)
+* Immunogenomics analyses that include HLA typing, and neo-antigen predictions
 
 I have a passion for applying statistical and machine learning approaches to big data, in particular genomics data (e.g. sequencing data). In terms of technical skills:
 
-1. I have expertise in dealing with big data in the R programming language (e.g. data.table, tidyr, dplyr) and a thorough understanding of the core principles around R
-1. I have extensive experience in doing reproducible research through interactive applications and D3 web reporting (e.g. Rmarkdown, knitr, pandoc, git, shiny)
-1. I have expertise in developing/managing big data processing pipelines through the Make engine with experience in using ruffus, bpipe, snakemake, and nextflow. 
+* I have expertise in dealing with big data in the R programming language (e.g. data.table, tidyr, dplyr) and a thorough understanding of the core principles around R
+* I have extensive experience in doing reproducible research through interactive applications and D3 web reporting (e.g. Rmarkdown, knitr, pandoc, git, shiny)
+* I have expertise in developing/managing big data processing pipelines through the Make engine with experience in using ruffus, bpipe, snakemake, and nextflow. 
+* I have experience in continuous integration/unit testing in production based workflows.
 
 <h3>Selected Publications <small><a href="https://scholar.google.co.in/citations?user=BbZVuYMAAAAJ&hl=en&oi=ao" target="_new">[Google Scholar]</a></small>
 </h3>
 
 <div class="list-group">
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Prognostic Model to Predict Post-Autologous Stem-Cell Transplantation Outcomes in Classical Hodgkin Lymphoma</h4>
+    <div>Fong Chun Chan*, Anja Mottok*, Aline Gerrie, <i>et al.</i> 2017. <a href="http://ascopubs.org/journal/jco">Journal of Clinical Oncology</a>.</div>
+    <div>* Equal Contribution</div>
+    <div>
+      <ul class="list-inline">
+         <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/28898161"><span class="label label-success">Pubmed</span></a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="list-group-item">
+    <h4 class="list-group-item-heading">Observing Clonal Dynamics Across Spatiotemporal Axes: A Prelude to Quantitative Fitness Models for Cancer</h4>
+    <div>Andrew McPherson, Fong Chun Chan, and Sohrab Shah <i>et al.</i> 2016. <a href="http://perspectivesinmedicine.cshlp.org/">Cold Spring Harb Perspect Med</a>.</div>
+    <div>
+      <ul class="list-inline">
+         <li><a href="https://www.ncbi.nlm.nih.gov/pubmed/28630229"><span class="label label-success">Pubmed</span></a></li>
+      </ul>
+    </div>
+  </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Histological Transformation and Progression in Follicular Lymphoma: a Clonal Evolution Study</h4>
     <div>Robert Kridel*, Fong Chun Chan*, Anja Mottok, Merrill Boyle, <i>et al.</i> 2016. <a href="http://journals.plos.org/plosmedicine/">PLOS Medicine</a>.</div>
@@ -63,7 +88,7 @@ I have a passion for applying statistical and machine learning approaches to big
   </div>
   <div class="list-group-item">
     <h4 class="list-group-item-heading">Gene expression-based model using formalin-fixed paraffin-embedded biopsies predicts overall survival in advanced-stage classical Hodgkin lymphoma</h4>
-    <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://jco.ascopubs.org/">Journal of Clinical Oncology</a>.</div>
+    <div>David W Scott, Fong Chun Chan, Fangxin Hong, Sanja Rogic, <i>et al.</i> 2013. <a href="http://ascopubs.org/journal/jco">Journal of Clinical Oncology</a>.</div>
     <div>
       <ul class="list-inline">
          <li><a href="http://www.ncbi.nlm.nih.gov/pubmed/23182984"><span class="label label-success">PubMed</span></a></li>
