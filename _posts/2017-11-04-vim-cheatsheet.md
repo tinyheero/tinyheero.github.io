@@ -95,6 +95,7 @@ tag file by using the command:
 
 ## Conclusions
 
+You can find my cheatsheet in my [vim-myhelp GitHub repo](https://github.com/tinyheero/vim-myhelp).
 Hopefully this post gives you some insights into how I setup my personal VIM
 cheatsheet. Now you will always have a quick way to bring up stuff you always 
 forget in Vim!
