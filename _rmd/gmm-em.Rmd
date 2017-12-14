@@ -161,10 +161,10 @@ Since we specified 2 clusters, k-means nicely splits the data into 2 clusters wi
 ```{r}
 wait.summary.df <- wait.df %>%
   group_by(cluster) %>%
-  summarize(mu = mean(x), std = sd(x), size = n())
+  summarize(mu = mean(x), variance = var(x), std = sd(x), size = n())
 
 wait.summary.df %>%
-  select(cluster, mu, std)
+  select(cluster, mu, variance, std)
 ```
 
 We can also generate the initial mixing weights as follows:
@@ -201,7 +201,14 @@ comp1.prod <-
   wait.summary.df$alpha[1]
 ```
 
-Here we are using the `dnrom` function from R to make use of the gaussian pdf. To calculate the bottom part of the equation, we actually need to calculate this value for both components and sum them up:
+Here we are using the `dnorm` function from R to make use of the gaussian pdf. 
+
+<div class="alert alert-warning" role="alert">
+ <h4 class="alert-heading">Warning!</h4>
+An important thing to note is that the dnorm function takes standard deviation as input and not variance!
+</div>
+
+To calculate the bottom part of the equation, we actually need to calculate this value for both components and sum them up:
 
 ```{r}
 comp2.prod <- 
@@ -424,7 +431,7 @@ In this post, I have demonstrated how to implement your own mixture model where 
 I hope this post gives you some insight into the inner workings of how to fit a gaussian mixture model!
 
 * 13-03-2017 - Fixed maximization equations. Used the likelihood instead of posterior equation by accident. Thanks [Koustuv Sinha](https://disqus.com/by/koustuvsinha) for pointing this out!
-* 13-12-2017 - Fixed math symbol for variance (<span class="inlinecode">$\sigma^{2}$</span>) across various equations. Was using accidentally using <span class="inlinecode">$\sigma$</span> instead. Thanks [Eric](https://disqus.com/by/disqus_K31aw7ERi7) for pointing this out!
+* 14-12-2017 - Fixed math symbol for variance (<span class="inlinecode">$\sigma^{2}$</span>) across various equations. Was using accidentally using <span class="inlinecode">$\sigma$</span> instead. Thanks [Eric](https://disqus.com/by/disqus_K31aw7ERi7) for pointing this out!
 
 ## R Session
 
