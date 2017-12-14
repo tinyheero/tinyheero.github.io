@@ -133,7 +133,7 @@ In case you were wondering what the <span class="inlinecode">$P(X|\mu,\sigma,\al
 When it comes to initialization of a GMM, we are asking the fundamental question of **what model parameters do we first assign?** This can be done in different ways, but for GMMs it's very common to first run k-means on your data to get some hard-labels on the data. With these hard-labels, we can use MLE to estimate the component parameters for our initialization (remember MLE works in the "Complete Data" scenario):
 
 * <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N_{k}}x_{i,k}}{N_{k}}$</span>
-* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$</span>
+* <span class="inlinecode">$\sigma_{k}^{2} = \frac{\sum_{i}^{N_{k}}(x_{i,k} - \mu_{k})^2}{N_{k}}$</span>
 * <span class="inlinecode">$\alpha_{k} = \frac{N_{k}}{N}$</span>
 
 Where <span class="inlinecode">$N_{k}$</span> indicates the number of data points in the kth component. Let's try that here:
@@ -189,9 +189,9 @@ $$P(x_{i} \in k_{j} | x_{i}) = \frac{P(x_{i} | x_{i} \in k_{j})P(k_{j})}{P(x_{i}
 
 The parts of this equation are related to the GMM equation above as follows:
 
-* <span class="inlinecode">$P(x_{i} | x_{i} \in k_{j}) = \mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}})$</span>
+* <span class="inlinecode">$P(x_{i} | x_{i} \in k_{j}) = \mathcal{N}(x_{i}|\mu_{k_{j}},\sigma_{k_{j}}^{2})$</span>
 * <span class="inlinecode">$P(k_{j}) = \alpha_{k_{j}}$</span>
-* <span class="inlinecode">$P(x_{i}) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{i}|\mu_{k},\sigma_{k})$</span>
+* <span class="inlinecode">$P(x_{i}) = \sum_{k=1}^{K}\alpha_k\mathcal{N}(x_{i}|\mu_{k},\sigma_{k}^{2})$</span>
 
 What we are interested in is <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> which is called the posterior probability. Knowing these equations, we can easily calculate this. For instance, what is the posterior probability of x = 66 belong to the first component? We can first calculate the top part of the equation like this in R:
 
@@ -237,10 +237,10 @@ comp2.post <- comp2.prod / normalizer
 Now that we have posterior probabilites (i.e. soft labels), we can re-estimate our component parameters. We simply have to make a little adjustment to the MLE equations that we specified early. Specifically, the <span class="inlinecode">$N_{k}$</span> (remember there are no hard labels) is replaced with the posterior probability <span class="inlinecode">$P(x_{i} \in k_{j} | x_{i})$</span> in each equation.
 
 * <span class="inlinecode">$\mu_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})x_{i}}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
-* <span class="inlinecode">$\sigma_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})(x_{i} - \mu_{k})^2}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
+* <span class="inlinecode">$\sigma_{k}^{2} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})(x_{i} - \mu_{k})^2}{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}$</span>
 * <span class="inlinecode">$\alpha_{k} = \frac{\sum_{i}^{N}P(x_{i} \in k_{j} | x_{i})}{N}$</span>
 
-With these equations we can now plug in our values and calculate the components parameters using our example from above:
+With these equations, we can now plug in our values and calculate the components parameters using our example from above:
 
 ```{r}
 comp1.n <- sum(comp1.post)
@@ -423,7 +423,8 @@ In this post, I have demonstrated how to implement your own mixture model where 
 
 I hope this post gives you some insight into the inner workings of how to fit a gaussian mixture model!
 
-* March 13, 2017 - Fixed maximization equations. Used the likelihood instead of posterior equation by accident. Thanks [Koustuv Sinha](https://disqus.com/by/koustuvsinha/) for pointing this out!
+* 13-03-2017 - Fixed maximization equations. Used the likelihood instead of posterior equation by accident. Thanks [Koustuv Sinha](https://disqus.com/by/koustuvsinha) for pointing this out!
+* 13-12-2017 - Fixed math symbol for variance (<span class="inlinecode">$\sigma^{2}$</span>) across various equations. Was using accidentally using <span class="inlinecode">$\sigma$</span> instead. Thanks [Eric](https://disqus.com/by/disqus_K31aw7ERi7) for pointing this out!
 
 ## R Session
 
