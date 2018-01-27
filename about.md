@@ -7,7 +7,7 @@ permalink: /about/
 
 <img src="{{ site.url }}/assets/fong-internet.jpg" alt="Fong Chun Chan" style="width: 300px;" class="floatright" />
 
-I am currently a senior bioinformatician in [Achilles Therapeutics](http://achillestx.com/). My primary focus has been to develop an industry-grade immunotherapy/immunogenomics pipeline (based on the TRACERx pipeline pioneered from Charles Swanton's lab )that identifies clonal neo-antigens that can elicit antitumor responses.
+I am currently a senior bioinformatician in [Achilles Therapeutics](http://achillestx.com/). My primary focus has been to develop an industry-grade immunotherapy/immunogenomics pipeline (based on the TRACERx pipeline pioneered from Charles Swanton's lab) that identifies clonal neo-antigens that can elicit antitumor responses.
 
 I completed my Bioinformatics PhD in 2017 under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/) studying tumour heterogeneity and its implications on disease progression in B-cell lymphomas. In particular, how tumour evolution plays a role in treatment resistance and how understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. Throughout my PhD and industry experience, I have acquired experience/skills in the following specific areas:
 
@@ -109,6 +109,7 @@ I have a passion for applying statistical and machine learning approaches to big
 			<li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://www.r-pkg.org/badges/version/cofeatureR" /></a></li>
       <li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="http://cranlogs.r-pkg.org/badges/cofeatureR" /></a></li>
       <li><a href="https://cran.rstudio.com/web/packages/cofeatureR"><img src="https://cranlogs.r-pkg.org/badges/grand-total/cofeatureR" /></a></li>
+			<li><a href="https://anaconda.org/fongchun/r-cofeaturer"> <img src="https://anaconda.org/fongchun/r-cofeaturer/badges/version.svg" /> </a></li>
 		</ul>
   </div>
   <div class="list-group-item">
@@ -117,9 +118,10 @@ I have a passion for applying statistical and machine learning approaches to big
 		<br />
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/survutils">GitHub</a></li>
-			<li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://www.r-pkg.org/badges/version/survutils" /></a></li>
-      <li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="http://cranlogs.r-pkg.org/badges/survutils" /></a></li>
-      <li><a href="https://cran.rstudio.com/web/packages/survutils"><img src="https://cranlogs.r-pkg.org/badges/grand-total/survutils" /></a></li>
+			<li><a href="https://cran.rstudio.com/web/packages/survutils"> <img src="http://www.r-pkg.org/badges/version/survutils" /></a></li>
+      <li><a href="https://cran.rstudio.com/web/packages/survutils"> <img src="http://cranlogs.r-pkg.org/badges/survutils" /></a></li>
+      <li><a href="https://cran.rstudio.com/web/packages/survutils"> <img src="https://cranlogs.r-pkg.org/badges/grand-total/survutils" /></a></li>
+      </li><a href="https://anaconda.org/fongchun/r-survutils"> <img src="https://anaconda.org/fongchun/r-survutils/badges/version.svg" /> </a></li>
 		</ul>
   </div>
   <div class="list-group-item">
@@ -128,6 +130,7 @@ I have a passion for applying statistical and machine learning approaches to big
 		<br />
 		<ul class="list-inline">
 		  <li><i class="fa fa-github fa-lg"></i> <a href="https://github.com/tinyheero/CHL26predictor">GitHub</a></li>
+      <li><a href="https://anaconda.org/fongchun/chl26predictor"> <img src="https://anaconda.org/fongchun/chl26predictor/badges/version.svg" /> </a></li>
 		</ul>
   </div>
 </div>
