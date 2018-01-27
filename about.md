@@ -121,7 +121,7 @@ I have a passion for applying statistical and machine learning approaches to big
 			<li><a href="https://cran.rstudio.com/web/packages/survutils"> <img src="http://www.r-pkg.org/badges/version/survutils" /></a></li>
       <li><a href="https://cran.rstudio.com/web/packages/survutils"> <img src="http://cranlogs.r-pkg.org/badges/survutils" /></a></li>
       <li><a href="https://cran.rstudio.com/web/packages/survutils"> <img src="https://cranlogs.r-pkg.org/badges/grand-total/survutils" /></a></li>
-      </li><a href="https://anaconda.org/fongchun/r-survutils"> <img src="https://anaconda.org/fongchun/r-survutils/badges/version.svg" /> </a></li>
+      <li><a href="https://anaconda.org/fongchun/r-survutils"> <img src="https://anaconda.org/fongchun/r-survutils/badges/version.svg" /></a></li>
 		</ul>
   </div>
   <div class="list-group-item">
