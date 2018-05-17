@@ -7,7 +7,7 @@ permalink: /about/
 
 <img src="{{ site.url }}/assets/fong-internet.jpg" alt="Fong Chun Chan" style="width: 300px;" class="floatright" />
 
-I am currently a senior bioinformatician in [Achilles Therapeutics](http://achillestx.com/). My primary focus has been to develop an industry-grade immunotherapy/immunogenomics pipeline (based on the TRACERx pipeline pioneered from Charles Swanton's lab) that identifies clonal neo-antigens that can elicit antitumor responses.
+I am currently a Principal Bioinformatics Scientist at [Achilles Therapeutics](http://achillestx.com/). My primary focus has been to develop an industry-grade immunotherapy/immunogenomics pipeline (based on the TRACERx pipeline pioneered from Charles Swanton's lab) that identifies clonal neo-antigens that can elicit antitumor responses. In particular, I am spearheading the research and improvements on copy number profiling, clonal mutation detection, and neoantigen generation.
 
 I completed my Bioinformatics PhD in 2017 under the co-supervision of [Dr. Sohrab Shah](http://compbio.bccrc.ca/) and [Dr. Christian Steidl](http://steidllab.med.ubc.ca/) studying tumour heterogeneity and its implications on disease progression in B-cell lymphomas. In particular, how tumour evolution plays a role in treatment resistance and how understanding this process may aid in the determination of relevant and precise therapeutic approaches for each cancer patient. Throughout my PhD and industry experience, I have acquired experience/skills in the following specific areas:
 
