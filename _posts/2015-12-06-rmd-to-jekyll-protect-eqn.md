@@ -131,7 +131,16 @@ unlink("{{ site.url }}", recursive = TRUE)
 
 What this does is it will knit a R markdown file (.Rmd), given as the first arugment, into a markdown (.md) and place the output file into the `_posts` directory with the current date as a prefix. Importantly, it will leave all the "equation wrappers" in place so that the Jekyll markdown parser won't touch them. It will additionally copy all the images it generates into the `assets` folder so that the post is ready to go.
 
-And that's it! If you follow these instructions, you should be able (at least with redcarpet as your Jekyll markdown parser) to seamlessly transfer all your math equations in R markdown into a markdown file for Jekyll! 
+# Summary
+
+And that's it! If you follow these instructions, you should be able (at least 
+with redcarpet as your Jekyll markdown parser) to seamlessly transfer all your 
+math equations in R markdown into a markdown file for Jekyll! 
+
+* 2018-07-10: [Emanuel Huber](https://emanuelhuber.github.io/) has come up with 
+a method that protects your equations by wrapping them with the `<pre>` tag, 
+renders the markdown file, and remove the `<pre>`. You can check it out 
+[here](https://gist.github.com/emanuelhuber/11835e6840868029d7c4721b7f7bf465)!
 
 # References
 
