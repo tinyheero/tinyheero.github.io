@@ -1,0 +1,100 @@
+---
+title: "Simple Linear Regression"
+date: "January 3rd, 2016"
+layout: post
+output: 
+  html_document:
+    toc: true
+tags: [R, linear regression]
+---
+
+```{r echo = FALSE}
+library("knitr")
+#library("svglite")
+#knitr::opts_chunk$set(fig.path="{{ site.url }}/assets/gmm-em/", 
+#                      dev = "svglite")
+```
+
+Simple linear regression is the one of the most basic supervised learning 
+approaches. You will undoubtingly encountered and did simple linear regression
+in school. And little unbeknowest to you, you would have been doing machine learning!!
+
+* Simple linear regression 
+
+
+
+
+**Table of Contents**
+
+<ul data-toc="body" data-toc-headings="h2,h3"></ul>
+
+## Why do simple linear regression?
+
+First, it is good to get some initution around why you would do single linear 
+regression. Simple linear regression is used when you want to model the 
+relationship of some feature/variable to another variable. For instance, you 
+may want to understand the relationship 
+
+
+Weird issue with the Adverising.csv data where the header row starts with a 
+comma. We can use a simple `sed` statement to remove that starting comma.
+
+```{bash, eval = FALSE}
+wget http://www-bcf.usc.edu/~gareth/ISL/Advertising.csv
+```
+
+```{r setup}
+library("gapminder")
+library("ggplot2")
+library("dplyr")
+library("readr")
+library("tibble")
+
+advertising_df <- 
+  read.csv("Advertising.csv") %>%
+  as_tibble() %>%
+  remove_rownames()
+
+```{r sales-vs-tv}
+advertising_df %>%
+  ggplot(aes(x = TV, y = sales)) +
+  geom_point() +
+  xlab("TV advertising ") +
+  ylab("Number of sales")
+```
+
+From this simple plot, you can readily see a correlation between advertising on 
+TV and number of sales. In other words, it would appearing as you increase your
+spending on TV advertising you also see an increase in the number of sales.
+
+## The simple linear regression model
+
+To represent this model, we use the following mathematical notion:
+
+$$
+Y = \beta_{0}+ \beta_{1}X + \epsilon
+$$
+
+The following describes what the different notations mean:
+
+* $Y$: This is the variable that we want to predict. This is also known as the 
+  response variable and in this particular example is the number of sales
+* $\beta_{0}, \beta_{1}$: These are coefficients/parameters of the model and 
+  they represent the intercept and slope of the model, respectively. 
+* The $X$ is 
+a random variable that represents the feature/variable we want to use to 
+predict the response variaThe $\epsilon$
+is an error term that we will explain in mode detail below.
+
+## How accurate were the coefficient estimates?
+
+
+
+## R Session
+
+```{r}
+devtools::session_info()
+```
+
+## References
+
