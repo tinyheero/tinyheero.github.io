@@ -30,9 +30,9 @@ Once it is installed, we need to do some configuration to get it working with th
 ```
 --langdef=R
 --langmap=r:.R.r
---regex-R=/^[ \t]*"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*<-[ \t]function/\1/f,Functions/
---regex-R=/^"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*<-[ \t][^f][^u][^n][^c][^t][^i][^o][^n]/\1/g,GlobalVars/
---regex-R=/[ \t]"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*<-[ \t][^f][^u][^n][^c][^t][^i][^o][^n]/\1/v,FunctionVariables/``
+--regex-R=/^[ \t]*"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*(<-|=)[ \t]function/\1/f,Functions/
+--regex-R=/^"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*(<-|=)[ \t][^f][^u][^n][^c][^t][^i][^o][^n]/\1/g,GlobalVars/
+--regex-R=/[ \t]"?([.A-Za-z][.A-Za-z0-9_]*)"?[ \t]*(<-|=)[ \t][^f][^u][^n][^c][^t][^i][^o][^n]/\1/v,FunctionVariables/
 ```
 
 And then add the following to your `vimrc` (if you use vim) or `~/.config/nvim/init.vim` (if you use neovim):
@@ -104,3 +104,5 @@ Here we can see the opened `test_function_1.R` script has 2 functions (`test_fun
 ## Conclusion
 
 Hopefully this post was able to demonstrate how to get setup wth Vim + Ctags in R. This powerful combination will have you flying around your code in no time!
+
+* 2018-10-13: [Thanks John Reid](http://tinyheero.github.io/2017/05/13/r-vim-ctags.html#comment-4094747935) for pointing out the extra backticks error in the `~/.ctags` file and the tip on using `(<-|=)`.
