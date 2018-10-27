@@ -172,8 +172,7 @@ P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
 </div>
 
 
-
-We can extend this application of Bayes' rule to Bayesian data analysis where the hypotheses become the parameters of our model and the data is our observed data which we try to explain using the parameters of our model. This is a fairly advanced topic which we will save for another post!
+We can extend this application of Bayes' rule to Bayesian data analysis where the hypotheses become the parameters of our model and the data is our observed data which we try to explain using the parameters of our model. This is a fairly advanced topic which [we will save for another post!]({% post_url 2017-03-08-how-to-bayesian-infer-101 %}).
 
 ## References
 

@@ -16,6 +16,13 @@ Here is an overview of what will be discussed in this post.
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
 
 
+~~~
+## Error in library("captioner"): there is no package called 'captioner'
+~~~
+
+~~~
+## Error in captioner(prefix = "<u>Table</u>", css_class = "tblcaption"): could not find function "captioner"
+~~~
 
 ## Deriving Bayes' Rule
 
@@ -155,7 +162,19 @@ Intuitively, you should be thinking this isn't as high because there are many re
 
 ## Summary
 
-Here in this post we've shown how to derive the Bayes' rule from the conditional probability equation. The power in the rule comes from how we intepret the variables specifically when we start thinking about it in terms of hypotheses and data to support the hypotheses. We can extend this application of Bayes' rule to Bayesian data analysis where the hypotheses become the parameters of our model and the data is our observed data which we try to explain using the parameters of our model. This is a fairly advanced topic which we will save for another post!
+Here in this post we've shown how to derive the Bayes' rule from the conditional probability equation. The power in the rule comes from how we intepret the variables specifically when we start thinking about it in terms of hypotheses and data to support the hypotheses. 
+
+The link happens when we start to interpret the variables of Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) of a model and observed data (<span class="inlinecode">$D$</span>):
+
+<div>
+$$\begin{align}
+P(X\ |\ Y) &= \frac{P(Y\ |\ X)\ P(X)}{P(Y)} \\
+P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
+\end{align}$$
+</div>
+
+
+We can extend this application of Bayes' rule to Bayesian data analysis where the hypotheses become the parameters of our model and the data is our observed data which we try to explain using the parameters of our model. This is a fairly advanced topic which [we will save for another post!]({% post_url 2017-03-08-how-to-bayesian-infer-101 %}).
 
 ## References
 
