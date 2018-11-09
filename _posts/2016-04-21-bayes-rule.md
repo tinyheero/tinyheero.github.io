@@ -16,13 +16,6 @@ Here is an overview of what will be discussed in this post.
 <ul data-toc="body" data-toc-headings="h2,h3"></ul>
 
 
-~~~
-## Error in library("captioner"): there is no package called 'captioner'
-~~~
-
-~~~
-## Error in captioner(prefix = "<u>Table</u>", css_class = "tblcaption"): could not find function "captioner"
-~~~
 
 ## Deriving Bayes' Rule
 

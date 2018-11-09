@@ -17,9 +17,6 @@ Here is an overview of what will be discussed in this post.
 
 ```{r echo = FALSE}
 library("knitr")
-library("captioner")
-
-tbl.nums <- captioner(prefix = "<u>Table</u>", css_class = "tblcaption")
 ```
 
 ## Deriving Bayes' Rule
