@@ -15,7 +15,9 @@ If I flipped this coin, what is the probability that the coin lands on a head? Y
 
 Let's say I flipped this coin 100 times (n) and it came back with 82 heads (r), and then I asked you this question:
 
-<div>$$P(\theta_{1} < \theta < \theta_{2} | n, r_{n})$$</div>
+<div>
+$$P(\theta_{1} < \theta < \theta_{2} | n, r_{n})$$
+</div>
 
 Verbosely put, what's the probability that this coin gives a head (<span class="inlinecode">$\theta$</span>) is between <span class="inlinecode">$\theta_{1}$</span> and <span class="inlinecode">$\theta_{2}$</span>) given you have n flips and <span class="inlinecode">r$</span> heads. In classical/frequentist statistics, this question actually makes no sense. This is because in classical statistics, parameters (unknown quantities) are fixed and have no uncertainity in their value; They are either that value or they are not. But in a Bayesian world, we are never completely certain about 
 
