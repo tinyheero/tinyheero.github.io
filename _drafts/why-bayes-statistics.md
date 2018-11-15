@@ -21,22 +21,23 @@ Let's say I flipped this coin n times and it came back with r heads, and then I 
 $$P(\theta_{1} < \theta < \theta_{2} | n, r_{n})$$
 </div>
 
-Verbosely put, what's the probability that this coin gives a head (<span class="inlinecode">$\theta$</span>) is between <span class="inlinecode">$\theta_{1}$</span> and <span class="inlinecode">$\theta_{2}$</span>) given you have n flips and <span class="inlinecode">r$</span> heads. In classical/frequentist statistics, this question actually makes no sense. This is because in classical statistics, parameters (unknown quantities) are fixed and have no uncertainity in their value; They are either that value or they are not. But in a Bayesian world, we are never completely certain about an estimations. 
+Verbosely put, what's the probability that this coin gives a head (<span class="inlinecode">$\theta$</span>) is between <span class="inlinecode">$\theta_{1}$</span> and <span class="inlinecode">$\theta_{2}$</span>) given you have <span class="inlinecode">$n$</span> flips and <span class="inlinecode">$r_{n}$</span> heads. In classical/frequentist statistics, this question actually makes no sense. This is because in classical statistics, parameters (unknown quantities) are fixed and have no uncertainity in their value; They are either that value or they are not. But in a Bayesian world, we are never completely certain about any estimations. As such, all estimations of an unknown quantity (e.g. the probability that a coin gives a head) has uncertain.
 
 # How do we represent these uncertainities?
 
-Uncertainities are expressed as a probability distributions. For instance, imagine you had the following probability distribution:
+Uncertainities are expressed as a [probability distributions]({% post_url 2016-03-17-prob-distr %}). For instance, imagine you had the following probability distribution:
 
 
-The x-axis represents the plausible values that the probability of a head could that. The y-axis represents the "confidence" (this isn't entirely accurate in mathematical terms, but will suffice for this example) that the probability of a head takes this value. By expressing our uncertainity as a probability distribution, we get these additional benefits:
+The x-axis represents the plausible values that the probability of a head could take. The y-axis represents the "confidence" (this isn't entirely accurate in mathematical terms, but will suffice for this example) that the probability of a head takes this value. By expressing our uncertainity as a probability distribution, we get these additional benefits:
 
 * The x value with the highest density peak represents the most likely value. 
-
-Credible intervals (CI) can be formed. For instance, [0.25 - 0.75] forms 90% CI that tells us we are 90% confident that the parameter is in this interval. This is quite different from a confidence interval? 
-
-
+* Credible intervals (CI) can be formed. For instance, [0.25 - 0.75] forms 90% CI that tells us we are 90% confident that the parameter is in this interval. This is quite different from a confidence interval from classical statistics, which is actually quite a counter-inituitive statistic (see my "[How do I Interpret a Confidence Interval? post"]({% post_url 2015-08-25-how-to-interpret-a-CI %}))
+* sfsd
+* There is a technique called Bayesian inferene that allows us to adapt the distribution in light of additional evidence.
 
 # Where do these probability distributions come from?
+
+While you could theoreticaly make your own probability distributions, 
 
 # Conclusions
 
