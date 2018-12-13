@@ -1,7 +1,10 @@
 ---
-layout: post
 title:  "Why Bayesian Statistics?"
-tags: [conda]
+date: "March 20th, 2016"
+layout: post
+output:
+  html_document:
+tags: [R, stats]
 ---
 
 The term you will have undoubtly encountered the term Bayesian statistics at some point. It is What makes it so 
@@ -21,12 +24,49 @@ Let's say I flipped this coin n times and it came back with r heads, and then I 
 $$P(\theta_{1} < \theta < \theta_{2} | n, r_{n})$$
 </div>
 
-Verbosely put, what's the probability that this coin gives a head (<span class="inlinecode">$\theta$</span>) is between <span class="inlinecode">$\theta_{1}$</span> and <span class="inlinecode">$\theta_{2}$</span>) given you have <span class="inlinecode">$n$</span> flips and <span class="inlinecode">$r_{n}$</span> heads. In classical/frequentist statistics, this question actually makes no sense. This is because in classical statistics, parameters (unknown quantities) are fixed and have no uncertainity in their value; They are either that value or they are not. But in a Bayesian world, we are never completely certain about any estimations. As such, all estimations of an unknown quantity (e.g. the probability that a coin gives a head) has uncertain.
+Verbosely put, what's the probability that this coin gives a head (<span class="inlinecode">$\theta$</span>) is between <span class="inlinecode">$\theta_{1}$</span> and <span class="inlinecode">$\theta_{2}$</span> given you have <span class="inlinecode">$n$</span> flips and <span class="inlinecode">$r_{n}$</span> heads. In classical/frequentist statistics, this question actually makes no sense. This is because in classical statistics, parameters (unknown quantities) are fixed and have no uncertainity in their value; They are either that value or they are not. But in a Bayesian world, we are never completely certain about any estimations. As such, all estimations of an unknown quantity (e.g. the probability that a coin gives a head) has uncertain.
 
 # How do we represent these uncertainities?
 
 Uncertainities are expressed as a [probability distributions]({% post_url 2016-03-17-prob-distr %}). For instance, imagine you had the following probability distribution:
 
+```{r uncertainty_as_prob_distr}
+library("ggplot2")
+
+ggplot(data = data.frame(x = c(0, 1)), aes(x)) +
+  stat_function(fun = dbeta, n = 101, args = list(shape1 = 5, shape2 = 5)) +
+  ylim(c(0, 2.8)) +
+  xlab("Probability of a head") +
+  ylab("Density") +
+  ggtitle("Uncertainity of a coin's probability of giving a head") +
+  # Credible interval arrow
+  geom_segment(
+    aes(x = 0.26, xend = 0.74, y = 0.75, yend = 0.75),
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  geom_segment(
+    aes(x = 0.74, xend = 0.26, y = 0.75, yend = 0.75),
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  geom_label(aes(x = 0.5, y = 0.9, label =  "90% credible interval")) +
+  # 95% area < 0.75
+  geom_segment(
+    aes(x = 0.74, xend = 0.125, y = 0.05, yend = 0.05),
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  geom_label(aes(x = 0.5, y = 0.2, label =  "95% area < 0.75")) +
+  # MAP value
+  geom_segment(
+    aes(x = 0.6, xend = 0.5, y = 2.6, yend = 2.5),
+    arrow = arrow(length = unit(0.2, "cm"))
+  ) +
+  geom_label(
+    aes(
+      x = 0.8, y = 2.6,
+      label = "Most likely value (maximum a\n posterior probability (MAP)\n estimate)"
+    )
+  )
+```
 
 The x-axis represents the plausible values that the probability of a head could take. The y-axis represents the "confidence" (this isn't entirely accurate in mathematical terms, but will suffice for this example) that the probability of a head takes this value. By expressing our uncertainity as a probability distribution, we get these additional benefits:
 
