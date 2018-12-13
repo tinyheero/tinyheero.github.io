@@ -1,6 +1,6 @@
 ---
 title:  "Why Bayesian Statistics?"
-date: "March 20th, 2016"
+date: "December 13th, 2018"
 layout: post
 output:
   html_document:

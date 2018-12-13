@@ -10,10 +10,9 @@ script_author <- "Fong Chun Chan <a.name@achillestx.com>"
 script_examples <- "
 Examples:
 
-  Run the template script with some parameters:
     {script_name} \\
-      --input-file input.txt \\
-      --output-file output.txt \\
+      --rmd-file gmm-em.Rmd \\
+      --img-dir gmm-em \\
 "
 
 # Warnings should be escalated to errors:
@@ -81,7 +80,7 @@ main <- function(cli_args) {
   pics <- list.files(fromdir)
   pics <- sapply(pics, function(x) paste(fromdir, x, sep="/"))
   file.copy(pics, todir, overwrite = TRUE)
-
+  return(invisible(NULL))
   #unlink("{{ site.url }}", recursive = TRUE)
 }
 
@@ -120,7 +119,11 @@ parser_args <- function(cli_args) {
     nargs = 1, 
     type = "character",
     required = TRUE,
-    help = "Set the directory name that stores the images [default %(default)s]"
+    help = 
+      paste(
+        "Set the directory name that stores the images associated with the",
+        "--rmd--file. This directory will be a subfolder of the assets folder."
+      )
   )
 
   parser$add_argument(
