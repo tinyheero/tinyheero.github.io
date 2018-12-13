@@ -1,55 +1,155 @@
 #!/usr/bin/env Rscript
-library("argparse")
-library("knitr")
+#
+# Contributors: Fong Chun Chan
 
-parser <- ArgumentParser(description = "Convert Rmarkdown to Jekyll Markdown")
+script_description <- "
+Convert Rmarkdown to Jekyll Markdown
+"
 
-parser$add_argument("--imgdir", nargs = 1, type = "character", 
-                    help = "Set the directory name that stores the images.")
+script_author <- "Fong Chun Chan <a.name@achillestx.com>"
+script_examples <- "
+Examples:
 
-parser$add_argument("filename", nargs = 1, type = "character", 
-                    help = "Rmarkdown filename")
+  Run the template script with some parameters:
+    {script_name} \\
+      --input-file input.txt \\
+      --output-file output.txt \\
+"
 
-if (interactive()){
-  opt <- c("--imgdir", "gmm-em")
-  filename <- "gmm-em.Rmd"
-  arguments <- parser$parse_args(c(filename, opt))
-} else {
-  arguments <- parser$parse_args()
+# Warnings should be escalated to errors:
+options(warn = 2)
+
+# The libraries to load. This should be as minimal as possible.
+loaded_libs <- c("argparse", "knitr", "glue")
+
+# Required library packages
+required_libs <- c(loaded_libs)
+
+# If any packages aren't installed, list them and stop
+missing_libs <-
+  required_libs[!required_libs %in% rownames(installed.packages())]
+if (length(missing_libs) > 0)
+  stop(paste(c("Missing required libraries:", missing_libs), collapse = " "))
+
+# Load the necessary packages (only do this in scripts, not library code)
+for (lib in loaded_libs)
+  suppressPackageStartupMessages(library(lib, character.only = TRUE))
+
+if (interactive()) {
+  parameters <-
+    list(
+      "rmd_file" = "gmm-em.Rmd",
+      "img_dir" = "gmm-em"
+    )
 }
 
-filename <- arguments$filename
+#' Main function
+#'
+#' This function should do little more than co-ordinate the other functions.
+#' That way, the logic of the script (in the other functions) can be tested
+#' independently of the parameter parsing.
+#' 
+#' @param cli_args Input from commandArgs(TRUE)
+#' @return NULL
+main <- function(cli_args) {
+  # Parse the CLI arguments:
+  parameters <- parser_args(cli_args)
 
-# Check that it's a .Rmd file.
-if (!grepl(".Rmd", filename)) {
-  stop("You must specify a .Rmd file.")
+  # Knit and place in _posts.
+  dir <- paste0("../_posts/", Sys.Date(), "-")
+  output <- paste0(dir, sub(".Rmd", ".md", parameters$rmd_file))
+
+  # Since May 2016, default markdown parser is kmarkdown which uses ~~~ as the
+  # default fenced block marker
+  render_markdown(fence_char = "~")
+  knit(parameters$rmd_file, output)
+
+  # Copy image files to the images directory.
+  if (! is.null(parameters$img_dir)) {
+    fromdir <- paste0("{{ site.url }}/assets/", parameters$img_dir, "/")
+    todir <- paste0("../assets/", parameters$img_dir, "/")
+  } else {
+    fromdir <- paste0("{{ site.url }}/assets/")
+    todir <- paste0("../assets/", parameters$img_dir)
+  }
+
+  # Create asset folder if doesn't exist
+  if (!file.exists(todir)) {
+    dir.create(todir)
+  }
+
+  pics <- list.files(fromdir)
+  pics <- sapply(pics, function(x) paste(fromdir, x, sep="/"))
+  file.copy(pics, todir, overwrite = TRUE)
+
+  #unlink("{{ site.url }}", recursive = TRUE)
 }
 
-# Knit and place in _posts.
-dir <- paste0("../_posts/", Sys.Date(), "-")
-output <- paste0(dir, sub(".Rmd", ".md", filename))
+#' Parse command-line arguments
+#'
+#' @param cli_args Input from commandArgs(TRUE)
+#' @return List of parameters parsed from the command-line.
+parser_args <- function(cli_args) {
+  
+  # See https://stackoverflow.com/a/27492072 for details of escaping backslashes
+  # To escape the \\ in the examples section
+  script_description <- gsub("\\\\", "\\\\\\\\", script_description)
+  script_examples <- gsub("\\\\", "\\\\\\\\", script_examples)
+  
+  # To maintain newlines following JSON serialization to python's argparse
+  script_description <- gsub("\n", "\\\\n\\\\\n", script_description) # nolint
+  script_examples <- gsub("\n", "\\\\n\\\\\n", script_examples) # nolint
+  
+  # Identify how the user called the script
+  full_commandline_arguments <- commandArgs(trailingOnly = FALSE)
+  script_name <- sub(
+    "--file=", "",
+    full_commandline_arguments[grep("--file=", full_commandline_arguments)]
+  )
+  
+  script_examples <- glue(script_examples)
+  
+  parser <- argparse::ArgumentParser( # nolint
+    description = script_description,
+    epilog = script_examples,
+    formatter_class = "argparse.RawTextHelpFormatter"
+  )
+  
+  parser$add_argument(
+    "--img-dir", 
+    nargs = 1, 
+    type = "character",
+    required = TRUE,
+    help = "Set the directory name that stores the images [default %(default)s]"
+  )
 
-# Since May 2016, default markdown parser is kmarkdown which uses ~~~ as the
-# default fenced block marker
-render_markdown(fence_char = "~")
-knit(filename, output)
+  parser$add_argument(
+    "--rmd-file", 
+    nargs = 1, 
+    type = "character",
+    required = TRUE,
+    help = "Rmarkdown file"
+  )
+ 
+  parameters <- parser$parse_args(cli_args)
+  
+  # Validate the parameters
+  
+  if (parameters$rmd_file != "-" 
+    && ! file.exists(parameters$rmd_file)
+   ) {
+    stop("Rmarkdown file doesn't exist.")
+  }
 
-# Copy image files to the images directory.
-if (!is.null(arguments$imgdir)) {
-  fromdir <- paste0("{{ site.url }}/assets/", arguments$imgdir, "/")
-  todir <- paste0("../assets/", arguments$imgdir, "/")
-} else {
-  fromdir <- paste0("{{ site.url }}/assets/")
-  todir <- paste0("../assets/", arguments$imgdir)
+  # Check that it's a .Rmd file.
+  if (!grepl(".Rmd", parameters$rmd_file)) {
+    stop("You must specify a .Rmd file.")
+  }
+ 
+  return(parameters)
+
 }
 
-# Create asset folder if doesn't exist
-if (!file.exists(todir)) {
-	dir.create(todir)
+if (! exists("testing")) {
+  main(commandArgs(TRUE))
 }
-
-pics <- list.files(fromdir)
-pics <- sapply(pics, function(x) paste(fromdir, x, sep="/"))
-file.copy(pics, todir, overwrite = TRUE)
-
-#unlink("{{ site.url }}", recursive = TRUE)
