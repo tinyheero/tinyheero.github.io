@@ -19,7 +19,7 @@ Examples:
 options(warn = 2)
 
 # The libraries to load. This should be as minimal as possible.
-loaded_libs <- c("argparse", "knitr", "glue")
+loaded_libs <- c("argparse", "glue")
 
 # Required library packages
 required_libs <- c(loaded_libs)
@@ -37,8 +37,8 @@ for (lib in loaded_libs)
 if (interactive()) {
   parameters <-
     list(
-      "rmd_file" = "gmm-em.Rmd",
-      "img_dir" = "gmm-em"
+      "rmd_file" = "why-bayes-statistics.Rmd",
+      "img_dir" = "why-bayes-statistics"
     )
 }
 
@@ -55,30 +55,30 @@ main <- function(cli_args) {
   parameters <- parser_args(cli_args)
 
   # Knit and place in _posts.
-  dir <- paste0("../_posts/", Sys.Date(), "-")
-  output <- paste0(dir, sub(".Rmd", ".md", parameters$rmd_file))
+  out_dir <- paste0("../_posts/", Sys.Date(), "-")
+  output_file <- paste0(out_dir, sub(".Rmd", ".md", parameters$rmd_file))
+
+  # Specify a temporarily location to store these images that is relative to 
+  # to the current run directory. These images will all be moved into the top
+  # level assets folder.
+  tmp_img_dir <- file.path("{{ site.url }}", "assets", parameters$img_dir, "/")
 
   # Since May 2016, default markdown parser is kmarkdown which uses ~~~ as the
   # default fenced block marker
-  render_markdown(fence_char = "~")
-  knit(parameters$rmd_file, output)
+  knitr::opts_chunk$set(fig.path = tmp_img_dir)
+  knitr::render_jekyll() #fence_char = "~")
+  knitr::knit(input = parameters$rmd_file, output = output_file)
 
   # Copy image files to the images directory.
-  if (! is.null(parameters$img_dir)) {
-    fromdir <- paste0("{{ site.url }}/assets/", parameters$img_dir, "/")
-    todir <- paste0("../assets/", parameters$img_dir, "/")
-  } else {
-    fromdir <- paste0("{{ site.url }}/assets/")
-    todir <- paste0("../assets/", parameters$img_dir)
-  }
+  todir <- paste0("../assets/", parameters$img_dir, "/")
 
   # Create asset folder if doesn't exist
-  if (!file.exists(todir)) {
+  if (! file.exists(todir)) {
     dir.create(todir)
   }
 
-  pics <- list.files(fromdir)
-  pics <- sapply(pics, function(x) paste(fromdir, x, sep="/"))
+  pics <- list.files(tmp_img_dir)
+  pics <- sapply(pics, function(x) paste(tmp_img_dir, x, sep="/"))
   file.copy(pics, todir, overwrite = TRUE)
   return(invisible(NULL))
   #unlink("{{ site.url }}", recursive = TRUE)
@@ -115,23 +115,23 @@ parser_args <- function(cli_args) {
   )
   
   parser$add_argument(
-    "--img-dir", 
-    nargs = 1, 
-    type = "character",
-    required = TRUE,
-    help = 
-      paste(
-        "Set the directory name that stores the images associated with the",
-        "--rmd--file. This directory will be a subfolder of the assets folder."
-      )
-  )
-
-  parser$add_argument(
     "--rmd-file", 
     nargs = 1, 
     type = "character",
     required = TRUE,
     help = "Rmarkdown file"
+  )
+
+  parser$add_argument(
+    "--img-dir", 
+    nargs = 1, 
+    type = "character",
+    help = 
+      paste(
+        "Set the directory name that stores the images associated with the",
+        "--rmd--file. This directory will be a subfolder of the assets folder.",
+        "If not set, the default value will be name of the --rmd-file"
+      )
   )
  
   parameters <- parser$parse_args(cli_args)
@@ -147,6 +147,11 @@ parser_args <- function(cli_args) {
   # Check that it's a .Rmd file.
   if (!grepl(".Rmd", parameters$rmd_file)) {
     stop("You must specify a .Rmd file.")
+  }
+
+  if (is.null(parameters$img_dir)) {
+    parameters$img_dir <- sub(".Rmd$", "", parameters$rmd_file)
+    message(glue::glue("Setting --img-dir to {parameters$img_dir}"))
   }
  
   return(parameters)

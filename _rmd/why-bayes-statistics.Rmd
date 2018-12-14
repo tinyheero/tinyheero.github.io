@@ -1,11 +1,22 @@
 ---
 title:  "Why Bayesian Statistics?"
-date: "December 13th, 2018"
+date: "December 14th, 2018"
 layout: post
 output:
   html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: hide
 tags: [R, stats]
 ---
+
+```{r echo = FALSE}
+# Keep this when you are rendering this rmarkdown not through the r-to-jekyll.R
+# script
+library("knitr")
+opts_chunk$set(dev = c("CairoSVG"))
+```
 
 The term you will have undoubtly encountered the term Bayesian statistics at some point. It is What makes it so 
 Having done my 
@@ -30,10 +41,12 @@ Verbosely put, what's the probability that this coin gives a head (<span class="
 
 Uncertainities are expressed as a [probability distributions]({% post_url 2016-03-17-prob-distr %}). For instance, imagine you had the following probability distribution:
 
-```{r uncertainty_as_prob_distr}
+```{r uncertainty_as_prob_distr, fig.height = 6}
+library("magrittr")
 library("ggplot2")
 
-ggplot(data = data.frame(x = c(0, 1)), aes(x)) +
+data.frame(x = c(0, 1)) %>%
+  ggplot(aes(x)) +
   stat_function(fun = dbeta, n = 101, args = list(shape1 = 5, shape2 = 5)) +
   ylim(c(0, 2.8)) +
   xlab("Probability of a head") +
