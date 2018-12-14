@@ -39,9 +39,10 @@ Verbosely put, what's the probability that this coin gives a head (<span class="
 
 # How do we represent these uncertainities?
 
-Uncertainities are expressed as a [probability distributions]({% post_url 2016-03-17-prob-distr %}). For instance, imagine you had the following probability distribution:
+Uncertainities are expressed as a [probability distributions]({% post_url 2016-03-17-prob-distr %}). 
+For instance, imagine you had the following probability distribution:
 
-```{r uncertainty_as_prob_distr, fig.height = 6}
+```{r uncertainty_as_prob_distr, fig.height = 5}
 library("magrittr")
 library("ggplot2")
 
@@ -81,16 +82,87 @@ data.frame(x = c(0, 1)) %>%
   )
 ```
 
-The x-axis represents the plausible values that the probability of a head could take. The y-axis represents the "confidence" (this isn't entirely accurate in mathematical terms, but will suffice for this example) that the probability of a head takes this value. By expressing our uncertainity as a probability distribution, we get these additional benefits:
+The x-axis represents the plausible values that the probability of a head could 
+take. The y-axis represents the "confidence" (this isn't entirely accurate in 
+mathematical terms, but will suffice for this example) that the probability of a 
+head takes this value. By expressing our uncertainity as a probability 
+distribution, we get these benefits:
 
-* The x value with the highest density peak represents the most likely value. 
-* Credible intervals (CI) can be formed. For instance, [0.25 - 0.75] forms 90% CI that tells us we are 90% confident that the parameter is in this interval. This is quite different from a confidence interval from classical statistics, which is actually quite a counter-inituitive statistic (see my "[How do I Interpret a Confidence Interval? post"]({% post_url 2015-08-25-how-to-interpret-a-CI %}))
-* sfsd
-* There is a technique called Bayesian inferene that allows us to adapt the distribution in light of additional evidence.
+* The x value with the highest density peak represents the most likely value. In
+  this case, that would be 0.5.
+* Credible intervals (CI) can be formed. For instance, [0.25 - 0.75] forms a 90% 
+  CI that tells us we are 90% confident that the parameter is in this interval. 
+  This is quite different from a confidence interval from classical statistics, 
+  which is actually quite a counter-inituitive statistic (see my "[How do I Interpret a Confidence Interval? post"]({% post_url 2015-08-25-how-to-interpret-a-CI %}))
+* No "p-value" calculation is required. Just calculate the relevant tail areas. 
+  For instance, what is P(head) < 0.75? We just look at the area left of 0.75,
+  which ends up being 0.95 of the total area. So we can say there is a 95% 
+  chance of P(head) < 0.75. 
+* There is a technique called Bayesian inference that allows us to adapt the 
+  distribution in light of additional evidence. (see my "[How to Do Bayesian Inference 101"]({% post_url 2017-03-08-how-to-bayesian-infer-101 %}) 
+  post for more details on this)
 
 # Where do these probability distributions come from?
 
-While you could theoreticaly make your own probability distributions, 
+While you could theoreticaly make your own probability distributions, in 
+practice people use established probability distributions (e.g. beta, normal).
+For instance, here are 6 different beta distributions:
+
+```{r beta, fig.asp = 0.8, fig.width = 8, message = FALSE, fig.cap = "Different beta distributions"}
+library("tibble")
+library("cowplot")
+library("glue")
+
+# Cowplot overrides the default ggplot2 theme. This sets it back to the default
+# theme.
+theme_set(theme_grey())
+
+beta_params_df <-
+  tribble(
+    ~ beta_distr_num, ~ shape1, ~ shape2,
+                   1,      0.5,      0.5, 
+                   2,        1,        1, 
+                   3,        5,        1, 
+                   4,        5,        5, 
+                   5,        5,       20, 
+                   6,        50,     200
+  )
+
+#' Plots a beta distribution 
+#'
+#' @param in_data List of arguments for the beta density function (dbeta)
+#' @return ggplot plot
+plot_beta <- function(in_data) {
+  # Create aliases for easier reference below
+  cur_shape_1 <- in_data[["shape1"]]
+  cur_shape_2 <- in_data[["shape2"]]
+
+  data.frame(x = c(0, 1)) %>%
+    ggplot(aes(x)) +
+    stat_function(
+      fun = dbeta, 
+      n = 101, 
+      args = list(shape1 = cur_shape_1, shape2 = cur_shape_2)
+    ) +
+    ylab("Density") +
+    xlab("Probability of a head") +
+    ggtitle(glue("Beta({cur_shape_1}, {cur_shape_2})"))
+}
+
+beta_plots <- 
+  split(beta_params_df, seq_len(nrow(beta_params_df))) %>%
+  lapply(plot_beta)
+
+plot_grid(plotlist = beta_plots, ncol = 3, nrow = 2, align = "v")
+```
+
+**Each of these beta distributions represents a different prior knowledge**. 
+For each, Beta(0.5, 0.5) represents a belief that the coin always gives heads or
+never gives head. While Beta(1, 1) represents a global uncertainity in that the 
+probability of a head could be any value (this is often referred to as an
+uniform prior).
+coin 
+
 
 # Conclusions
 
