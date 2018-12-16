@@ -40,11 +40,9 @@ that is fundamental to Bayesian statistics is that it's all about representing
 uncertainity about an unknown quantity. To illustrate this, imagine I had the 
 following coin (this is a Canadian penny):
 
-```{r, eval = FALSE}
 <div style="text-align:center">
   <img src="https://upload.wikimedia.org/wikipedia/en/f/f8/Canadian_Penny_-_Obverse.png"/>
 </div>
-```
 
 If I flipped this coin, what is the probability that the coin lands on a head? 
 You most likely guessed 0.5, which is a reasonable guess given your prior 
@@ -234,20 +232,24 @@ representing all possible estimates with associated levels of uncertainity.
 prior on a uncertain parameter.** In this case, we will use a beta distribution
 as our prior.
 
+<div class="alert alert-dismissible alert-info">
+<h4>Heads Up!</h4>
 It's worth noting that in theory you can use any distribution. However in 
 practice, certain prior distributions are used for specific models because it 
 makes the math easier. These are called conjugate priors. I won't go into the 
 details in this post, but is worth knowing this if you come across this term.
+</div>
 
 So we what we will literally do here is substitute the beta distribution into 
-the binomial distribution (this mathemetically forms what is called a 
-beta-binomial) and then we can generate some expected outcomes. As you might 
-guess, the shape of your beta will influence your expected outcomes. For 
-instance, here we test the different effects of the 6 beta distributions on
-the distribution of the expected number of heads if we were to flip a coin 20 
-times:
+the binomial distribution (this forms what is called a beta-binomial) and then 
+we can generate some expected outcomes. As you might guess, the shape of your 
+beta will influence your expected outcomes. For instance, here we test the 
+different effects of the 6 beta distributions on the distribution of the 
+expected number of heads if we were to flip a coin 20 times:
 
-```{r implications-of-a-prior, fig.width = 12, fig.height = 10}
+```{r implications-of-a-prior, message = FALSE, fig.width = 12, fig.height = 10}
+library("dplyr")
+
 plot_prior_prediction_distr <- function(in_data) {
   # Create aliases for easier reference below
   cur_shape_1 <- in_data[["shape1"]]
@@ -262,15 +264,19 @@ plot_prior_prediction_distr <- function(in_data) {
       trial_no = seq_len(num_sims),
       theta = thetas,
       heads = rbinom(num_sims, num_trials, thetas)
-    )
+    ) %>%
+    mutate(heads = factor(heads, levels = 0:num_trials))
 
   prior_p <- plot_beta(in_data)
   predictive_p <- 
     coin_flip_df %>%
-    ggplot(aes(x = factor(heads, levels = 0:num_trials))) +
+    ggplot(aes(x = heads)) +
     geom_bar() +
     xlab("Number of heads") +
-    ylab("Density")
+    ylab("Number of simulations") +
+    # So that the x-scale includes 0 - num_trials so that we can compare across
+    # plots
+    scale_x_discrete(drop = FALSE)
 
   plot_grid(prior_p, predictive_p, nrow = 2)
 }
