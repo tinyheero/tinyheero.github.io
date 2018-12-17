@@ -34,25 +34,21 @@ such, I hope to be able to share this same "Ah ha" moment I had in this post.
 # I'm all 'bout that uncertainty, 'bout that uncertainty, no certainity
 
 That was my lame and sad attempt at trying to come up with some catching section
-name (inspired by [Meghan Trainor's "All About That Bass"](https://www.youtube.com/watch?v=7PCkvCPvDXk)) 
-to describe the crux of Bayesian statistics. But joking aside, the one concept 
-that is fundamental to Bayesian statistics is that it's all about representing 
-uncertainty about an unknown quantity. To illustrate this, imagine I had the 
-following coin (this is a Canadian penny):
+name (inspired by [Meghan Trainor's "All About That Bass"](https://www.youtube.com/watch?v=7PCkvCPvDXk)) to describe the crux of Bayesian statistics. 
 
-<div style="text-align:center">
-  <img src="https://upload.wikimedia.org/wikipedia/en/f/f8/Canadian_Penny_-_Obverse.png"/>
-</div>
+![meghan-trainor-bayes-stats]({{ site.url }}/assets/crux-of-bayes-statistics/meghan-trainor-bayes-stats.jpg)
 
-If I flipped this coin, what is the probability that the coin lands on a head? 
-You most likely guessed 0.5, which is a reasonable guess given your prior 
-knowledge on how coins work. But what if I told you that I got this coin from a 
-magic shop? You'll probably have some doubts that it is 0.5 now. It could be 
-anything now. Maybe it's a trick coin that always gives you head (i.e. 1 
-probability) ? Or maybe it always gives you a tail (i.e. 0 probability)? Or 
-maybe it is biased towards towards some value (e.g. 0.75 probability). 
-**The point is there is some uncertainty in your estimation of this unknown 
-quantity.**
+But joking aside, the one concept that is fundamental to Bayesian statistics is 
+that it's all about representing uncertainty about an unknown quantity. To 
+illustrate this, imagine I had a coin and I asked you what is the probability 
+that the coin gives a head if I flip it? You most likely guessed 0.5, which is 
+a reasonable guess given your prior knowledge on how coins work. But what if I 
+told you that I got this coin from a magic shop? You'll probably have some 
+doubts that it is 0.5 now. It could be anything now. Maybe it's a trick coin 
+that always gives you head (i.e. 1 probability) ? Or maybe it always gives you
+a tail (i.e. 0 probability)? Or maybe it is biased towards towards some value 
+(e.g. 0.75 probability).  **The point is there is some uncertainty in your 
+estimation of this unknown quantity.**
 
 So let's say I wanted to flip this coin <span class="inlinecode">n</span> times. 
 We can represent the number of expected heads (<span class="inlinecode">$r_{n}$</span>) 
