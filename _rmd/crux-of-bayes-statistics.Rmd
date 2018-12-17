@@ -31,13 +31,13 @@ me. Suddenly, it became clear to me what the hype was all about. Once I got the
 "crux" of it, I felt like this set me up for the rest of Bayesian thinking. As 
 such, I hope to be able to share this same "Ah ha" moment I had in this post.
 
-# It's all about the uncertainity, about the uncertainity, no certainity!
+# I'm all 'bout that uncertainty, 'bout that uncertainty, no certainity
 
 That was my lame and sad attempt at trying to come up with some catching section
-name (inspired by [Meghan Trainor's "All About that Bass"](https://www.youtube.com/watch?v=7PCkvCPvDXk)) 
+name (inspired by [Meghan Trainor's "All About That Bass"](https://www.youtube.com/watch?v=7PCkvCPvDXk)) 
 to describe the crux of Bayesian statistics. But joking aside, the one concept 
 that is fundamental to Bayesian statistics is that it's all about representing 
-uncertainity about an unknown quantity. To illustrate this, imagine I had the 
+uncertainty about an unknown quantity. To illustrate this, imagine I had the 
 following coin (this is a Canadian penny):
 
 <div style="text-align:center">
@@ -51,7 +51,7 @@ magic shop? You'll probably have some doubts that it is 0.5 now. It could be
 anything now. Maybe it's a trick coin that always gives you head (i.e. 1 
 probability) ? Or maybe it always gives you a tail (i.e. 0 probability)? Or 
 maybe it is biased towards towards some value (e.g. 0.75 probability). 
-**The point is there is some uncertainity in your estimation of this unknown 
+**The point is there is some uncertainty in your estimation of this unknown 
 quantity.**
 
 So let's say I wanted to flip this coin <span class="inlinecode">n</span> times. 
@@ -79,13 +79,13 @@ and <span class="inlinecode">$\theta_{2}$</span> given you have <span class="inl
 flips and <span class="inlinecode">$r_{n}$</span> heads. In 
 classical/frequentist statistics, this question actually makes no sense. This is 
 because in classical statistics, parameters (unknown quantities) are fixed and 
-have no uncertainity in their value; They are either that value or they are not. 
+have no uncertainty in their value; They are either that value or they are not. 
 **But in a Bayesian world, we are never completely certain about any estimations.**
 As such, all estimations of an unknown quantity (e.g. the probability that a coin gives a head) have some degree of uncertain.
 
 # How do we represent these uncertainities?
 
-We have learned that that it's all about the uncertainity in our estimations.
+We have learned that that it's all about the uncertainty in our estimations.
 So how do we actually represent these uncertainities?  They are expressed as a 
 [probability distributions]({% post_url 2016-03-17-prob-distr %}).  For 
 instance, imagine you had the following probability distribution:
@@ -128,7 +128,7 @@ data.frame(x = c(0, 1)) %>%
 The x-axis represents the plausible values that the (<span class="inlinecode">$\theta$</span>) 
 could take. The y-axis represents the "confidence" (this isn't entirely accurate in 
 mathematical terms, but will suffice for this example) that the probability of a 
-head takes this value. By expressing our uncertainity as a probability 
+head takes this value. By expressing our uncertainty as a probability 
 distribution, we get these benefits:
 
 * The x value with the highest density peak represents the most likely value. In
@@ -147,7 +147,7 @@ distribution, we get these benefits:
   accounting for our prior information on the quantity.
   post for more details on this)
 
-# Where do these probability distributions for representing uncertainity come from?
+# Where do these probability distributions for representing uncertainty come from?
 
 While you could theoreticaly make your own probability distributions, in 
 practice people use established probability distributions (e.g. beta, normal).
@@ -208,7 +208,7 @@ plot_grid(
 
 **Each of these beta distributions represents a different prior knowledge**. 
 For instance, Beta(0.5, 0.5) represents a belief that the coin always gives 
-heads or tails. Beta(1, 1) represents a global uncertainity in that the 
+heads or tails. Beta(1, 1) represents a global uncertainty in that the 
 probability of a head could be any value (this is often referred to as an
 uniform prior). Beta(50, 200) represents a strong belief that the probability is
 0.2 for getting a head.
@@ -216,7 +216,7 @@ uniform prior). Beta(50, 200) represents a strong belief that the probability is
 Which type of distribution (e.g. beta, normal) depends on the type data you are
 modeling.
 
-# So what do I do with this uncertainity probability distribution?
+# So what do I do with this uncertainty probability distribution?
 
 If we go back to the original scenario with the coin and recall this 
 equation representing the number of expected heads:
@@ -293,7 +293,7 @@ plot_grid(
 ```
 
 In each panel, the top plot is the beta prior distribution representing the 
-uncertainity in your <span class="inlinecode">$\theta$</span> parameter for your
+uncertainty in your <span class="inlinecode">$\theta$</span> parameter for your
 binomial. Then the bottom plot is approximate distribution of heads you would 
 get if you use the corresponding beta prior (its an approximation because we are 
 running a monte carlo simulation to estimate the distribution). This bottom plot
@@ -305,11 +305,11 @@ what you would expect.
 
 You've made it to the end of the post! Hopefully this post helped illuminate
 the key concept of Bayesian statistics. Remember that it is all about 
-representing uncertainity regarding an unknown quantity. This uncertainity is
+representing uncertainty regarding an unknown quantity. This uncertainty is
 represented with a probability distribution and ultimately impacts your expected
 outcome. As probability distributions are used, this is what makes Bayesian 
 statistics fundamentally probabilistic.
 
 # References
 
-* "[Introduction to Bayesian statistics using BUGS" (offered by the MRC Biostatisics Unit from the University of Cambridge)](https://www.mrc-bsu.cam.ac.uk/training/short-courses/bayescourse/)
+* [Introduction to Bayesian statistics using BUGS](https://www.mrc-bsu.cam.ac.uk/training/short-courses/bayescourse/)
