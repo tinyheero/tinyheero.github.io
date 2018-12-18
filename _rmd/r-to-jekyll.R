@@ -37,8 +37,8 @@ for (lib in loaded_libs)
 if (interactive()) {
   parameters <-
     list(
-      "rmd_file" = "why-bayes-statistics.Rmd",
-      "img_dir" = "why-bayes-statistics"
+      "rmd_file" = "crux-of-bayes-statistics.Rmd",
+      "img_dir" = "crux-of-bayes-statistics"
     )
 }
 
@@ -80,6 +80,7 @@ main <- function(cli_args) {
   pics <- list.files(tmp_img_dir)
   pics <- sapply(pics, function(x) paste(tmp_img_dir, x, sep="/"))
   file.copy(pics, todir, overwrite = TRUE)
+  message(glue("Images copied to {todir}"))
   return(invisible(NULL))
   #unlink("{{ site.url }}", recursive = TRUE)
 }
