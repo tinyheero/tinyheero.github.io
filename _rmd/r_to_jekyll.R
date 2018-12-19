@@ -56,7 +56,7 @@ main <- function(cli_args) {
 
   # Since May 2016, default markdown parser is kmarkdown which uses ~~~ as the
   # default fenced block marker
-  knitr::opts_chunk$set(fig.path = parameters$img_dir)
+  knitr::opts_chunk$set(fig.path = file.path(parameters$img_dir, "/"))
   knitr::render_jekyll() #fence_char = "~")
   knitr::knit(input = parameters$rmd_file, output = parameters$output_file)
 }
