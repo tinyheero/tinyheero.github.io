@@ -76,7 +76,11 @@ main() {
     fi
 
     # Directory where the knitted post will be saved to
-    out_dir="../posts";
+    out_dir="../_posts";
+
+    if [[ ! -d "${out_dir}" ]]; then
+        echo "Post directory ${out_dir} does not exist";
+    fi
 
     # Output file name will take the same file name, but with .md as the suffix
     output_file="${out_dir}/$(date +%Y-%m-%d)-${parameters[rmd_file]%.Rmd}.md";
