@@ -54,35 +54,11 @@ main <- function(cli_args) {
   # Parse the CLI arguments:
   parameters <- parser_args(cli_args)
 
-  # Knit and place in _posts.
-  out_dir <- paste0("../_posts/", Sys.Date(), "-")
-  output_file <- paste0(out_dir, sub(".Rmd", ".md", parameters$rmd_file))
-
-  # Specify a temporarily location to store these images that is relative to 
-  # to the current run directory. These images will all be moved into the top
-  # level assets folder.
-  tmp_img_dir <- file.path("{{ site.url }}", "assets", parameters$img_dir, "/")
-
   # Since May 2016, default markdown parser is kmarkdown which uses ~~~ as the
   # default fenced block marker
-  knitr::opts_chunk$set(fig.path = tmp_img_dir)
+  knitr::opts_chunk$set(fig.path = parameters$img_dir)
   knitr::render_jekyll() #fence_char = "~")
-  knitr::knit(input = parameters$rmd_file, output = output_file)
-
-  # Copy image files to the images directory.
-  todir <- paste0("../assets/", parameters$img_dir, "/")
-
-  # Create asset folder if doesn't exist
-  if (! file.exists(todir)) {
-    dir.create(todir)
-  }
-
-  pics <- list.files(tmp_img_dir)
-  pics <- sapply(pics, function(x) paste(tmp_img_dir, x, sep="/"))
-  file.copy(pics, todir, overwrite = TRUE)
-  message(glue("Images copied to {todir}"))
-  return(invisible(NULL))
-  #unlink("{{ site.url }}", recursive = TRUE)
+  knitr::knit(input = parameters$rmd_file, output = parameters$output_file)
 }
 
 #' Parse command-line arguments
@@ -120,21 +96,31 @@ parser_args <- function(cli_args) {
     nargs = 1, 
     type = "character",
     required = TRUE,
-    help = "Rmarkdown file"
+    help = "Rmarkdown file to knit"
   )
 
   parser$add_argument(
     "--img-dir", 
     nargs = 1, 
     type = "character",
+    required = TRUE,
     help = 
       paste(
         "Set the directory name that stores the images associated with the",
-        "--rmd--file. This directory will be a subfolder of the assets folder.",
+        "--rmd-file. This directory will be a subfolder of the assets folder.",
         "If not set, the default value will be name of the --rmd-file"
       )
   )
  
+  parser$add_argument(
+    "--output-file", 
+    nargs = 1, 
+    type = "character",
+    required = TRUE,
+    help = "Name of the output file"
+  )
+
+
   parameters <- parser$parse_args(cli_args)
   
   # Validate the parameters
@@ -150,11 +136,6 @@ parser_args <- function(cli_args) {
     stop("You must specify a .Rmd file.")
   }
 
-  if (is.null(parameters$img_dir)) {
-    parameters$img_dir <- sub(".Rmd$", "", parameters$rmd_file)
-    message(glue::glue("Setting --img-dir to {parameters$img_dir}"))
-  }
- 
   return(parameters)
 
 }

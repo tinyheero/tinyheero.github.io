@@ -99,10 +99,10 @@ main() {
     [[ -d "${final_img_dir}" ]] || mkdir -p "${final_img_dir}";
 
     # Using -type ensures that symbolic links or folders are not copied
-    while IFS= read -r -d '' file
-    do
+    while IFS= read -r -d '' file; do
        rsync "${file}" "${final_img_dir}";
-    done <   <(find "${tmp_img_dir}" -type f -print0)
+    done < <(find "${tmp_img_dir}" -type f -print0)
+    echo "Images copied to ${final_img_dir}";
 
     return 0;
 }
