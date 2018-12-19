@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # Bash long-argument script template
@@ -27,6 +27,9 @@ SCRIPT_DIRECTORY=$(dirname "${SCRIPT_PATH}");
 # Default parameter values
 # Requires bash 4.0+ to declare an associative array.
 declare -A parameters;
+parameters[rmd_file]="";
+parameters[img_dir]="";
+parameters[output_file]="";
 
 # Script metadata
 VERSION=$(cd "${SCRIPT_DIRECTORY}" && git describe --always --tags --dirty);
@@ -44,16 +47,12 @@ Description:
 
 Options:
 
-    -i/--rmd-file FILENAME
+    --rmd-file FILENAME
         The rmarkdown file to knit
 
-    -o/--img-dir FILENAME
-        Default: ${parameters[img_dir]:-}
-        The file to which to write output
-
-    -p/--parameter PARAM_VALUE
-        Default: ${parameters[parameter]:-}
-        An example parameter
+    --img-dir FILENAME
+        The name of the folder to store the images associatedw with this
+        --rmd-file
 
     -v --version
         Print script name and version.
@@ -88,8 +87,8 @@ main() {
     # folder later.
     tmp_img_dir="{{ site.url }}/assets/${parameters[img_dir]}";
 
-    ./r-to-jekyll.R \
-        --rmd-file "${rmd_file}" \
+    ./r_to_jekyll.R \
+        --rmd-file "${parameters[rmd_file]}" \
         --img-dir "${tmp_img_dir}" \
         --output-file "${output_file}" 
 
@@ -183,6 +182,11 @@ parseargs() {
         
         (( idx ++ ));
     done
+
+    if [[ -z "${parameters[rmd_file]}" ]]; then
+        >&2 echo "--rmd-file must be specified";
+        return 1;
+    fi
     
     if [[ ! -f "${parameters[rmd_file]}" ]]; then
         >&2 echo "${parameters[rmd_file]} does not exists";
