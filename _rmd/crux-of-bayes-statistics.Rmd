@@ -8,7 +8,7 @@ output:
     toc_float: true
     number_sections: true
     code_folding: hide
-tags: [R, stats]
+tags: [R, stats, bayesian]
 ---
 
 ```{r echo = FALSE}
@@ -248,6 +248,7 @@ expected number of heads if we were to flip a coin 20 times across 1000
 simulations (i.e. Monte Carlo simulation):
 
 ```{r implications-of-a-prior, message = FALSE, fig.width = 12, fig.height = 10}
+set.seed(1)
 library("dplyr")
 
 plot_prior_prediction_distr <- function(in_data) {

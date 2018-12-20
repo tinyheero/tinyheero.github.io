@@ -8,7 +8,7 @@ output:
     toc_float: true
     number_sections: true
     code_folding: hide
-tags: [R, stats]
+tags: [R, stats, bayesian]
 ---
 
 
@@ -250,6 +250,7 @@ simulations (i.e. Monte Carlo simulation):
 
 
 {% highlight r %}
+set.seed(1)
 library("dplyr")
 
 plot_prior_prediction_distr <- function(in_data) {
