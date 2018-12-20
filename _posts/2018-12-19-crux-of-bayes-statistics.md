@@ -11,12 +11,7 @@ output:
 tags: [R, stats]
 ---
 
-```{r echo = FALSE}
-# Keep this when you are rendering this rmarkdown not through the r-to-jekyll.R
-# script
-library("knitr")
-opts_chunk$set(dev = c("CairoSVG"))
-```
+
 
 If you are in some field that has data (which is a lot of
 fields these days), you will have undoubtly encountered the term Bayesian 
@@ -86,7 +81,8 @@ So how do we actually represent these uncertainities?  They are expressed as a
 [probability distributions]({% post_url 2016-03-17-prob-distr %}).  For 
 instance, imagine you had the following probability distribution:
 
-```{r uncertainty_as_prob_distr, fig.height = 5}
+
+{% highlight r %}
 library("magrittr")
 library("ggplot2")
 library("glue")
@@ -123,7 +119,9 @@ data.frame(x = c(0, 1)) %>%
     arrow = arrow(length = unit(0.2, "cm"))
   ) +
   geom_label(aes(x = 0.73, y = 2.6, label = "Most likely value"))
-```
+{% endhighlight %}
+
+![plot of chunk uncertainty_as_prob_distr]({{ site.url }}/assets/crux-of-bayes-statistics//uncertainty_as_prob_distr-1.svg)
 
 The x-axis represents the plausible values that <span class="inlinecode">$\theta$</span>
 could take. The y-axis represents the "confidence" (this isn't entirely accurate in 
@@ -153,7 +151,8 @@ While you could theoreticaly make your own probability distributions, in
 practice people use established probability distributions (e.g. beta, normal).
 For instance, here are 6 different beta distributions:
 
-```{r beta-prior, fig.asp = 0.7, fig.width = 8, message = FALSE, fig.cap = "Different beta distributions"}
+
+{% highlight r %}
 library("tibble")
 library("cowplot")
 library("glue")
@@ -204,7 +203,9 @@ plot_grid(
   labels = LETTERS[1:6],
   align = "v"
 )
-```
+{% endhighlight %}
+
+![Different beta distributions]({{ site.url }}/assets/crux-of-bayes-statistics//beta-prior-1.svg)
 
 **Each of these beta distributions represents a different prior knowledge**. 
 For instance, Beta(0.5, 0.5) represents a belief that the coin always gives 
@@ -248,7 +249,8 @@ different effects of the 6 beta distributions on the distribution of the
 expected number of heads if we were to flip a coin 20 times across 1000 
 simulations (i.e. Monte Carlo simulation):
 
-```{r implications-of-a-prior, message = FALSE, fig.width = 12, fig.height = 10}
+
+{% highlight r %}
 library("dplyr")
 
 plot_prior_prediction_distr <- function(in_data) {
@@ -291,7 +293,9 @@ plot_grid(
   ncol = 3, nrow = 2, 
   labels = LETTERS[1:6],
   align = "v")
-```
+{% endhighlight %}
+
+![plot of chunk implications-of-a-prior]({{ site.url }}/assets/crux-of-bayes-statistics//implications-of-a-prior-1.svg)
 
 In each panel, the top plot is the beta prior distribution representing the 
 uncertainty in your <span class="inlinecode">$\theta$</span> parameter for your
