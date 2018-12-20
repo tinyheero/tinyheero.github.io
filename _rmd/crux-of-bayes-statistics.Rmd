@@ -95,7 +95,6 @@ data.frame(x = c(0, 1)) %>%
   ggplot(aes(x)) +
   stat_function(fun = dbeta, n = 101, args = list(shape1 = 5, shape2 = 5)) +
   ylim(c(0, 2.8)) +
-#  xlab("Probability of a head {expression(theta)}")) +
   xlab(expression("Probability of a head ("*theta*")")) +
   ylab("Density") +
   ggtitle(
