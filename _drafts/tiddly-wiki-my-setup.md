@@ -52,13 +52,13 @@ sudo npm install -g tiddlywiki
 
 # Table of contents 
 
-[toc-tabbed-external-nav](https://tiddlywiki.com/#Example%20Table%20of%20Contents%3A%20Tabbed%20External)
+TiddlyWiki contains several [macros](https://tiddlywiki.com/#Macros:Macros%20HelloThere%20GettingStarted%20Community). 
+that can be used for generating a tree of tiddler links by analysing tags. The 
+one I like the most is [toc-tabbed-external-nav](https://tiddlywiki.com/#Example%20Table%20of%20Contents%3A%20Tabbed%20External).
 
-One minor issue that I had with this [macro](https://tiddlywiki.com/#Macros:Macros%20HelloThere%20GettingStarted%20Community). 
-is that there is no easy way to modify the tiddlers without having to directly 
-open and edit it. I found this [gem](https://tiddlywiki.com/#Example%20Table%20of%20Contents%3A%20Tabbed%20External)
-that contains a modified version of this macro to add an open and edit button 
-macro. 
+A minor gripe that I had with this is that there is no easy way to modify the 
+tiddlers without having to directly open and edit it. I found this [gem](https://tiddlywiki.com/#Example%20Table%20of%20Contents%3A%20Tabbed%20External)
+that contains a modified version of this macro to add an open and edit button.
 
 What you have to do this is create a tiddler and then add these contents:
 
