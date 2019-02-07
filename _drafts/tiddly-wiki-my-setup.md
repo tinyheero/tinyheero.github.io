@@ -6,27 +6,79 @@ tags: [bioinfo, kallisto]
 
 ## Introduction
 
-So what is TiddlyWiki? It is describe on its website as:
+Every once in a while, I encounter something in my life that makes me say "Wow,
+this is the greatest thing since sliced bread." In 2017, that was TiddlyWiki. It
+was exactly what I needed and wished I had known about years ago. Since then, 
+I've been happily building my personal wiki, customizing it, and sharing my 
+experience with others. Quite a few times now, I've had the opportunity to sit 
+down and demonstrate my setup and how I use TiddlyWiki. I figured it woud be 
+good to get this information down in a blog post so that it may be a resource
+for others out there.
 
-> a unique non-linear notebook for capturing, organising and sharing complex information.
+## What is TiddlyWiki? 
 
-In other words, it's a personal wiki that allows for you to capture notes in an extremely flexible way.
+As described on its website as:
+
+> a unique non-linear notebook for capturing, organising and sharing complex 
+> information.
+
+In other words, it's a personal wiki that allows for you to capture and 
+organize your notes in a flexible way. The fundamental unit of a TiddlyWiki is 
+"tiddlers", which are meant to store set of information.
 
 ## Getting started with TiddlyWiki
 
-Getting started with TiddlyWiki is fairly straightforward. You download an empty copy of TiddlyWiki (`empty.html`) to create what is called the "single file version". Then open that into your browser and you can start using TiddlyWiki just like that! Everything will get encapsulated inside this single HTML file. You can then deposit this to some cloud based storage (e.g. Google Drive) giving you syncing aross machines.
+Getting started with TiddlyWiki is fairly straightforward. There are two 
+approaches to do this:
 
-However, I would instead recommending installing and using TiddlyWiki through the Node.js approach. The biggest 
+* Single HTML file approach
+* Node.js approach
 
+### Single HTML approach
 
-On Mac OSX, you can do this with:
+The single HTML approach is quick and easy way to get started. Go to 
+https://tiddlywiki.com/ and download an empty copy of TiddlyWiki (`empty.html`). 
+Then open the HTML file in your browser and you can basically start using 
+TiddlyWiki just like that! I won't go 
+
+Importantly, everything will get encapsulated inside 
+this single HTML file allowing you to easily share your entire wiki to others.
+You can also deposit this HTML file to some cloud based storage (e.g. Google 
+Drive) allowing you to sync aross machines. 
+
+Additionally, making a small change would require you to upload the entire
+HTML file. The alternative approach is to install and use TiddlyWiki through the 
+Node.js approach. The biggest difference will be your wiki no longer being a 
+single large HTML file, but rather broken intwo 
+no lon
+
+To get setup through the Node.js approach on a Mac OSX, you can use HomeBrew
+to first install Node.js:
 
 ```bash
 brew install node
 ```
 
+Then use the node package manager, run:
+
 ```bash
 sudo npm install -g tiddlywiki
+```
+
+If all goes well, you will have tiddlywiki installed. You can confirm this with:
+
+````bash
+# Check which version of TiddlyWiki is installed on your machine
+tiddlywiki --version
+```
+```
+5.1.19
+```
+
+Now create a wiki:
+
+```bash
+tiddlywiki test_wiki --init server
 ```
 
 * The node.js approach
