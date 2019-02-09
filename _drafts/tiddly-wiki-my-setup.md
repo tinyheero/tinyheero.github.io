@@ -1,19 +1,20 @@
 ---
 layout: post
-title:  "TiddlyWiki: My Step"
-tags: [bioinfo, kallisto]
+title:  "TiddlyWiki: My Setup for the Greatest Thing Since Sliced Bread"
+tags: [tiddlywiki]
 ---
 
 ## Introduction
 
 Every once in a while, I encounter something in my life that makes me say "Wow,
 this is the greatest thing since sliced bread." In 2017, that was TiddlyWiki. It
-was exactly what I needed and wished I had known about years ago. Since then, 
-I've been happily building my personal wiki, customizing it, and sharing my 
-experience with others. Quite a few times now, I've had the opportunity to sit 
-down and demonstrate my setup and how I use TiddlyWiki. I figured it woud be 
-good to get this information down in a blog post so that it may be a resource
-for others out there.
+was exactly what I needed and wished I had known about many years ago (would 
+have been invaluable to me during my undergraduate and graduate years).  Since 
+then, I've been happily building my personal wiki, customizing it, and sharing 
+my experience with others. Quite a few times now, I've had the opportunity to 
+sit down and demonstrate my setup and how I use TiddlyWiki. I figured it woud be 
+good to get this information down in a blog post in hopes that it may be a 
+resource for others out there.
 
 ## What is TiddlyWiki? 
 
@@ -24,36 +25,58 @@ As described on its website as:
 
 In other words, it's a personal wiki that allows for you to capture and 
 organize your notes in a flexible way. The fundamental unit of a TiddlyWiki is 
-"tiddlers", which are meant to store set of information.
+"tiddlers", which are meant to store sets of information that can be tagged
+and linked together very easily. I suggest watching this [video](https://www.youtube.com/watch?v=KtCUr83XgyE) 
+for a quick introduction on what TiddlyWiki is.
 
-## Getting started with TiddlyWiki
+<iframe width="560" height="315" src="https://www.youtube.com/embed/KtCUr83XgyE" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+## Getting Setup with TiddlyWiki
 
 Getting started with TiddlyWiki is fairly straightforward. There are two 
 approaches to do this:
 
 * Single HTML file approach
-* Node.js approach
+* Node.js approach (my preferred approach)
 
-### Single HTML approach
+### Single HTML file approach
 
-The single HTML approach is quick and easy way to get started. Go to 
-https://tiddlywiki.com/ and download an empty copy of TiddlyWiki (`empty.html`). 
-Then open the HTML file in your browser and you can basically start using 
-TiddlyWiki just like that! I won't go 
+The single HTML approach is the quick and easy way to get started. Simple go to 
+the [TiddlyWiki website](https://tiddlywiki.com) and download an empty copy of 
+TiddlyWiki (`empty.html`). Then open this HTML file in your browser and you 
+should be presented with a "Getting Started" screen:
 
-Importantly, everything will get encapsulated inside 
-this single HTML file allowing you to easily share your entire wiki to others.
-You can also deposit this HTML file to some cloud based storage (e.g. Google 
-Drive) allowing you to sync aross machines. 
+<p align="middle">
+<img src="{{ site.url }}/assets/tiddlywiki/tiddlywiki_empty.png" alt = "TiddlyWiki Empty HTML" />
+</p>
 
-Additionally, making a small change would require you to upload the entire
-HTML file. The alternative approach is to install and use TiddlyWiki through the 
-Node.js approach. The biggest difference will be your wiki no longer being a 
-single large HTML file, but rather broken intwo 
-no lon
+From there, you can basically just start using TiddlyWiki. I won't go into any
+tutorial as to how to use it as I think it's fairly self-explanatory and the 
+TiddlyWiki website has a plethora of resources that can help you.
 
-To get setup through the Node.js approach on a Mac OSX, you can use HomeBrew
-to first install Node.js:
+The important thing here is that anything you do to your TiddlyWiki is 
+encapsulated inside this single HTML file. This allows you to easily share your 
+entire wiki to others. Additionally, you also deposit this HTML file to some 
+cloud based storage (e.g. Google Drive) allowing you to sync aross machines. 
+
+While this single HTML file approach is great for getting started, I've found
+the biggest disadvantage is that the HTML file can become unwiedly as you add 
+more content. As a consequence, using a cloud-based storage solution may result
+in syncing issues because every single change you make triggers a sync of
+the HTML file. I have also  been in situations where I would switch to another 
+computer and forget to wait for the entire syncing process to finish (this could 
+be long depending on how big your file is). I may end up editing an older 
+version of the file creating further syncing issues. Although this may seem 
+pedantic, this has occurred enough to be more than just a nuisance!
+
+This is why I would advocate for the alternative approach of using TiddlyWiki
+through Node.js
+
+### Node.js approach
+
+The Node.js approach requires only a few extra steps to get started with 
+TiddlyWiki. First, you need to install Node.js. These instructions will depend
+on your operating system. On Mac OSX, you can use HomeBrew to install Node.js:
 
 ```bash
 brew install node
