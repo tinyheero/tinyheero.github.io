@@ -4,17 +4,24 @@ title:  "TiddlyWiki: My Setup for the Greatest Thing Since Sliced Bread"
 tags: [tiddlywiki]
 ---
 
-## Introduction
-
 Every once in a while, I encounter something in my life that makes me say "Wow,
 this is the greatest thing since sliced bread." In 2017, that was TiddlyWiki. It
 was exactly what I needed and wished I had known about many years ago (would 
 have been invaluable to me during my undergraduate and graduate years).  Since 
-then, I've been happily building my personal wiki, customizing it, and sharing 
-my experience with others. Quite a few times now, I've had the opportunity to 
-sit down and demonstrate my setup and how I use TiddlyWiki. I figured it woud be 
-good to get this information down in a blog post in hopes that it may be a 
-resource for others out there.
+then, I've been happily building my personal TiddlyWiki, customizing it, and 
+sharing my experience with others. Quite a few times now, I've had the 
+opportunity to sit down and demonstrate my setup and how I use TiddlyWiki. I 
+figured it woud be good to get this information down in a blog post in hopes 
+that it may be a resource for others out there.
+
+What I hope to convey in this post is:
+
+* How to install and get started with TiddlyWiki
+* Tips/tricks that I have done to enhanced my experience with TiddlyWiki
+
+I won't be going over a tutorial on how to use TiddlyWiki. I believe that it is
+fairly straightforward to jump into and the main website already has some good
+documentation on how to use it.
 
 ## What is TiddlyWiki? 
 
@@ -24,8 +31,8 @@ As described on its website as:
 > information.
 
 In other words, it's a personal wiki that allows for you to capture and 
-organize your notes in a flexible way. The fundamental unit of a TiddlyWiki is 
-"tiddlers", which are meant to store sets of information that can be tagged
+organize your notes in a flexible way. The fundamental unit of a TiddlyWiki is a 
+"tiddler", which are meant to store sets of information that can be tagged
 and linked together very easily. I suggest watching this [video](https://www.youtube.com/watch?v=KtCUr83XgyE) 
 for a quick introduction on what TiddlyWiki is.
 
@@ -50,33 +57,36 @@ should be presented with a "Getting Started" screen:
 <img src="{{ site.url }}/assets/tiddlywiki/tiddlywiki_empty.png" alt = "TiddlyWiki Empty HTML" />
 </p>
 
-From there, you can basically just start using TiddlyWiki. I won't go into any
-tutorial as to how to use it as I think it's fairly self-explanatory and the 
-TiddlyWiki website has a plethora of resources that can help you.
+From there, you can basically just start using TiddlyWiki. As I mentioned at the
+beginning of this post, I won't go into any tutorial as to how to use it. I 
+would recommend going to the TiddlyWiki website, which has a plethora of 
+resources that can help you.
 
-The important thing here is that anything you do to your TiddlyWiki is 
-encapsulated inside this single HTML file. This allows you to easily share your 
-entire wiki to others. Additionally, you also deposit this HTML file to some 
-cloud based storage (e.g. Google Drive) allowing you to sync aross machines. 
+The important thing to recognize here is that **your entire TiddlyWiki is 
+encapsulated inside a single HTML file**. As such, any changes you make will 
+simply change this one file. This allows you to easily share your entire wiki to 
+others. Additionally, you also deposit this HTML file to some cloud based 
+storage (e.g. Google Drive) allowing you to sync aross machines. 
 
 While this single HTML file approach is great for getting started, I've found
-the biggest disadvantage is that the HTML file can become unwiedly as you add 
-more content. As a consequence, using a cloud-based storage solution may result
-in syncing issues because every single change you make triggers a sync of
-the HTML file. I have also  been in situations where I would switch to another 
-computer and forget to wait for the entire syncing process to finish (this could 
-be long depending on how big your file is). I may end up editing an older 
-version of the file creating further syncing issues. Although this may seem 
-pedantic, this has occurred enough to be more than just a nuisance!
+the **biggest disadvantage is that the HTML file can become monolithic and 
+unwieldy over time as you add more content**. As a consequence, using a 
+cloud-based storage solution may result in syncing issues because every single 
+change you make triggers a sync of the HTML file. I have also been in situations 
+where I would switch to another computer and forget to wait for the entire 
+syncing process to finish (this could be long depending on how big your file 
+is). I may end up editing an older version of the file creating further syncing 
+issues. Although this may seem pedantic, this has occurred enough to be more 
+than just a nuisance!
 
 This is why I would advocate for the alternative approach of using TiddlyWiki
 through Node.js
 
 ### Node.js approach
 
-The Node.js approach requires only a few extra steps to get started with 
-TiddlyWiki. First, you need to install Node.js. These instructions will depend
-on your operating system. On Mac OSX, you can use HomeBrew to install Node.js:
+The Node.js approach requires only a few extra steps. First, you need to install 
+Node.js. These instructions will depend on your operating system. On Mac OSX, 
+you can use HomeBrew to install Node.js:
 
 ```bash
 brew install node
@@ -90,22 +100,65 @@ sudo npm install -g tiddlywiki
 
 If all goes well, you will have tiddlywiki installed. You can confirm this with:
 
-````bash
+```bash
 # Check which version of TiddlyWiki is installed on your machine
 tiddlywiki --version
 ```
-```
+
+```bash
 5.1.19
 ```
 
 Now create a wiki:
 
 ```bash
+# Create a folder for a new wiki that includes server-related components
 tiddlywiki test_wiki --init server
 ```
 
-* The node.js approach
-* Stored in google drive
+This creates subfolder in your current directory called `test_wiki`. Then you 
+start the wiki:
+
+```bash
+# Start TiddlyWiki. This is served on port 8080 by default.
+tiddlywiki test_wiki --server
+```
+
+You should then be able to go to your web browser, enter the URL 
+`http://127.0.0.1:8080/`, and you should see the same start up screen as in the 
+single HTML file approach. By default, the server will start on the port 8080. 
+But you can change this by adding a different port number to the end of the 
+command. For instance, to host on host 8888
+
+```bash
+tiddlywiki test_wiki --server 8888
+```
+
+This will the TiddlyWiki will be hosted on `http://127.0.0.1:8888`.
+
+### So why is this better than the single HTML file approach?
+
+The major advantage of using the Node.js approach is that your tiddlers are each
+saved as an individual file. For instance, if I had a TiddlyWiki that had 4 
+tiddlers, you can see how the folder structure of your Wiki is:
+
+```
+test_wiki/
+├── tiddlers
+│   ├── $__StoryList.tid
+│   ├── Another\ tiddler!.tid
+│   ├── I\ am\ a\ tiddler\ also.tid
+│   ├── Test\ tiddler.tid
+│   └── Tiddler\ for\ the\ win.tid
+└── tiddlywiki.info
+
+1 directory, 6 files
+```
+
+Each tiddler is stored under the `tiddlers` folder and with the suffix `.tid`.
+This means that each change to a tiddler, only affects that one tiddler and not
+the others. 
+
 
 # Adding a table of contents
 

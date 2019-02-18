@@ -64,6 +64,9 @@ mathjax:
 EM: 
     slug: EM
     name: Expectation-Maximization
+tiddlywiki: 
+    slug: tiddlywiki 
+    name: TiddlyWiki
 topicmodels: 
     slug: topicmodels
     name: topicmodels
