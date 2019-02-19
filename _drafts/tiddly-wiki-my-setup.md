@@ -159,10 +159,46 @@ Each tiddler is stored under the `tiddlers` folder and with the suffix `.tid`.
 This means that each change to a tiddler, only affects that one tiddler and not
 the others. 
 
+## Enhancing your TiddlyWiki
 
-# Adding a table of contents
+What follows is a bunch of enhancements that I have made to my TiddlyWiki that
+have greatly improved my experience with it.
 
-* Ordering it
+### Adding a table of contents
+
+You can add a table of contents (ToC) to your sidebar by doing the following:
+
+1. Create a tiddler called "TableOfContents"
+1. Tag the tiddler with `$:/tags/SideBar`
+1. Then set the contents of the tiddler to: 
+
+    ```
+    <div class="tc-table-of-contents">
+
+    <<toc-selective-expandable 'TableOfContents'>>
+
+    </div>
+    ```
+1. Add a caption field with the text "Contents" (or whatever you want the ToC to
+     appear as in the Sidebar.
+1. Add a list-after field with the text `$:/core/ui/SideBar/Open`. This controls
+     where the ToC appears in the SideBar. In this case, the ToC will appear 
+     right after the Open.
+
+After this, you can add entries to your ToC by simplying tagging the tiddler 
+with the tag `TableOfContents`. If you tag your tiddlers with the titles of 
+other tiddlers that are already in the ToC, then these tiddlers will appear
+nested in the ToC. For instance:
+
+<p align="middle">
+<img src="{{ site.url }}/assets/tiddlywiki/tiddlywiki_toc.png" alt = "TiddlyWiki ToC" />
+</p>
+
+Notice how Sub-tiddler1 appears nested under Tiddler1.
+
+See the [official instructions on the TiddlyWiki website for more details](https://tiddlywiki.com/#Adding%20a%20table%20of%20contents%20to%20the%20sidebar:%5B%5BAdding%20a%20table%20of%20contents%20to%20the%20sidebar%5D%5D%20TableOfContents%20HelloThere%20GettingStarted%20Community).
+
+#### Controlling the order of your ToC elements
 
 # Adding a new category to the sidebar
 
