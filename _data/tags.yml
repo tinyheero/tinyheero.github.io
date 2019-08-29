@@ -73,6 +73,9 @@ topicmodels:
 randvar: 
     slug: randvar
     name: Random Variables
+snakemake: 
+    slug: snakemake 
+    name: Snakemake
 survival: 
     slug: survival 
     name: Survival Analysis
