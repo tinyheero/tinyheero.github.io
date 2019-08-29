@@ -1,47 +1,83 @@
 ---
 layout: post
-title:  "Accessing the Wildcards in a Snakemake Rule"
-tags: [tiddlywiki]
+title:  "Accessing the Wildcard Values in a Snakemake Rule"
+tags: [snakemake]
 ---
 
-If you are familiar with Makefiles, then you'll be familiar with wildcards. For
-instance:
+# The Wildcard
 
-```make
-%_output.tsv : %_input.tsv
-    touch $@
-```
-
-Here we have a recipe that contains a wildcard represented by the `%` symbol.
-
-accepts a single pre-requistie and makes the file
-
-When we run:
-
-```bash
-touch patientA_input.tsv;
-make patientA_output.tsv;
-```
-
-The equivalent recipe (called a rule) in Snakemake would be:
-
+If you are familiar with [Snakemake](https://snakemake.readthedocs.io/en/stable/index.html), 
+then you will likely have used [wildcards](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#wildcards)
+before. For instance, consider the following rule in our `Snakefile`:
 
 ```python
 rule get_patient_output:
+    input: "{patient_id}_input.tsv"
     output: "{patient_id}_output.tsv"
     shell:
         """
-        {wildcards.patient_id}
+        touch {output}
         """
 ```
 
-The beauty
+Here we have a rule `get_patient_output` that contains a wildcard represented by 
+`{patient_id}`. When we run:
 
-You can use the `wildcards`
+```bash
+touch patientA_input.tsv;
+snakemake patientA_output.tsv;
+```
+```
+Building DAG of jobs...
+Using shell: /usr/local/bin/bash
+Provided cores: 1
+Rules claiming more threads will be scaled down.
+Job counts:
+        count   jobs
+        1       get_patient_output
+        1
 
-What happens if you need to do something a bit more sophisticated such as
-needing the wildcard to access multiple files. For instance, say you had the
-following dictionary containing the gene mutations that each patient had.
+[Thu Aug 29 22:56:57 2019]
+rule get_patient_output:
+    input: patientA_input.tsv
+    output: patientA_output.tsv
+    jobid: 0
+    wildcards: patient_id=patientA
+
+[Thu Aug 29 22:56:57 2019]
+Finished job 0.
+1 of 1 steps (100%) done
+```
+
+Snakemake is able to recognize that we want to make `patientA_output.tsv` and
+is able to do this as long as the prerequisite file is available, which in this 
+case is the `patientA_input.tsv` file. Since we created the prerequisite file
+by running `touch`, this command runs to completion creating the output file
+we desire. 
+
+Since we have a wildcard in the rule, we can reuse the rule by simply changing
+by the patient identifier. For instance, if we ran the following:
+
+```bash
+touch patientB_input.tsv;
+snakemake patientB_output.tsv;
+
+touch patientC_input.tsv;
+snakemake patientC_output.tsv;
+```
+
+Snakemake would use the same rule in each instance because of the wildcard. This 
+will generally be your first introduction to using wildcards in Snakemake and it 
+is very powerful in enabling rule reusage in workflows. **In other words, rather
+than explicitly writing out a rule for each file you want to generate. You can
+use wildcards in rules to allow the same rule to be used to generate multiple
+outputs.**
+
+# Accessing the Wildcard Values Using Lambda Functions
+
+But what happens if you need to do something a bit more sophisticated such as 
+needing the wildcard value to be an index to other files. For instance, say you 
+had the following dictionary storing the gene mutations that each patient has:
 
 ```python
 patient_gene_mutations = {
@@ -50,15 +86,16 @@ patient_gene_mutations = {
 }
 ```
 
-You then had a recipe that required as input each patient gene mutation files.
-What you would need to do is access patient_gene_mutations dictionary to extract
-out the gene identifiers associated with the patient. However, the patient
-identifier is a wildcard in the recipe.
+You then had a rule that required as input each patient's gene mutation files.
+In other words, I want to make a patient output file but I want the prerequistes 
+to be the files containing information on the gene mutations specific to this 
+patient. What you would need to do is access `patient_gene_mutations` dictionary 
+in your rule to extract out the gene identifiers associated with the patient. 
+However, the patient identifier is a wildcard in the rule. 
 
-This is where anonymous lambda functions comes very handy. I didn't find the
-lambda functionality in Snakemake to be documented quite well. But the gist of
-it is you can use it to access the wildcards. For instance, consider the 
-following Snakefile:
+This is where anonymous `lambda` functions comes very handy as they give you 
+access to the wildcards of the rule. With it, you can construct more complex
+rule prequisites. For instance, consider the following Snakefile:
 
 ```python
 patient_gene_mutations = {
@@ -93,9 +130,13 @@ rule get_patient_output:
         """
 ```
 
-In the `get_patient_output` rule, we use a lambda function to construct a list
-of input files that the rule needs. These input files are the mutation data
-files required for the specific patient. When you run:
+In the `get_patient_output` rule, we use a `lambda` function to construct a list
+of input files that the rule needs. Importantly, we can access the patient 
+identifier wildcard value using `wildcards.patient_id`. This allows us to gather
+a list of gene mutation input files, which are specific to the patient 
+identifier.
+
+When you run:
 
 ```bash
 snakemake all
@@ -116,3 +157,16 @@ This ends up producing the following structure:
     ├── patientA_output.tsv
     └── patientB_output.tsv
 ```
+
+# Conclusions
+
+The usage of a `lambda` function is not confined to just the input directive.
+You can also use it in the output, params, and other Snakemake directives. 
+
+Hope this posts sheds some light on how to access the wildcard values of a 
+Snakemake rule. With this trick, you should be able to construct more complex 
+rules to help with your workflows!
+
+# References
+
+* [Mix globbing and wildcards when specifying rule input](https://bioinformatics.stackexchange.com/questions/7184/mix-globbing-and-wildcards-when-specifying-rule-input)
