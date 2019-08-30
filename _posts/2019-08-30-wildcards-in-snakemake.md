@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Accessing the Wildcard Values in a Snakemake Rule"
+title:  "Accessing Wildcard Values in a Snakemake Rule"
 date: 2019-08-30
 tags: [snakemake]
 ---
