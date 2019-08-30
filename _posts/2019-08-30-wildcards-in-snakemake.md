@@ -1,10 +1,9 @@
 ---
 layout: post
 title:  "Accessing the Wildcard Values in a Snakemake Rule"
+date: 2019-08-30
 tags: [snakemake]
 ---
-
-# The Wildcard
 
 If you are familiar with [Snakemake](https://snakemake.readthedocs.io/en/stable/index.html), 
 then you will likely have used [wildcards](https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html#wildcards)
@@ -56,7 +55,7 @@ by running `touch`, this command runs to completion creating the output file
 we desire. 
 
 Since we have a wildcard in the rule, we can reuse the rule by simply changing
-by the patient identifier. For instance, if we ran the following:
+the patient identifier. For instance, if we ran the following:
 
 ```bash
 touch patientB_input.tsv;
@@ -93,7 +92,7 @@ patient. What you would need to do is access `patient_gene_mutations` dictionary
 in your rule to extract out the gene identifiers associated with the patient. 
 However, the patient identifier is a wildcard in the rule. 
 
-This is where anonymous `lambda` functions comes very handy as they give you 
+This is where anonymous `lambda` functions come in handy as they give you 
 access to the wildcards of the rule. With it, you can construct more complex
 rule prequisites. For instance, consider the following Snakefile:
 
@@ -161,11 +160,9 @@ This ends up producing the following structure:
 # Conclusions
 
 The usage of a `lambda` function is not confined to just the input directive.
-You can also use it in the output, params, and other Snakemake directives. 
-
-Hope this posts sheds some light on how to access the wildcard values of a 
-Snakemake rule. With this trick, you should be able to construct more complex 
-rules to help with your workflows!
+You can also use it in the output, params, and other Snakemake directives. With 
+this trick, you should be able to construct more complex rules to help with 
+your workflows!
 
 # References
 
