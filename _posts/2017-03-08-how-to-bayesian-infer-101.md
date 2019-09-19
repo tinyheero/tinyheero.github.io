@@ -9,7 +9,11 @@ tags: [R, stats, bayesian]
 
 
 
-Towards the end of the post [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %}), I eluded a bit to how Bayes' rule becomes extremely powerful in Bayesian inference. The link happens when we start to interpret the variables of Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) of a model and observed data (<span class="inlinecode">$D$</span>):
+Towards the end of the post [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %}), 
+I eluded a bit to how Bayes' rule becomes extremely powerful in Bayesian 
+inference. The link happens when we start to interpret the variables of 
+Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) of a model 
+and observed data (<span class="inlinecode">$D$</span>):
 
 <div>
 $$\begin{align}
@@ -18,11 +22,18 @@ P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
 \end{align}$$
 </div>
 
-In this post, we will learn exactly how Bayes' rule is used in Bayesian inference by going through a specific example of coin tossing. A lot of this post and examples are inspired by [John K. Kruschke's "Doing Bayesian Data Analysis"](https://sites.google.com/site/doingbayesiandataanalysis/). An incredible book that I have been using for my entry into world of Bayesian statistics. I would highly recommend anyone interested in Bayesian statistics to get this book.
+In this post, we will learn exactly how Bayes' rule is used in Bayesian 
+inference by going through a specific example of coin tossing. A lot of this 
+post and examples are inspired by [John K. Kruschke's "Doing Bayesian Data Analysis"](https://sites.google.com/site/doingbayesiandataanalysis/). An incredible book that I have been using for my entry into 
+world of Bayesian statistics. I would highly recommend anyone interested in 
+Bayesian statistics to get this book.
 
 <div class="alert alert-dismissible alert-warning">
 <h4>Important!</h4>
-Please ensure that you are familiar with Bayes' rule before continuing as this post will not make sense with a thorough understanding of it. If you are not familiar, please review my previous post on <a href="/2016/04/21/bayes-rule.html">Bayes' Rule</a> for details.
+Please ensure that you are familiar with Bayes' rule before continuing as this 
+post will not make sense with a thorough understanding of it. If you are not 
+familiar, please review my previous post on 
+<a href="/2016/04/21/bayes-rule.html">Bayes' Rule</a> for details.
 </div>
 
 Here is an overview of what will be discussed in this post.
@@ -33,53 +44,73 @@ Here is an overview of what will be discussed in this post.
 
 ## The Coin Flipping Example
 
-Consider the scenario where you found a coin on the side of a street that had an odd looking geometry, unlike anything you have ever seen before. It still has two sides (heads and a tail), and you start to wonder:
+Consider the scenario where you found a coin on the side of a street that had an 
+odd looking geometry, unlike anything you have ever seen before. It still has 
+two sides (heads and a tail), and you start to wonder:
 
 > What is probability of getting a head on a given flip with this coin?
 
-Given your knowledge of how a typical coin is, your prior guess is that is should be probably 0.5. But given the strange looking geometry, you also entertain the idea that it could be something like 0.4 or 0.6, but think these values are less probable than 0.5. You then proceed to flip the coin 100 times (because you are really bored and have time on your hands) and you notice that you get 83 heads. Given this observed data now, what is your guess at the probability of getting a head on a given flip?
+Given your knowledge of how a typical coin is, your prior guess is that is 
+should be probably 0.5. But given the strange looking geometry, you also 
+entertain the idea that it could be something like 0.4 or 0.6, but think these 
+values are less probable than 0.5. You then proceed to flip the coin 100 times 
+(because you are really bored and have time on your hands) and you notice that 
+you get 83 heads. Given this observed data now, what is your guess at the 
+probability of getting a head on a given flip?
 
-If we think back to our examples from the Bayes' Rule post, we can see that this particular example is not that dissimilar:
+If we think back to our examples from the Bayes' Rule post, we can see that this 
+particular example is not that dissimilar:
 
 * We have a prior belief of what the probability of getting a heads is (0.5).
 * We have some observed data, which is 83 heads out of 100 coin tosses.
-* We need to update our belief of this probability now that we have some observed data.
+* We need to update our belief of this probability now that we have some 
+    observed data.
 
-There is however one key difference in this particular example compared to our previous examples. **Our prior is not a single fixed value, but rather a series of different possible values. It could be 0.5 or 0.4 or 0.6....in fact it could be any value between 0 and 1!** Moreover, the possible values are not all equally likely. For instance, we have a strong belief that it could be 0.5 (because of what we know about coins in general), and while 0.4 and 0.6 or any other value is possible we still think 0.5 is more probable. Visually, we could have something like:
+There is however one key difference in this particular example compared to our 
+previous examples. **Our prior is not a single fixed value, but rather a series 
+of different possible values. It could be 0.5 or 0.4 or 0.6....in fact it could 
+be any value between 0 and 1!** Moreover, the possible values are not all 
+equally likely. For instance, we have a strong belief that it could be 0.5 
+(because of what we know about coins in general), and while 0.4 and 0.6 or any 
+other value is possible we still think 0.5 is more probable. Visually, we could 
+have something like:
 
 
-~~~r
+{% highlight r %}
 library("dplyr")
 library("ggplot2")
 
 #' Generates a "Triangle" Prior Probability Distribution
 #'
 #' @param vals Sample space of all possible parameter values.
-#' @return 2 column data.frame containing the parameter and its corresponding
+#' @return 2 column dataframe containing the parameter and its corresponding
 #'   prior probability.
 get_prior_distr <- function(vals) {
-  vals.pmin <- pmin(vals, 1 - vals)
+  vals_pmin <- pmin(vals, 1 - vals)
 
   # Normalize the prior so that they sum to 1.
-  dplyr::data_frame(theta = vals,
-                    prior = vals.pmin / sum(vals.pmin))
+  tibble::tibble(
+    theta = vals,
+    prior = vals_pmin / sum(vals_pmin)
+  )
 }
 
 # Define the Space of all theta values
-theta.vals <- seq(0, 1, 0.1)
+theta_vals <- seq(0, 1, 0.1)
 
-theta.prior.distr.df <- get_prior_distr(theta.vals)
+theta_prior_distr_df <- get_prior_distr(theta_vals)
 
 #' Plots the Prior Probability Distribution
 #'
-#' @param prior.distr.df Prior probability distribution data.frame from 
+#' @param prior_distr_df Prior probability distribution dataframe from 
 #'   get_prior_distr().
-#' @param plot.x.labels Plot the parameter values on the x-axes that are taken
+#' @param plot_x_labels Plot the parameter values on the x-axes that are taken
 #'  from the input data.
-plot_prior_distr <- function(prior.distr.df, plot.x.labels = TRUE) {
+#' @return ggplot of the prior probability distribution
+plot_prior_distr <- function(prior_distr_df, plot_x_labels = TRUE) {
 
-  theta.prior.p <- 
-    prior.distr.df %>%
+  theta_prior_p <- 
+    prior_distr_df %>%
     ggplot(aes(x = theta, y = prior)) +
     geom_point() +
     geom_segment(aes(x = theta, xend = theta, y = prior, yend = 0)) +
@@ -87,20 +118,19 @@ plot_prior_distr <- function(prior.distr.df, plot.x.labels = TRUE) {
     ylab(expression(paste("P(", theta, ")"))) +
     ggtitle("Prior Distribution") 
 
-  if (plot.x.labels) {
-    theta.vals <- prior.distr.df[["theta"]]
+  if (plot_x_labels) {
+    theta_vals <- prior_distr_df[["theta"]]
 
-    theta.prior.p <- 
-      theta.prior.p + 
-      scale_x_continuous(breaks = c(theta.vals),
-                         labels = theta.vals)
+    theta_prior_p <- 
+      theta_prior_p + 
+      scale_x_continuous(breaks = c(theta_vals), labels = theta_vals)
   }
 
-  theta.prior.p
+  return(theta_prior_p)
 }
 
-plot_prior_distr(theta.prior.distr.df)
-~~~
+plot_prior_distr(theta_prior_distr_df)
+{% endhighlight %}
 
 ![plot of chunk prior-distr]({{ site.url }}/assets/how-to-bayesian-infer-101/prior-distr-1..svg)
 
@@ -143,7 +173,7 @@ $$P(Y = y\ |\ \theta) = \theta^{y}(1 - \theta)^{1 - y}$$
 
 Notice how when <span class="inlinecode">$Y = 1$</span>, this expression becomes <span class="inlinecode">$P(Y = 1 |\ \theta) = \theta$</span>. And when <span class="inlinecode">$Y = 0$</span>, this expression becomes <span class="inlinecode">$P(Y = 0\ |\ \theta) = 1 - \theta$</span>.
 
-This particular expression is actually the probability mass function of the [Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). The Bernoulli distribution is used when we are describing a single trial (e.g. coin flip) with two possible outcomes (e.g. heads or tails). We can extend this to the situation where we have multiple independent trials very easily. First, we let <span class="inlinecode">$y_{i}$</span> represent the outcome of the i<sup>th</sup> coin flip and the set of all outcomes to be <span class="inlinecode">$D$</span>. Since each coin toss is an independent trial (i.e. the outcome of a coin toss is independent of the previous coin toss outcomes), the probability of <span class="inlinecode">D</span> is then multiplicative product of the individual outcomes:
+This particular expression is actually the probability mass function (pmf) of the [Bernoulli distribution](https://en.wikipedia.org/wiki/Bernoulli_distribution). The Bernoulli distribution is used when we are describing a single trial (e.g. coin flip) with two possible outcomes (e.g. heads or tails). We can extend this to the situation where we have multiple independent trials very easily. First, we let <span class="inlinecode">$y_{i}$</span> represent the outcome of the i<sup>th</sup> coin flip and the set of all outcomes to be <span class="inlinecode">$D$</span>. Since each coin toss is an independent trial (i.e. the outcome of a coin toss is independent of the previous coin toss outcomes), the probability of <span class="inlinecode">D</span> is then multiplicative product of the individual outcomes:
 
 <div>
 $$\begin{align}
@@ -166,9 +196,9 @@ Now that we have specified a probabilistic model to represent the coin toss, we 
 For this example, we will restrict our parameter values to discrete values of <span class="inlinecode">$\theta = 0, \theta = 0.1, ..., \theta = 1.0$</span>. And we believe that certain parameters are more likely. For instance, the probability of the coin being "fair" <span class="inlinecode">$\theta = 0.5$</span> is more likely than a coin being unfair. So we could define a probability distribution as follows:
 
 
-~~~r
-plot_prior_distr(theta.prior.distr.df)
-~~~
+{% highlight r %}
+plot_prior_distr(theta_prior_distr_df)
+{% endhighlight %}
 
 ![plot of chunk prior-distr-triangle]({{ site.url }}/assets/how-to-bayesian-infer-101/prior-distr-triangle-1..svg)
 
@@ -179,53 +209,72 @@ This is called a "prior distribution" and defines the possibilities of <span cla
 The final step is that we use the observed data and apply Bayes' rule to generate the posterior distribution. Let us start with the simplest scenario which is a single coin toss which has the outcome of a head. We now use Bayes' rule to generate a posterior for each <span class="inlinecode">$\theta$</span> value:
 
 
-~~~r
+{% highlight r %}
 #' Get the Likelihood Probability Distribution
 #'
-#' Generates a likelihood probability distribution data frame
+#' Generates a likelihood probability distribution dataframe
 #'
-#' @param theta.vals Vector of theta values for the binomial distribution.
-#' @param num.heads Number of heads.
-#' @param num.tails Number of tails.
-#' @return data_frame for the likelihood probability distribution.
-get_likelihood_df <- function(theta.vals, num.heads, num.tails) {
+#' @param theta_vals Vector of theta values for the binomial distribution.
+#' @param num_heads Number of heads.
+#' @param num_tails Number of tails.
+#' @return Dataframe of the likelihood probability distribution.
+get_likelihood_df <- function(theta_vals, num_heads, num_tails) {
   likelihood.vals <- c()
-  for (cur.theta.val in theta.vals) {
+  for (cur.theta.val in theta_vals) {
     likelihood.vals <- 
       c(likelihood.vals, 
-        (cur.theta.val^num.heads) * (1 - cur.theta.val)^(num.tails))
+        (cur.theta.val^num_heads) * (1 - cur.theta.val)^(num_tails))
   }
 
-  likelihood.df <- dplyr::data_frame(theta = theta.vals,
-                                     likelihood = likelihood.vals)
-  likelihood.df
+  likelihood.vals <- dbinom(num_heads, num_heads + num_tails, theta_vals)
+  likelihood_df <- 
+    tibble::tibble(
+      theta = theta_vals,
+      likelihood = likelihood.vals
+    )
+
+  return(likelihood_df)
 }
 
 #' Get Posterior Probability Distribution
 #' 
-#" Generate a posterior probability distribution data.frame.
+#' Generate a posterior probability distribution dataframe.
 #'
-#' @param likelihood.df Likelihood distribution data.frame from 
+#' @param likelihood_df Likelihood distribution dataframe from 
 #'   get_likelihood_df().
-#' @param theta.prior.distr.df Prior distribution data.frame from 
+#' @param theta_prior_distr_df Prior distribution dataframe from 
 #'   get_prior_distr().
-#' @return data_frame of the posterior probability distribution.
-get_posterior_df <- function(likelihood.df, prior.distr.df) {
+#' @return Dataframe with 4 columns:
+#'   * theta: Theta value.
+#'   * likelihood: Binomial likelihood of the observed data with the specific 
+#'       theta.
+#'   * prior: Prior of the theta value.
+#'   * post_prob: Pposterior probability
+get_posterior_df <- function(likelihood_df, prior_distr_df) {
 
-  marg.likelihood <- sum(likelihood.df[["likelihood"]])
+  likelihood_prior_df <- 
+    dplyr::left_join(likelihood_df, prior_distr_df, by = "theta")
 
-  posterior.df <- 
-    likelihood.df %>%
-    dplyr::left_join(prior.distr.df) %>%
-    dplyr::mutate(marg_likelihood = marg.likelihood) %>%
-    dplyr::mutate(post_prob = (likelihood * prior) / marg.likelihood)
+  marg_likelihood <- 
+    likelihood_prior_df %>%
+    dplyr::mutate(
+      likelihood_theta = .data[["likelihood"]] * .data[["prior"]]
+    ) %>%
+    dplyr::pull("likelihood_theta") %>%
+    sum()
 
-  posterior.df
+  posterior_df <- 
+    dplyr::mutate(
+      likelihood_prior_df, 
+      post_prob = (likelihood * prior) / marg_likelihood
+    )
+
+  return(posterior_df)
 }
 
 #' Plots Likelihood Probability Distribution
-plot_likelihood_prob_distr <- function(likelihood.df) {
-  likelihood.df %>%
+plot_likelihood_prob_distr <- function(likelihood_df) {
+  likelihood_df %>%
   ggplot(aes(x = theta, y = likelihood)) +
   geom_point() +
   geom_segment(aes(x = theta, xend = theta, y = likelihood, yend = 0)) +
@@ -235,8 +284,8 @@ plot_likelihood_prob_distr <- function(likelihood.df) {
 }
 
 #' Plots Posterior Probability Distribution
-plot_posterior_prob_distr <- function(posterior.df, theta.vals) {
-  posterior.df %>%
+plot_posterior_prob_distr <- function(posterior_df, theta_vals) {
+  posterior_df %>%
   ggplot(aes(x = theta, y = post_prob)) +
   geom_point() +
   geom_segment(aes(x = theta, xend = theta, y = post_prob, yend = 0)) +
@@ -245,23 +294,36 @@ plot_posterior_prob_distr <- function(posterior.df, theta.vals) {
   ggtitle("Posterior Distribution")
 }
 
-likelihood.df <- get_likelihood_df(theta.vals, 1, 0)
-posterior.df <- get_posterior_df(likelihood.df, theta.prior.distr.df)
-~~~
+likelihood_df <- get_likelihood_df(theta_vals, 1, 0)
+posterior_df <- get_posterior_df(likelihood_df, theta_prior_distr_df)
+{% endhighlight %}
 
 
-~~~r
-plot_grid(plot_prior_distr(theta.prior.distr.df),
-          plot_likelihood_prob_distr(likelihood.df),
-          plot_posterior_prob_distr(posterior.df, theta.vals),
-          nrow = 3)
-~~~
+{% highlight r %}
+plot_grid(
+  plot_prior_distr(theta_prior_distr_df),
+  plot_likelihood_prob_distr(likelihood_df),
+  plot_posterior_prob_distr(posterior_df, theta_vals),
+  nrow = 3
+)
+{% endhighlight %}
 
 ![plot of chunk posterior-prob-distr]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-1..svg)
 
-Notice how the posterior probability distribution is different from the prior distribution. Specifically, the probability mass has shifted to higher <span class="inlinecode">$\theta$</span> values. This makes sense since that the outcome was head suggesting that the coin favours heads. Hence, <span class="inlinecode">$\theta$</span> values supporting a bias towards head outcomes will be favoured and thus we see the mass of the posterior distribution shifting towards that direction.
+Notice how the posterior probability distribution is different from the prior 
+distribution. Specifically, the probability mass has shifted to higher 
+<span class="inlinecode">$\theta$</span> values. This makes sense since that the 
+outcome was head suggesting that the coin favours heads. Hence, 
+<span class="inlinecode">$\theta$</span> values supporting a bias towards head 
+outcomes will be favoured and thus we see the mass of the posterior distribution 
+shifting towards that direction.
 
-Importantly to note is that despite all data supporting heads, high <span class="inlinecode">$\theta$</span> values in the posterior distribution (e.g. 0.9 and 1) do not have a lot of probability. This makes sense since a single data point should not skew our prior belief of the probability of a head. If we had more data points, we might change our beliefs. This intuition makes sense and illustrates a key concept in Bayesian inference:
+Importantly to note is that despite all data supporting heads, high 
+<span class="inlinecode">$\theta$</span> values in the posterior distribution 
+(e.g. 0.9 and 1) do not have a lot of probability. This makes sense since a 
+single data point should not skew our prior belief of the probability of a head. 
+If we had more data points, we might change our beliefs. This intuition makes 
+sense and illustrates a key concept in Bayesian inference:
 
 <div class="alert alert-dismissible alert-warning">
 <h4>Key Concept</h4>
@@ -272,67 +334,94 @@ The posterior is a compromise between the prior and likelihood. Specifically:
 </ul>
 </div>
 
-This compromise is best demonstrated with more data. Let us see what happens when we have 20 coin toss and with a total of 15 heads.
+This compromise is best demonstrated with more data. Let us see what happens 
+when we have 20 coin toss and with a total of 15 heads.
 
 
-~~~r
-likelihood.df <- get_likelihood_df(theta.vals, 15, 5)
-posterior.df <- get_posterior_df(likelihood.df, theta.prior.distr.df)
+{% highlight r %}
+likelihood_df <- get_likelihood_df(theta_vals, 15, 5)
+posterior_df <- get_posterior_df(likelihood_df, theta_prior_distr_df)
 
-plot_grid(plot_prior_distr(theta.prior.distr.df),
-          plot_likelihood_prob_distr(likelihood.df) +
-            labs(subtitle = "15 Heads with 20 Coin Tosses"),
-          plot_posterior_prob_distr(posterior.df, theta.vals) +
-            labs(subtitle = "15 Heads with 20 Coin Tosses"),
-          nrow = 3,
-          align = "v")
-~~~
+plot_grid(
+  plot_prior_distr(theta_prior_distr_df), 
+  plot_likelihood_prob_distr(likelihood_df) +
+    labs(subtitle = "15 Heads with 20 Coin Tosses"),
+  plot_posterior_prob_distr(posterior_df, theta_vals) +
+    labs(subtitle = "15 Heads with 20 Coin Tosses"),
+  nrow = 3,
+  align = "v"
+)
+{% endhighlight %}
 
 ![plot of chunk posterior-prob-distr-sample-size]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-sample-size-1..svg)
 
 Notice in this situation how the mass has shifted even more to the right side and in particular the majority of it is on 0.7 and 0.8. This makes sense again because the data suggest that <span class="inlinecode">$\theta$</span> should be around 0.75. The reason why we do not see mass at 0.75 is because we restricted our parameter space to discrete values of <span class="inlinecode">$\theta = 0, \theta = 0.1, ..., \theta = 1.0$</span>. We can easily expand our parameter space to a larger "grid":
 
 
-~~~r
-new.theta.vals <- seq(0, 1, 0.001)
-new.prior.distr.df <- get_prior_distr(new.theta.vals)
-new.likelihood.df <- get_likelihood_df(new.theta.vals, 15, 5)
-new.posterior.df <- get_posterior_df(new.likelihood.df, new.prior.distr.df)
+{% highlight r %}
+new_theta_vals <- seq(0, 1, 0.001)
+new_prior_distr_df <- get_prior_distr(new_theta_vals)
+new_likelihood_df <- get_likelihood_df(new_theta_vals, 15, 5)
+new_posterior_df <- get_posterior_df(new_likelihood_df, new_prior_distr_df)
 
-plot_grid(plot_prior_distr(new.prior.distr.df, plot.x.labels = FALSE), 
-          plot_likelihood_prob_distr(new.likelihood.df) +
-            labs(subtitle = "15 Heads with 20 Coin Tosses"),
-          plot_posterior_prob_distr(new.posterior.df, new.theta.vals) +
-            labs(subtitle = "15 Heads with 20 Coin Tosses"),
-          nrow = 3)
-~~~
+plot_grid(
+  plot_prior_distr(new_prior_distr_df, plot_x_labels = FALSE), 
+  plot_likelihood_prob_distr(new_likelihood_df) +
+    labs(subtitle = "15 Heads with 20 Coin Tosses"),
+  plot_posterior_prob_distr(new_posterior_df, new_theta_vals) +
+    labs(subtitle = "15 Heads with 20 Coin Tosses"),
+  nrow = 3
+)
+{% endhighlight %}
 
 ![plot of chunk posterior-prob-distr-grid]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-grid-1..svg)
  
-With more data points, we note that the posterior starts to resemble the likelihood. Let us take this one more step with 1000 data points and 750 heads:
+With more data points, we note that the posterior starts to resemble the 
+likelihood. Let us take this one more step with 1000 data points and 750 heads:
 
 
-~~~r
-new.theta.vals <- seq(0, 1, 0.001)
-new.likelihood.df <- get_likelihood_df(new.theta.vals, 750, 250)
-new.posterior.df <- get_posterior_df(new.likelihood.df, new.prior.distr.df)
+{% highlight r %}
+new_theta_vals <- seq(0, 1, 0.001)
+new_likelihood_df <- get_likelihood_df(new_theta_vals, 750, 250)
+new_posterior_df <- get_posterior_df(new_likelihood_df, new_prior_distr_df)
 
-plot_grid(plot_prior_distr(new.prior.distr.df, plot.x.labels = FALSE), 
-          plot_likelihood_prob_distr(new.likelihood.df) +
-            labs(subtitle = "750 Heads with 1000 Coin Tosses"),
-          plot_posterior_prob_distr(new.posterior.df, new.theta.vals) +
-            labs(subtitle = "750 Heads with 1000 Coin Tosses"),
-          nrow = 3,
-          align = "v")
-~~~
+p1 <- plot_prior_distr(new_prior_distr_df, plot_x_labels = FALSE)
+
+p2 <- 
+  plot_likelihood_prob_distr(new_likelihood_df) +
+  labs(subtitle = "750 Heads with 1000 Coin Tosses")
+
+p3 <- 
+  plot_posterior_prob_distr(new_posterior_df, new_theta_vals) +
+  labs(subtitle = "750 Heads with 1000 Coin Tosses")
+
+plot_grid(p1, p2, p3, nrow = 3, align = "v")
+{% endhighlight %}
 
 ![plot of chunk posterior-prob-distr-grid-more-data]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-grid-more-data-1..svg)
 
-Here is the posterior is almost exactly the same as the likelihood.
+Here is the posterior is almost exactly the same as the likelihood. 
+
+It's also a good idea to check that the posterior probability distribution is a 
+proper probability distribution by checking that it sums/integrates to:
+
+
+{% highlight r %}
+sum(new_posterior_df[["post_prob"]])
+{% endhighlight %}
+
+
+
+{% highlight text %}
+## [1] 1
+{% endhighlight %}
 
 ## Conclusions
 
-In this post, I have introduced how one can make use of Bayes' rule to do Bayesian inference. Remember that the happens when we start to interpret the variables of Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) of a model and observed data (<span class="inlinecode">$D$</span>):
+In this post, I have introduced how one can make use of Bayes' rule to do 
+Bayesian inference. Remember that the happens when we start to interpret the 
+variables of Bayes' rule as parameters (<span class="inlinecode">$\theta$</span>) 
+of a model and observed data (<span class="inlinecode">$D$</span>):
 
 <div>
 $$\begin{align}
@@ -341,7 +430,21 @@ P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
 \end{align}$$
 </div>
 
-I have provided an overview of the 4 key steps to any Bayesian inference, and how the posterior distribution represents a compromise between the prior and likelihood. In this example, the prior distribution was chosen arbitrary and we calculated the posterior distribution by exhaustively calculating each value. This was possible because our parameter space was small, but does not scale well to larger parameter spaces. In follow-up posts, I will discuss how we can use an analytical approach to solve this, which in turn depends on our selection of a prior distribution. Moreover, I will discuss why Bayesian statistics is difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can help us deal with this!
+I have provided an overview of the 4 key steps to any Bayesian inference, and 
+how the posterior distribution represents a compromise between the prior and 
+likelihood. In this example, the prior distribution was chosen arbitrary and we 
+calculated the posterior distribution by exhaustively calculating each value. 
+This was possible because our parameter space was small, but does not scale well 
+to larger parameter spaces. In follow-up posts, I will discuss how we can use an 
+analytical approach to solve this, which in turn depends on our selection of a 
+prior distribution. Moreover, I will discuss why Bayesian statistics is 
+difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can 
+help us deal with this!
+
+* 2019-09-19: Fixed the calculation of the marginal probability by multiply the
+    likelihood by the prior. This results in a proper posterior probability
+    distribution that integrates to 1. Thanks Jose Tabora for pointing out the 
+    original posterior probability distribution wasn't proper.
 
 ## References
 
@@ -351,58 +454,77 @@ I have provided an overview of the 4 key steps to any Bayesian inference, and ho
 ## R Session
 
 
-~~~
-## Session info --------------------------------------------------------------
-~~~
-
-~~~
+{% highlight text %}
+## ─ Session info ──────────────────────────────────────────────────────────
 ##  setting  value                       
-##  version  R version 3.3.2 (2016-10-31)
-##  system   x86_64, darwin11.4.2        
+##  version  R version 3.5.2 (2018-12-20)
+##  os       macOS Sierra 10.12.6        
+##  system   x86_64, darwin16.7.0        
 ##  ui       unknown                     
 ##  language (EN)                        
-##  collate  en_CA.UTF-8                 
-##  tz       America/Vancouver           
-##  date     2017-03-08
-~~~
-
-~~~
-## Packages ------------------------------------------------------------------
-~~~
-
-~~~
-##  package    * version date       source         
-##  argparse   * 1.0.4   2016-10-28 CRAN (R 3.3.2) 
-##  assertthat   0.1     2013-12-06 CRAN (R 3.3.2) 
-##  colorspace   1.3-1   2016-11-18 CRAN (R 3.3.2) 
-##  cowplot    * 0.7.0   2016-10-28 CRAN (R 3.3.2) 
-##  DBI          0.5-1   2016-09-10 CRAN (R 3.3.2) 
-##  devtools     1.12.0  2016-12-05 CRAN (R 3.3.2) 
-##  digest       0.6.10  2016-08-02 CRAN (R 3.3.2) 
-##  dplyr      * 0.5.0   2016-06-24 CRAN (R 3.3.2) 
-##  evaluate     0.10    2016-10-11 CRAN (R 3.3.2) 
-##  findpython   1.0.1   2014-04-03 CRAN (R 3.3.2) 
-##  gdtools    * 0.1.3   2016-11-11 CRAN (R 3.3.2) 
-##  getopt       1.20.0  2013-08-30 CRAN (R 3.3.2) 
-##  ggplot2    * 2.2.0   2016-11-11 CRAN (R 3.3.2) 
-##  gtable       0.2.0   2016-02-26 CRAN (R 3.3.2) 
-##  highr        0.6     2016-05-09 CRAN (R 3.3.2) 
-##  knitr      * 1.15.1  2016-11-22 CRAN (R 3.3.2) 
-##  labeling     0.3     2014-08-23 CRAN (R 3.3.2) 
-##  lazyeval     0.2.0   2016-06-12 CRAN (R 3.3.2) 
-##  magrittr     1.5     2014-11-22 CRAN (R 3.3.2) 
-##  memoise      1.0.0   2016-01-29 CRAN (R 3.3.2) 
-##  munsell      0.4.3   2016-02-13 CRAN (R 3.3.2) 
-##  nvimcom    * 0.9-14  2017-03-08 local (@0.9-14)
-##  plyr         1.8.4   2016-06-08 CRAN (R 3.3.2) 
-##  proto      * 1.0.0   2016-10-29 CRAN (R 3.3.2) 
-##  R6           2.2.0   2016-10-05 CRAN (R 3.3.2) 
-##  Rcpp         0.12.8  2016-11-17 CRAN (R 3.3.2) 
-##  rjson        0.2.15  2014-11-03 CRAN (R 3.3.2) 
-##  scales       0.4.1   2016-11-09 CRAN (R 3.3.2) 
-##  stringi      1.1.2   2016-10-01 CRAN (R 3.3.2) 
-##  stringr      1.1.0   2016-08-19 CRAN (R 3.3.2) 
-##  svglite    * 1.2.0   2016-11-04 CRAN (R 3.3.2) 
-##  tibble       1.2     2016-08-26 CRAN (R 3.3.2) 
-##  withr        1.0.2   2016-06-20 CRAN (R 3.3.2)
-~~~
+##  collate  en_GB.UTF-8                 
+##  ctype    en_GB.UTF-8                 
+##  tz       Europe/London               
+##  date     2019-09-19                  
+## 
+## ─ Packages ──────────────────────────────────────────────────────────────
+##  package     * version date       lib source        
+##  argparse    * 2.0.0   2018-11-30 [1] CRAN (R 3.5.1)
+##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.5.2)
+##  backports     1.1.4   2019-04-10 [1] CRAN (R 3.5.2)
+##  bindr         0.1.1   2018-03-13 [1] CRAN (R 3.5.1)
+##  bindrcpp    * 0.2.2   2018-03-29 [1] CRAN (R 3.5.1)
+##  callr         3.1.1   2018-12-21 [1] CRAN (R 3.5.1)
+##  cli           1.0.1   2018-09-25 [1] CRAN (R 3.5.1)
+##  colorspace    1.4-1   2019-03-18 [1] CRAN (R 3.5.2)
+##  cowplot     * 0.9.4   2019-01-08 [1] CRAN (R 3.5.1)
+##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
+##  desc          1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
+##  devtools      2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
+##  digest        0.6.20  2019-07-04 [1] CRAN (R 3.5.2)
+##  dplyr       * 0.7.8   2018-11-10 [1] CRAN (R 3.5.1)
+##  evaluate      0.14    2019-05-28 [1] CRAN (R 3.5.2)
+##  findpython    1.0.5   2019-03-08 [1] CRAN (R 3.5.2)
+##  fs            1.2.6   2018-08-23 [1] CRAN (R 3.5.1)
+##  gdtools     * 0.1.7   2018-02-27 [1] CRAN (R 3.5.1)
+##  getopt        1.20.3  2019-03-22 [1] CRAN (R 3.5.2)
+##  ggplot2     * 3.1.0   2018-10-25 [1] CRAN (R 3.5.1)
+##  glue        * 1.3.1   2019-03-12 [1] CRAN (R 3.5.2)
+##  gtable        0.3.0   2019-03-25 [1] CRAN (R 3.5.2)
+##  highr         0.8     2019-03-20 [1] CRAN (R 3.5.2)
+##  jsonlite      1.6     2018-12-07 [1] CRAN (R 3.5.1)
+##  knitr       * 1.21    2018-12-10 [1] CRAN (R 3.5.1)
+##  labeling      0.3     2014-08-23 [1] CRAN (R 3.5.1)
+##  lazyeval      0.2.1   2017-10-29 [1] CRAN (R 3.5.1)
+##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.5.1)
+##  memoise       1.1.0   2017-04-21 [1] CRAN (R 3.5.1)
+##  munsell       0.5.0   2018-06-12 [1] CRAN (R 3.5.1)
+##  pillar        1.3.1   2018-12-15 [1] CRAN (R 3.5.1)
+##  pkgbuild      1.0.2   2018-10-16 [1] CRAN (R 3.5.1)
+##  pkgconfig     2.0.2   2018-08-16 [1] CRAN (R 3.5.1)
+##  pkgload       1.0.2   2018-10-29 [1] CRAN (R 3.5.1)
+##  plyr          1.8.4   2016-06-08 [1] CRAN (R 3.5.1)
+##  prettyunits   1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
+##  processx      3.2.1   2018-12-05 [1] CRAN (R 3.5.1)
+##  ps            1.3.0   2018-12-21 [1] CRAN (R 3.5.1)
+##  purrr         0.3.2   2019-03-15 [1] CRAN (R 3.5.2)
+##  R6            2.4.0   2019-02-14 [1] CRAN (R 3.5.2)
+##  Rcpp          1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
+##  remotes       2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
+##  rlang         0.3.1   2019-01-08 [1] CRAN (R 3.5.1)
+##  rprojroot     1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
+##  scales        1.0.0   2018-08-09 [1] CRAN (R 3.5.1)
+##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
+##  stringi       1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
+##  stringr       1.4.0   2019-02-10 [1] CRAN (R 3.5.1)
+##  svglite     * 1.2.1   2017-09-11 [1] CRAN (R 3.5.1)
+##  testthat      2.0.1   2018-10-13 [1] CRAN (R 3.5.1)
+##  tibble        2.0.1   2019-01-12 [1] CRAN (R 3.5.1)
+##  tidyselect    0.2.5   2018-10-11 [1] CRAN (R 3.5.1)
+##  usethis       1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
+##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
+##  xfun          0.4     2018-10-23 [1] CRAN (R 3.5.1)
+## 
+## [1] /usr/local/lib/R/3.5/site-library
+## [2] /usr/local/Cellar/r/3.5.2_2/lib/R/library
+{% endhighlight %}
