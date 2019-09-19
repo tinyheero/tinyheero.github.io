@@ -15,7 +15,7 @@ library("svglite")
 knitr::opts_chunk$set(
   fig.path = "{{ site.url }}/assets/how-to-bayesian-infer-101/",
   dev = "svglite", 
-  fig.ext = ".svg"
+  fig.ext = "svg"
 )
 theme_set(theme_grey())
 ```
@@ -426,8 +426,8 @@ prior distribution. Moreover, I will discuss why Bayesian statistics is
 difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can 
 help us deal with this!
 
-* 2019-09-19: Fixed the calculation of the marginal probability by multiply the
-    likelihood by the prior. This results in a proper posterior probability
+* 2019-09-19: Fixed the calculation of the marginal probability by multiplying 
+    the likelihood by the prior. This results in a proper posterior probability
     distribution that integrates to 1. Thanks Jose Tabora for pointing out the 
     original posterior probability distribution wasn't proper.
 

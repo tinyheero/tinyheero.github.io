@@ -132,7 +132,7 @@ plot_prior_distr <- function(prior_distr_df, plot_x_labels = TRUE) {
 plot_prior_distr(theta_prior_distr_df)
 {% endhighlight %}
 
-![plot of chunk prior-distr]({{ site.url }}/assets/how-to-bayesian-infer-101/prior-distr-1..svg)
+![plot of chunk prior-distr]({{ site.url }}/assets/how-to-bayesian-infer-101/prior-distr-1.svg)
 
 Here we have 10 different possibilities of theta and their associated probabilities. In fact, what we have just described is a probability distribution that was defined in the [Bayes' Rule]({% post_url 2016-04-21-bayes-rule %})! So if we think of our prior as a random variable, <span class="inlinecode">$\theta$</span>, then what we actually have is a prior probability distribution. What implications does this have? Well this ends up affecting how we measure the likelihood because before our likelihood was based on a single prior value. Instead, our likelihood essentially becomes a function of a series of candidate <span class="inlinecode">$\theta$</span> values. In other words, the probability of seeing the observed data is different depending on what the value of <span class="inlinecode">$\theta$</span> is. 
 
@@ -200,7 +200,7 @@ For this example, we will restrict our parameter values to discrete values of <s
 plot_prior_distr(theta_prior_distr_df)
 {% endhighlight %}
 
-![plot of chunk prior-distr-triangle]({{ site.url }}/assets/how-to-bayesian-infer-101/prior-distr-triangle-1..svg)
+![plot of chunk prior-distr-triangle]({{ site.url }}/assets/how-to-bayesian-infer-101/prior-distr-triangle-1.svg)
 
 This is called a "prior distribution" and defines the possibilities of <span class="inlinecode">$\theta$</span> and their associated probabilities.
 
@@ -308,7 +308,7 @@ plot_grid(
 )
 {% endhighlight %}
 
-![plot of chunk posterior-prob-distr]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-1..svg)
+![plot of chunk posterior-prob-distr]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-1.svg)
 
 Notice how the posterior probability distribution is different from the prior 
 distribution. Specifically, the probability mass has shifted to higher 
@@ -353,7 +353,7 @@ plot_grid(
 )
 {% endhighlight %}
 
-![plot of chunk posterior-prob-distr-sample-size]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-sample-size-1..svg)
+![plot of chunk posterior-prob-distr-sample-size]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-sample-size-1.svg)
 
 Notice in this situation how the mass has shifted even more to the right side and in particular the majority of it is on 0.7 and 0.8. This makes sense again because the data suggest that <span class="inlinecode">$\theta$</span> should be around 0.75. The reason why we do not see mass at 0.75 is because we restricted our parameter space to discrete values of <span class="inlinecode">$\theta = 0, \theta = 0.1, ..., \theta = 1.0$</span>. We can easily expand our parameter space to a larger "grid":
 
@@ -374,7 +374,7 @@ plot_grid(
 )
 {% endhighlight %}
 
-![plot of chunk posterior-prob-distr-grid]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-grid-1..svg)
+![plot of chunk posterior-prob-distr-grid]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-grid-1.svg)
  
 With more data points, we note that the posterior starts to resemble the 
 likelihood. Let us take this one more step with 1000 data points and 750 heads:
@@ -398,7 +398,7 @@ p3 <-
 plot_grid(p1, p2, p3, nrow = 3, align = "v")
 {% endhighlight %}
 
-![plot of chunk posterior-prob-distr-grid-more-data]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-grid-more-data-1..svg)
+![plot of chunk posterior-prob-distr-grid-more-data]({{ site.url }}/assets/how-to-bayesian-infer-101/posterior-prob-distr-grid-more-data-1.svg)
 
 Here is the posterior is almost exactly the same as the likelihood. 
 
@@ -441,8 +441,8 @@ prior distribution. Moreover, I will discuss why Bayesian statistics is
 difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can 
 help us deal with this!
 
-* 2019-09-19: Fixed the calculation of the marginal probability by multiply the
-    likelihood by the prior. This results in a proper posterior probability
+* 2019-09-19: Fixed the calculation of the marginal probability by multiplying 
+    the likelihood by the prior. This results in a proper posterior probability
     distribution that integrates to 1. Thanks Jose Tabora for pointing out the 
     original posterior probability distribution wasn't proper.
 
