@@ -159,10 +159,9 @@ This ends up producing the following structure:
 
 # Conclusions
 
-The usage of a `lambda` function is not confined to just the input directive.
-You can also use it in the output, params, and other Snakemake directives. With 
-this trick, you should be able to construct more complex rules to help with 
-your workflows!
+With this trick, you should be able to construct more complex rules to help with 
+your workflows! Just bear in mind that the `lambda` function [unfortunately does 
+not work in the output directive](https://bitbucket.org/snakemake/snakemake/issues/735/use-lambda-functions-in-outputs).
 
 # References
 
