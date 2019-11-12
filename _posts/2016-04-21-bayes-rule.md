@@ -109,7 +109,7 @@ As another example, we will use disease testing to illustrate Bayes' rule. Say w
     <div>
     $$\begin{align}
     P(Y = Positive) &= P(Y = Positive, \theta = Disease) + P(Y = Positive, \theta \neq Disease) \\
-    P(Y = Positive) &= 0.95 * 0.001 + 0.01 * (1-0.01) \\
+    P(Y = Positive) &= 0.95 * 0.001 + 0.01 * (1 - 0.001) \\
     P(Y = Positive) &= 0.01094
     \end{align}$$
     </div>
@@ -166,8 +166,11 @@ P(\theta\ |\ D) &= \frac{P(D\ |\ \theta)\ P(\theta)}{P(D)}
 \end{align}$$
 </div>
 
-
 We can extend this application of Bayes' rule to Bayesian data analysis where the hypotheses become the parameters of our model and the data is our observed data which we try to explain using the parameters of our model. This is a fairly advanced topic which [we will save for another post!]({% post_url 2017-03-08-how-to-bayesian-infer-101 %}).
+
+* 2019-11-12: Fixed a mistake when calculating <span class="inlinecode">$P(Y = Positive, \theta \neq Disease)$</span>
+  in the second example. Thanks [Colpain Charles](https://disqus.com/by/colpaincharles/) 
+  for pointing this out!
 
 ## References
 
