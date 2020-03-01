@@ -1,0 +1,144 @@
+---
+title:  "Use of the .data and .env Pronouns to Disambiguate Your Tidyverse Code"
+date: "March 1st, 2020"
+layout: post
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+tags: [R, tidyverse]
+---
+
+```{r echo = FALSE}
+# Keep this when you are rendering this rmarkdown not through the r-to-jekyll.R
+# script
+library("knitr")
+opts_chunk$set(dev = c("CairoSVG"))
+```
+
+As someone who has been writing [tidyverse](https://www.tidyverse.org/) code for
+a few years, I've always found it difficult to bring the concept of
+[tidyeval](https://tidyeval.tidyverse.org/) into a production-level environment.
+The recent [rstudio::conf 2020](https://resources.rstudio.com/rstudio-conf-2020)
+talk by Lionel Henry titled ["Interactivity and Programming in the tidyverse"](https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry) shed some much
+needed light on how to write safe production-level tidyverse code.
+
+I wanted to use this blog post to highlight Lionel's tip on the usage of `.data`
+and `.env` pronouns in your tidyverse code to disambiguate your code. I've
+already been using the [`.data` pronoun for quite some time](https://stackoverflow.com/questions/49651253/dplyr-data-pronoun-vs-quosure-approach), but didn't realize that it wasn't enough by itself. However,
+if you use it in combination with the `.env` pronoun, this will ensure that you
+don't produce unanticipated results in your R code!
+
+# Data Masking
+
+Lionel Henry starts the talk by discussing the idea of "data masking" which 
+allows you to "blend data with the workspace". In essence, it enables you to do
+something like:
+
+```{r}
+dplyr::filter(mtcars, cyl == carb)
+```
+
+Here the `dplyr::filter` function knows that you are filtering for rows where
+the "cyl" column matches the "carb" column. Data masking allows us to refer to 
+the columns "cyl" and "carb" in the dataframe `mtcars` without having to 
+explicitly list the column names like this:
+
+```{r}
+dplyr::filter(mtcars, mtcars[["cyl"]] == mtcars[["carb"]])
+```
+
+Similarly, if you do this:
+
+```{r}
+num_cyl <- 6
+dplyr::filter(mtcars, cyl == num_cyl)
+```
+
+The `dplyr::filter` function knows that you are filtering for rows where the 
+"cyl" column matches the value stored in the `num_cyl` variable because there is 
+no column name called "num_cyl". This is great because it simplifies your code 
+when you are exploring the data.
+
+# Unexpected Data Masking
+
+Now what do you expect to happen with this piece of code?
+
+```{r}
+carb <- 6
+dplyr::filter(mtcars, cyl == carb)
+```
+
+You might have expected it to return all rows where the `cyl` column had a value 
+of 6 as this was the number the `carb` variable was set to. However in this 
+case, the `mtcars` dataframe had a column name called "carb" and this actually 
+took precedence over the value in the variable. To me, this produced 
+unanticipated results due to unexpected data masking.
+
+This is generally not a big issue when you are using R in interactive mode. You
+would know which variables are in your workspace and what the column names are
+in your dataframe. Additionally, if you ran into this issue where you had a
+column name that matched a variable name, you could just rename the column name
+or variable and just move on.
+
+However when writing production level R code, you might not have this luxury.
+You really want to be disambiguous in what values the R code should be using.
+So what's the solution? 
+
+# The .data and .env Pronouns to the Rescue
+
+This is where the `.data` and `.env` pronouns come into play. The pronouns refer 
+to data in your dataframe and workspace respectively. In this case:
+
+```{r}
+carb <- 6
+dplyr::filter(mtcars, .data[["cyl"]] == .env[["carb"]])
+```
+
+would produce the intended results. The `.data[["cyl"]]` tells `dplyr::filter`
+to filter on the "cyl" column in the `mtcars` dataframe. The `.env[["carb"]]`
+indicates that we should be filtering on the value stored in the workspace
+variable `carb` and NOT the "carb" column in `mtcars`. 
+
+If we wanted to filter for rows where the "cyl" and "carb" column values matched 
+, then we would do this:
+
+```{r}
+dplyr::filter(mtcars, .data[["cyl"]] == .data[["carb"]])
+```
+
+This principle should also be applied to your functions. The `.env` pronoun
+also takes into account lexical scoping:
+
+```{r}
+cyl_val <- 6
+
+filter_df_by_cyl <- function(in_df, cyl_val) {
+  dplyr::filter(in_df, .data[["cyl"]] == .env[["cyl_val"]])
+}
+
+filter_df_by_cyl(mtcars, 8)
+```
+
+Here it filters by the value 8 and not 6 as it determines the value from the 
+`cyl_val` variable in the function environment and not the global environment.
+
+# Conclusions
+
+In summary, make sure to use the `.data` and `env` pronouns in your R code!
+I have gotten into the habit of doing this regardless of whether I am writing 
+production-level code or not. As far as I can tell, there is no harm in being 
+explicit in my R code aside from the extra few characters you have to type. If 
+you don't do it, you might get unexpected data masking that could produce 
+results you might not know are wrong. In a production-level environment, you 
+can't afford this type of mistake.
+
+I would also highly recommend watching the [full presentation by Lionel Henry](https://resources.rstudio.com/rstudio-conf-2020)
+to get more tips on safely using tidyverse code in a production-level 
+environment.
+
+# References
+
+* [Interactivity and Programming in the Tidyverse - Lionel Henry](https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry)
+* [Tidy evaluation](https://tidyeval.tidyverse.org/)
