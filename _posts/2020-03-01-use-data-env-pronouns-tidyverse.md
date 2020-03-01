@@ -1,5 +1,5 @@
 ---
-title:  "Use the .data and .env Pronouns to Disambiguate Your Tidyverse Code"
+title:  "Use of the .data and .env Pronouns to Disambiguate Your Tidyverse Code"
 date: "March 1st, 2020"
 layout: post
 output:
@@ -122,7 +122,7 @@ However when writing production level R code, you might not have this luxury.
 You really want to be disambiguous in what values the R code should be using.
 So what's the solution? 
 
-# Introducing the .data and .env Pronouns
+# The .data and .env Pronouns to the Rescue
 
 This is where the `.data` and `.env` pronouns come into play. The pronouns refer 
 to data in your dataframe and workspace respectively. In this case:
