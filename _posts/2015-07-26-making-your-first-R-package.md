@@ -244,7 +244,17 @@ Vignettes are extremely important to give people a high-level understanding of w
 devtools::use_vignette("introduction")
 ~~~
 
-This will create a `vignette/introduction.Rmd` file. This is a vignette template Rmarkdown file that you can then use to fill out steps on how you can use your package. 
+Note that starting in [devtools 2.1.0](https://github.com/r-lib/devtools/releases/tag/v2.1.0)
+the `use_vignette` function was moved to the usethat package.  So if you are 
+using a newer version of devtools, you can run:
+
+~~~r
+usethat::use_vignette("introduction")
+~~~
+
+This will create a `vignette/introduction.Rmd` file. This is a vignette template 
+Rmarkdown file that you can then use to fill out steps on how you can use your 
+package. 
 
 # How do I Install/Use My R Package?
 
@@ -283,16 +293,27 @@ That's it! Now anyone can use your wonderful package!
 
 ## What about My Vignettes? 
 
-So how should you make your vignettes available to the public? What I've done is commit both the .rmd and generated .html file to my GitHub repository. GitHub won't directly render the .html file, but you can use the [GitHub HTML Preview service](http://htmlpreview.github.io/). Basically, you just give it the url of your html file from your GitHub and it will render it. For instance, here is the preview of my html vignette:
-
-[http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html](http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html)
+So how should you make your vignettes available to the public? What I've done is 
+commit both the .rmd and generated .html file to my GitHub repository. GitHub 
+won't directly render the .html file, but you can use the 
+[GitHub HTML Preview service](http://htmlpreview.github.io/). Basically, you 
+just give it the url of your html file from your GitHub and it will render it. 
+For instance, here is the [preview of my html vignette](http://htmlpreview.github.io/?https://github.com/tinyheero/CHL26predictor/blob/master/vignettes/introduction.html)
 
 # Summary and What's Next?
 
-Hopefully this post has inspired you to get started on your first R package. I strongly believe putting your functions in R packages is the optimal way to maintain your functions as well as distribute it to others to use.  If you've made it to the end of this post, and are wondering what's next? Then a few things that I would suggest are:
+Hopefully this post has inspired you to get started on your first R package. I 
+strongly believe putting your functions in R packages is the optimal way to 
+maintain your functions as well as distribute it to others to use.  If you've 
+made it to the end of this post, and are wondering what's next? Then a few 
+things that I would suggest are:
 
 1. **READ** [Hadley Wickham's "R packages"](http://r-pkgs.had.co.nz/). As mentioned in the beginning, this is the most comprehensive resource on making R packages. It will cover everything mentioned in this post and in far greater detail. 
 1. Think about taking your package to the next step and submit your R packages to popular central hubs like [CRAN](https://cran.r-project.org/) or [Bioconductor](http://bioconductor.org/) (bioinformatics R packages).
 1. [Adding automated testing to your R package.](http://r-pkgs.had.co.nz/tests.html)
 
 Now go out and start making your first R package!
+
+* 2020-03-01: Thanks [ismailsunni](https://disqus.com/by/ismailsunni/) for 
+    pointing out that the `devtools::use_vignette` function has now been moved
+    to the usethat package. 
