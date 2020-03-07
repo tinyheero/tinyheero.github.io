@@ -1,0 +1,96 @@
+---
+title:  "Safely Selecting your Columns in the Tidyverse"
+date: "March 1st, 2020"
+layout: post
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+tags: [R, tidyverse]
+---
+
+```{r echo = FALSE}
+# Keep this when you are rendering this rmarkdown not through the r-to-jekyll.R
+# script
+library("knitr")
+opts_chunk$set(dev = c("CairoSVG"))
+```
+
+# Data Masking
+
+* intro to data masking.
+
+Data mas
+
+```{r}
+library("magrittr")
+dplyr::select(mtcars, mpg) %>%
+  head()
+
+dplyr::select(mtcars, mpg, carb) %>%
+  head()
+```
+
+# Selecting a Single Column
+
+My recommendation is to quote the column(s) you want to select:
+
+```{r}
+dplyr::select(mtcars, "mpg") 
+```
+
+```{r}
+dplyr::select(mtcars, "mpg", "carb")
+```
+
+This ensures that you are explicitly selecting for columns in the dataframe and 
+this would throw an error else wise:
+
+```{r}
+dplyr::select(mtcars, "mpg", "tiny")
+```
+
+
+# Safely Selecting Multiple Columns
+
+What happens if you want to select for multiple columns with a single variable?
+You can create a character vector storing the different column names:
+
+```{r}
+cols_to_select <- c("mpg", "carb")
+dplyr::select(mtcars, cols_to_select)
+```
+
+Here the `dplyr::select` function is smart enough to figure out that you are
+asking for multiple columns stored in the `cols_to_select` variable. However,
+what happens 
+
+Due to data masking, the "gear" column name takes precedence over the values in
+your `gear` variable. This ends up resulting in an unexpected result. The 
+solution in this case is to use the `all_of` function:
+
+```{r}
+gear <- c("mpg", "carb")
+dplyr::select(mtcars, all_of(gear))
+```
+
+The function means to literally select "all of" of the columns that are stored 
+in the character vector variable. By using `all_of`, you guard yourself against
+any data masking.
+
+
+
+
+
+
+
+# Conclusions
+
+```{r}
+devtools::session_info()
+```
+
+# References
+
+* [Interactivity and Programming in the Tidyverse - Lionel Henry](https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry)

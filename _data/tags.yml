@@ -37,6 +37,9 @@ svgPanZoom:
 stats:
     slug: stats
     name: Statistics
+tidyverse:
+    slug: tidyverse
+    name: tidyverse
 TrAp:
     slug: TrAp 
     name: TrAp
