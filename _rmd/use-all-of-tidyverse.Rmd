@@ -1,0 +1,176 @@
+---
+title: "Safely Selecting Data Frame Columns in Your Tidyverse Code"
+date: "May 8th, 2020"
+layout: post
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+tags: [R, tidyverse]
+---
+
+```{r echo = FALSE}
+# Keep this when you are rendering this rmarkdown not through the r-to-jekyll.R
+# script
+library("knitr")
+opts_chunk$set(dev = c("CairoSVG"))
+```
+
+In my previous post ["Use of the .data and .env Pronouns to Disambiguate Your Tidyverse Code"]({% post_url 2020-03-01-use-data-env-pronouns-tidyverse %}), 
+I discussed how using the `.data` and `.env` pronouns should be used to write 
+production-grade R code. The post was inspired by Lionel Henry's talk titled 
+["Interactivity and Programming in the tidyverse"](https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry).
+
+In that same talk, the `all_of` function was introduced as a method to safely 
+select column names from data frames. In this post, I will discuss how one should
+use this function and the `.data` pronoun to safely select column names in
+production-grade R code.
+
+# Setup
+
+First, I will do some setting up of my environment for the rest of the post:
+
+```{r}
+# Set mtcars to tibble to control the maximum number of printed rows. This is
+# just to make the post easier to follow
+library("magrittr")
+library("tibble")
+options(tibble.print_max = 6, tibble.print_min = 6)
+mtcars <- as_tibble(mtcars)
+```
+
+# Safely Selecting a Single Column
+
+As I mentioned from my last post, "data masking" enables you to "blend data with 
+the workspace". This allows for you to easily select a single column from a 
+data frame like this:
+
+```{r}
+dplyr::select(mtcars, mpg)
+```
+
+Here the `dplyr::select` function knows you are trying to select the "mpg" 
+column from the `mtcars` data frame. If you use a variable to store the column 
+name you want to select:
+
+```{r}
+col_to_select <- "mpg"
+dplyr::select(mtcars, col_to_select)
+```
+
+**N.B: We'll ignore the note regarding the usage of `all_of` for now and come back
+to this at the end of the post.**
+
+The `dplyr::select` figures out you are selecting the column name that is stored
+in the `col_to_select` variable and not a phantom column called "col_to_select"
+(since it doesn't exist). Now what happens when you do something like this?
+
+```{r}
+gear <- "mpg"
+dplyr::select(mtcars, gear)
+```
+
+Due to data masking, the "gear" column name takes precedence over the value 
+stored in the `gear` variable. There are two ways to deal with this. You can 
+explicitly refer to the column name by double quoting the column name.
+
+```{r}
+gear <- "mpg"
+
+# Ignores the `gear` variable.
+dplyr::select(mtcars, "gear")
+```
+
+If you want to use a variable to store the column name, then the safest thing to 
+do is to combine it with the `.data` pronoun:
+
+```{r}
+gear <- "mpg"
+dplyr::select(mtcars, .data[[gear]])
+```
+
+# Safely Selecting Multiple Columns
+
+If you want to safely select multiple columns, then you should start by double
+quoting the columns names to make it explicit:
+
+```{r}
+dplyr::select(mtcars, "mpg", "carb")
+```
+
+If you want to use a variable to select multiple columns, you should create a 
+character vector storing the different column names: 
+
+```{r message = FALSE}
+cols_to_select <- c("mpg", "carb")
+dplyr::select(mtcars, cols_to_select)
+```
+
+Here the `dplyr::select` function is smart enough to figure out that you are
+asking for multiple columns stored in the `cols_to_select` variable. However,
+what happens if you have something like this?
+
+```{r}
+gear <- c("mpg", "carb")
+dplyr::select(mtcars, gear)
+```
+
+Similar to the scenario where we were selecting a single column, data masking
+results in the "gear" column name taking precedence over the values in the 
+`gear` variable. This ends up creating an unexpected result. This is where the
+`all_of` function comes in:
+
+```{r}
+gear <- c("mpg", "carb")
+dplyr::select(mtcars, all_of(gear))
+```
+
+The function means to literally select "all of" the columns that are stored in 
+the character vector variable. By using `all_of`, you guard yourself against
+any data masking.
+
+# `.data` vs. `all_of`
+
+Near the beginning of the post, we saw the following note when using a variable
+with the `dplyr::select` function:
+
+```{r}
+col_to_select <- "mpg"
+dplyr::select(mtcars, col_to_select)
+```
+
+Based on this, it seems that using the function `all_of` is the recommended way 
+to select columns when using a variable even when it's only a single column. 
+In other words,
+
+```{r}
+col_to_select <- "mpg"
+dplyr::select(mtcars, all_of(col_to_select))
+```
+
+This is as valid as using the `.data` pronoun. My personal preference is to 
+stick to using the `.data` pronoun when I only want to select a single column
+and use `all_of` when my character vector has multiple values in it. This simply
+makes it more obvious to me what I should be expecting from `dplyr::select` 
+call.
+
+# Conclusions
+
+In conclusion, my recommendations for safely selecting data frame columns in the 
+tidyverse are as follows:
+
+* Be explicit in the single and multiple column selections by double quoting the 
+    column names.
+* If you want to use a variable to store a single column name, then combine it 
+    with the `.data` pronoun.
+* If you want to use a variable to store a character vector of multiple column 
+    names, then use the `all_of` function.
+
+```{r}
+devtools::session_info()
+```
+
+# References
+
+* [Interactivity and Programming in the Tidyverse - Lionel Henry](https://resources.rstudio.com/rstudio-conf-2020/interactivity-and-programming-in-the-tidyverse-lionel-henry)
