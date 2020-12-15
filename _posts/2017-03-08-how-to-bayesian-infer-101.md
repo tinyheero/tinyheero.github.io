@@ -78,7 +78,6 @@ have something like:
 
 {% highlight r %}
 library("dplyr")
-library("ggplot2")
 
 #' Generates a "Triangle" Prior Probability Distribution
 #'
@@ -219,13 +218,6 @@ The final step is that we use the observed data and apply Bayes' rule to generat
 #' @param num_tails Number of tails.
 #' @return Dataframe of the likelihood probability distribution.
 get_likelihood_df <- function(theta_vals, num_heads, num_tails) {
-  likelihood.vals <- c()
-  for (cur.theta.val in theta_vals) {
-    likelihood.vals <- 
-      c(likelihood.vals, 
-        (cur.theta.val^num_heads) * (1 - cur.theta.val)^(num_tails))
-  }
-
   likelihood.vals <- dbinom(num_heads, num_heads + num_tails, theta_vals)
   likelihood_df <- 
     tibble::tibble(
@@ -441,6 +433,8 @@ prior distribution. Moreover, I will discuss why Bayesian statistics is
 difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can 
 help us deal with this!
 
+* 2020-12-15: Removed superfluous code in the `get_likelihood_df` function.
+    Thanks Ben for pointing this out.
 * 2019-09-19: Fixed the calculation of the marginal probability by multiplying 
     the likelihood by the prior. This results in a proper posterior probability
     distribution that integrates to 1. Thanks Jose Tabora for pointing out the 
@@ -455,9 +449,9 @@ help us deal with this!
 
 
 {% highlight text %}
-## ─ Session info ──────────────────────────────────────────────────────────
+## ─ Session info ───────────────────────────────────────────────────────────────
 ##  setting  value                       
-##  version  R version 3.5.2 (2018-12-20)
+##  version  R version 4.0.3 (2020-10-10)
 ##  os       macOS Sierra 10.12.6        
 ##  system   x86_64, darwin16.7.0        
 ##  ui       unknown                     
@@ -465,66 +459,65 @@ help us deal with this!
 ##  collate  en_GB.UTF-8                 
 ##  ctype    en_GB.UTF-8                 
 ##  tz       Europe/London               
-##  date     2019-09-19                  
+##  date     2020-12-15                  
 ## 
-## ─ Packages ──────────────────────────────────────────────────────────────
-##  package     * version date       lib source        
-##  argparse    * 2.0.0   2018-11-30 [1] CRAN (R 3.5.1)
-##  assertthat    0.2.1   2019-03-21 [1] CRAN (R 3.5.2)
-##  backports     1.1.4   2019-04-10 [1] CRAN (R 3.5.2)
-##  bindr         0.1.1   2018-03-13 [1] CRAN (R 3.5.1)
-##  bindrcpp    * 0.2.2   2018-03-29 [1] CRAN (R 3.5.1)
-##  callr         3.1.1   2018-12-21 [1] CRAN (R 3.5.1)
-##  cli           1.0.1   2018-09-25 [1] CRAN (R 3.5.1)
-##  colorspace    1.4-1   2019-03-18 [1] CRAN (R 3.5.2)
-##  cowplot     * 0.9.4   2019-01-08 [1] CRAN (R 3.5.1)
-##  crayon        1.3.4   2017-09-16 [1] CRAN (R 3.5.1)
-##  desc          1.2.0   2018-05-01 [1] CRAN (R 3.5.1)
-##  devtools      2.0.1   2018-10-26 [1] CRAN (R 3.5.1)
-##  digest        0.6.20  2019-07-04 [1] CRAN (R 3.5.2)
-##  dplyr       * 0.7.8   2018-11-10 [1] CRAN (R 3.5.1)
-##  evaluate      0.14    2019-05-28 [1] CRAN (R 3.5.2)
-##  findpython    1.0.5   2019-03-08 [1] CRAN (R 3.5.2)
-##  fs            1.2.6   2018-08-23 [1] CRAN (R 3.5.1)
-##  gdtools     * 0.1.7   2018-02-27 [1] CRAN (R 3.5.1)
-##  getopt        1.20.3  2019-03-22 [1] CRAN (R 3.5.2)
-##  ggplot2     * 3.1.0   2018-10-25 [1] CRAN (R 3.5.1)
-##  glue        * 1.3.1   2019-03-12 [1] CRAN (R 3.5.2)
-##  gtable        0.3.0   2019-03-25 [1] CRAN (R 3.5.2)
-##  highr         0.8     2019-03-20 [1] CRAN (R 3.5.2)
-##  jsonlite      1.6     2018-12-07 [1] CRAN (R 3.5.1)
-##  knitr       * 1.21    2018-12-10 [1] CRAN (R 3.5.1)
-##  labeling      0.3     2014-08-23 [1] CRAN (R 3.5.1)
-##  lazyeval      0.2.1   2017-10-29 [1] CRAN (R 3.5.1)
-##  magrittr      1.5     2014-11-22 [1] CRAN (R 3.5.1)
-##  memoise       1.1.0   2017-04-21 [1] CRAN (R 3.5.1)
-##  munsell       0.5.0   2018-06-12 [1] CRAN (R 3.5.1)
-##  pillar        1.3.1   2018-12-15 [1] CRAN (R 3.5.1)
-##  pkgbuild      1.0.2   2018-10-16 [1] CRAN (R 3.5.1)
-##  pkgconfig     2.0.2   2018-08-16 [1] CRAN (R 3.5.1)
-##  pkgload       1.0.2   2018-10-29 [1] CRAN (R 3.5.1)
-##  plyr          1.8.4   2016-06-08 [1] CRAN (R 3.5.1)
-##  prettyunits   1.0.2   2015-07-13 [1] CRAN (R 3.5.1)
-##  processx      3.2.1   2018-12-05 [1] CRAN (R 3.5.1)
-##  ps            1.3.0   2018-12-21 [1] CRAN (R 3.5.1)
-##  purrr         0.3.2   2019-03-15 [1] CRAN (R 3.5.2)
-##  R6            2.4.0   2019-02-14 [1] CRAN (R 3.5.2)
-##  Rcpp          1.0.0   2018-11-07 [1] CRAN (R 3.5.1)
-##  remotes       2.0.2   2018-10-30 [1] CRAN (R 3.5.1)
-##  rlang         0.3.1   2019-01-08 [1] CRAN (R 3.5.1)
-##  rprojroot     1.3-2   2018-01-03 [1] CRAN (R 3.5.1)
-##  scales        1.0.0   2018-08-09 [1] CRAN (R 3.5.1)
-##  sessioninfo   1.1.1   2018-11-05 [1] CRAN (R 3.5.1)
-##  stringi       1.2.4   2018-07-20 [1] CRAN (R 3.5.1)
-##  stringr       1.4.0   2019-02-10 [1] CRAN (R 3.5.1)
-##  svglite     * 1.2.1   2017-09-11 [1] CRAN (R 3.5.1)
-##  testthat      2.0.1   2018-10-13 [1] CRAN (R 3.5.1)
-##  tibble        2.0.1   2019-01-12 [1] CRAN (R 3.5.1)
-##  tidyselect    0.2.5   2018-10-11 [1] CRAN (R 3.5.1)
-##  usethis       1.4.0   2018-08-14 [1] CRAN (R 3.5.1)
-##  withr         2.1.2   2018-03-15 [1] CRAN (R 3.5.1)
-##  xfun          0.4     2018-10-23 [1] CRAN (R 3.5.1)
+## ─ Packages ───────────────────────────────────────────────────────────────────
+##  package     * version  date       lib source        
+##  argparse    * 2.0.3    2020-10-19 [1] CRAN (R 4.0.3)
+##  assertthat    0.2.1    2019-03-21 [1] CRAN (R 4.0.3)
+##  backports     1.1.10   2020-09-15 [1] CRAN (R 4.0.3)
+##  Cairo       * 1.5-12.2 2020-07-07 [1] CRAN (R 4.0.3)
+##  callr         3.5.1    2020-10-13 [1] CRAN (R 4.0.3)
+##  cli           2.1.0    2020-10-12 [1] CRAN (R 4.0.3)
+##  colorspace    1.4-1    2019-03-18 [1] CRAN (R 4.0.3)
+##  cowplot     * 1.1.0    2020-09-08 [1] CRAN (R 4.0.3)
+##  crayon        1.3.4    2017-09-16 [1] CRAN (R 4.0.3)
+##  desc          1.2.0    2018-05-01 [1] CRAN (R 4.0.3)
+##  devtools      2.3.2    2020-09-18 [1] CRAN (R 4.0.3)
+##  digest        0.6.27   2020-10-24 [1] CRAN (R 4.0.3)
+##  dplyr       * 1.0.2    2020-08-18 [1] CRAN (R 4.0.3)
+##  ellipsis      0.3.1    2020-05-15 [1] CRAN (R 4.0.3)
+##  evaluate      0.14     2019-05-28 [1] CRAN (R 4.0.3)
+##  fansi         0.4.1    2020-01-08 [1] CRAN (R 4.0.3)
+##  farver        2.0.3    2020-01-16 [1] CRAN (R 4.0.3)
+##  findpython    1.0.5    2019-03-08 [1] CRAN (R 4.0.3)
+##  fs            1.5.0    2020-07-31 [1] CRAN (R 4.0.3)
+##  generics      0.0.2    2018-11-29 [1] CRAN (R 4.0.3)
+##  ggplot2     * 3.3.2    2020-06-19 [1] CRAN (R 4.0.3)
+##  glue        * 1.4.2    2020-08-27 [1] CRAN (R 4.0.3)
+##  gtable        0.3.0    2019-03-25 [1] CRAN (R 4.0.3)
+##  highr         0.8      2019-03-20 [1] CRAN (R 4.0.3)
+##  jsonlite      1.7.1    2020-09-07 [1] CRAN (R 4.0.3)
+##  knitr       * 1.30     2020-09-22 [1] CRAN (R 4.0.3)
+##  labeling      0.4.2    2020-10-20 [1] CRAN (R 4.0.3)
+##  lifecycle     0.2.0    2020-03-06 [1] CRAN (R 4.0.3)
+##  magrittr      2.0.1    2020-11-17 [1] CRAN (R 4.0.3)
+##  memoise       1.1.0    2017-04-21 [1] CRAN (R 4.0.3)
+##  munsell       0.5.0    2018-06-12 [1] CRAN (R 4.0.3)
+##  pillar        1.4.6    2020-07-10 [1] CRAN (R 4.0.3)
+##  pkgbuild      1.1.0    2020-07-13 [1] CRAN (R 4.0.3)
+##  pkgconfig     2.0.3    2019-09-22 [1] CRAN (R 4.0.3)
+##  pkgload       1.1.0    2020-05-29 [1] CRAN (R 4.0.3)
+##  prettyunits   1.1.1    2020-01-24 [1] CRAN (R 4.0.3)
+##  processx      3.4.4    2020-09-03 [1] CRAN (R 4.0.3)
+##  ps            1.4.0    2020-10-07 [1] CRAN (R 4.0.3)
+##  purrr         0.3.4    2020-04-17 [1] CRAN (R 4.0.3)
+##  R6            2.4.1    2019-11-12 [1] CRAN (R 4.0.3)
+##  remotes       2.2.0    2020-07-21 [1] CRAN (R 4.0.3)
+##  rlang         0.4.8    2020-10-08 [1] CRAN (R 4.0.3)
+##  rprojroot     1.3-2    2018-01-03 [1] CRAN (R 4.0.3)
+##  scales        1.1.1    2020-05-11 [1] CRAN (R 4.0.3)
+##  sessioninfo   1.1.1    2018-11-05 [1] CRAN (R 4.0.3)
+##  stringi       1.5.3    2020-09-09 [1] CRAN (R 4.0.3)
+##  stringr       1.4.0    2019-02-10 [1] CRAN (R 4.0.3)
+##  testthat      2.3.2    2020-03-02 [1] CRAN (R 4.0.3)
+##  tibble        3.0.4    2020-10-12 [1] CRAN (R 4.0.3)
+##  tidyselect    1.1.0    2020-05-11 [1] CRAN (R 4.0.3)
+##  usethis       1.6.3    2020-09-17 [1] CRAN (R 4.0.3)
+##  vctrs         0.3.4    2020-08-29 [1] CRAN (R 4.0.3)
+##  withr         2.3.0    2020-09-22 [1] CRAN (R 4.0.3)
+##  xfun          0.18     2020-09-29 [1] CRAN (R 4.0.3)
 ## 
-## [1] /usr/local/lib/R/3.5/site-library
-## [2] /usr/local/Cellar/r/3.5.2_2/lib/R/library
+## [1] /usr/local/lib/R/4.0/site-library
+## [2] /usr/local/Cellar/r/4.0.3/lib/R/library
 {% endhighlight %}

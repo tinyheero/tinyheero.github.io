@@ -10,11 +10,12 @@ tags: [R, stats, bayesian]
 ```{r message = FALSE, echo = FALSE}
 library("knitr")
 library("cowplot")
-library("svglite")
+library("Cairo")
+library("ggplot2")
 
 knitr::opts_chunk$set(
   fig.path = "{{ site.url }}/assets/how-to-bayesian-infer-101/",
-  dev = "svglite", 
+  dev = "CairoSVG",
   fig.ext = "svg"
 )
 theme_set(theme_grey())
@@ -88,7 +89,6 @@ have something like:
 
 ```{r prior-distr, message = FALSE, fig.height = 4}
 library("dplyr")
-library("ggplot2")
 
 #' Generates a "Triangle" Prior Probability Distribution
 #'
@@ -223,13 +223,6 @@ The final step is that we use the observed data and apply Bayes' rule to generat
 #' @param num_tails Number of tails.
 #' @return Dataframe of the likelihood probability distribution.
 get_likelihood_df <- function(theta_vals, num_heads, num_tails) {
-  likelihood.vals <- c()
-  for (cur.theta.val in theta_vals) {
-    likelihood.vals <- 
-      c(likelihood.vals, 
-        (cur.theta.val^num_heads) * (1 - cur.theta.val)^(num_tails))
-  }
-
   likelihood.vals <- dbinom(num_heads, num_heads + num_tails, theta_vals)
   likelihood_df <- 
     tibble::tibble(
@@ -426,6 +419,8 @@ prior distribution. Moreover, I will discuss why Bayesian statistics is
 difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can 
 help us deal with this!
 
+* 2020-12-15: Removed superfluous code in the `get_likelihood_df` function.
+    Thanks Ben for pointing this out.
 * 2019-09-19: Fixed the calculation of the marginal probability by multiplying 
     the likelihood by the prior. This results in a proper posterior probability
     distribution that integrates to 1. Thanks Jose Tabora for pointing out the 

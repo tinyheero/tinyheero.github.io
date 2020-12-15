@@ -33,7 +33,7 @@ parameters[output_file]="";
 
 # Script metadata
 VERSION=$(cd "${SCRIPT_DIRECTORY}" && git describe --always --tags --dirty);
-AUTHOR="Author Name <a.name@achillestx.com>";
+AUTHOR="Fong Chun Chan <fongchunchan@gmail.com>";
 USAGE="
 Usage:
 
@@ -51,7 +51,7 @@ Options:
         The rmarkdown file to knit
 
     --img-dir FILENAME
-        The name of the folder to store the images associatedw with this
+        The name of the folder to store the images associated with this
         --rmd-file
 
     -v --version
