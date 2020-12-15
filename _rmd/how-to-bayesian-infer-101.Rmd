@@ -420,11 +420,12 @@ difficult and how a class of methods called Markov chain Monte Carlo (MCMC) can
 help us deal with this!
 
 * 2020-12-15: Removed superfluous code in the `get_likelihood_df` function.
-    Thanks Ben for pointing this out.
+    Thanks [Ben](https://disqus.com/by/disqus_bennyp/) for pointing this out.
 * 2019-09-19: Fixed the calculation of the marginal probability by multiplying 
     the likelihood by the prior. This results in a proper posterior probability
-    distribution that integrates to 1. Thanks Jose Tabora for pointing out the 
-    original posterior probability distribution wasn't proper.
+    distribution that integrates to 1. Thanks [Jose Tabora](https://disqus.com/by/disqus_cKBlo84jcJ/) 
+    for pointing out the original posterior probability distribution wasn't 
+    proper.
 
 ## References
 
