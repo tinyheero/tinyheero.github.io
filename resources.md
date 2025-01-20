@@ -10,8 +10,8 @@ This page contains some useful resources for becoming a better bioinformatician 
 ## Slides
 
 * [Primer on SCNA calling]({{ site.url }}/assets/slides/primer_scna_calling.pdf): 
-Primer on somatic copy number alteration calling using a read-depth based 
-approach (in contrast to using split and spanning read approach).
+Primer on somatic copy number alteration (SCNA) calling using a read-depth 
+based approach (in contrast to using split and spanning read approach).
 
 ## Courses
 
